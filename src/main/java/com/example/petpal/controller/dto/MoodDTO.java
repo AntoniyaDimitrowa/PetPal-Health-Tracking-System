@@ -1,14 +1,14 @@
-package com.example.petpal.business.domain;
+package com.example.petpal.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@Getter
 @Builder
-public class Mood {
-    private long id;
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+public class MoodDTO {
     private String name;
 }

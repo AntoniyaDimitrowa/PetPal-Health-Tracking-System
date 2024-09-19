@@ -1,4 +1,4 @@
-package com.example.petpal.business.domain;
+package com.example.petpal.controller.dto;
 
 import com.example.petpal.business.domain.enums.VaccinationType;
 import lombok.AllArgsConstructor;
@@ -6,12 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-public class Vaccination {
-    private long id;
+public class VaccinationDTO {
     private String name;
     private VaccinationType type;
 

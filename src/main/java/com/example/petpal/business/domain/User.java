@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @AllArgsConstructor
 public class User {
     @Getter
@@ -20,6 +22,10 @@ public class User {
     @Getter
     @Setter
     protected String password;
+
+    @Getter
+    @Setter
+    private Date memberSince;
 
     @Getter
     @Setter
