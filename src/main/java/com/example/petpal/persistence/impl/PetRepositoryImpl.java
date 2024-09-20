@@ -3,19 +3,62 @@ package com.example.petpal.persistence.impl;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
+import com.example.petpal.persistence.entity.MoodEntity;
 import com.example.petpal.persistence.entity.PetEntity;
 import com.example.petpal.persistence.entity.VaccinationEntity;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class PetRepositoryImpl implements IPetRepository {
     private final ArrayList<PetEntity> pets = new ArrayList<>();
+    private final ArrayList<BreedEntity> breeds = new ArrayList<>();
     private static long nextId = 1;
+
+    public PetRepositoryImpl() {
+        // Initialize some breed entities
+        MoodEntity energetic = new MoodEntity(1,"Energetic");
+        MoodEntity calm = new MoodEntity(2, "Calm");
+        MoodEntity protective = new MoodEntity(3, "Protective");
+
+        // Initialize some breed entities
+        BreedEntity labrador = BreedEntity.builder()
+                .id(1L)
+                .name("Labrador")
+                .description("Labradors are friendly, outgoing, and high-spirited companions.")
+                .normalMood(energetic)
+                .minimumExercisePerDay(1.5)  // 1.5 hours
+                .commonHealthProblems(new ArrayList<>(Arrays.asList("Hip dysplasia", "Obesity")))
+                .build();
+
+        BreedEntity goldenRetriever = BreedEntity.builder()
+                .id(2L)
+                .name("Golden Retriever")
+                .description("Golden Retrievers are intelligent, friendly, and devoted dogs.")
+                .normalMood(calm)
+                .minimumExercisePerDay(1.0)  // 1 hour
+                .commonHealthProblems(new ArrayList<>(Arrays.asList("Elbow dysplasia", "Heart problems")))
+                .build();
+
+        BreedEntity bulldog = BreedEntity.builder()
+                .id(3L)
+                .name("Bulldog")
+                .description("Bulldogs are calm, courageous, and friendly.")
+                .normalMood(protective)
+                .minimumExercisePerDay(0.5)  // 30 minutes
+                .commonHealthProblems(new ArrayList<>(Arrays.asList("Breathing problems", "Skin infections")))
+                .build();
+
+        breeds.addAll(Arrays.asList(labrador, goldenRetriever, bulldog));
+
+        // Initialize some pet entities
+        PetEntity pet1 = new PetEntity(nextId++, "Buddy", labrador, Gender.Male, new Date(), 25.5, new ArrayList<>(), new ArrayList<>());
+        PetEntity pet2 = new PetEntity(nextId++, "Bella", goldenRetriever, Gender.Female, new Date(), 22.3, new ArrayList<>(), new ArrayList<>());
+        PetEntity pet3 = new PetEntity(nextId++, "Charlie", bulldog, Gender.Male, new Date(), 30.0, new ArrayList<>(), new ArrayList<>());
+
+        pets.addAll(Arrays.asList(pet1, pet2, pet3));
+    }
 
     @Override
     public Optional<PetEntity> getPet(long id) {
@@ -24,11 +67,17 @@ public class PetRepositoryImpl implements IPetRepository {
 
     @Override
     public void updatePet(long id, String name, BreedEntity breed, Gender gender, Date birthdate, Double weight) {
-
+        PetEntity entity = getPet(id).get();
+        entity.setName(name);
+        entity.setBreed(breed);
+        entity.setGender(gender);
+        entity.setBirthdate(birthdate);
+        entity.setWeight(weight);
     }
 
     @Override
     public void deletePet(long petId) {
+
         pets.removeIf(pet -> pet.getId() == petId);
     }
 

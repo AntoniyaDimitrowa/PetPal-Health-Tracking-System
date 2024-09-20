@@ -1,9 +1,11 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IPetService;
+import com.example.petpal.business.converters.BreedConverter;
+import com.example.petpal.business.converters.VaccinationConverter;
+import com.example.petpal.business.converters.PetConverter;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Pet;
-import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.exception.InvalidPetException;
@@ -25,25 +27,38 @@ public class PetServiceImpl implements IPetService {
 
     @Override
     public Optional<Pet> getPet(long petId) {
-//        Optional<PetEntity> petOptional = petRepository.getPet(petId);
-//        if (petOptional.isEmpty()) {
-//            throw new InvalidPetException(petId);
-//        }
-        return Optional.empty();
+        return petRepository.getPet(petId).map(PetConverter::convertFromPetEntityToPet);
     }
 
     @Override
-    public void updatePet(long id, String name, Breed breed, Gender gender, Date birthdate, Double weight) throws InvalidPetException {
+    public void updatePet(long id, String name, Breed breed, Gender gender, Date birthdate, double weight) throws InvalidPetException {
+        Optional<PetEntity> petOptional = petRepository.getPet(id);
+        if (petOptional.isEmpty()) {
+            throw new InvalidPetException(id);
+        }
+        PetEntity petEntity = petOptional.get();
 
+        petRepository.updatePet(id, name, BreedConverter.convertFromBreedToBreedEntity(breed), gender, birthdate, weight);
     }
 
     @Override
     public void deletePet(long petId) {
-
+        this.petRepository.deletePet(petId);
     }
 
     @Override
-    public Pet createPet(String name, Breed breed, Gender gender, Date birthdate, Double weight, ArrayList<VaccinationRecord> vaccinations) {
-        return null;
+    public Pet createPet(String name, Breed breed, Gender gender, Date birthdate, double weight, ArrayList<VaccinationRecord> vaccinations) {
+
+        PetEntity newPet = PetEntity.builder()
+                .name(name)
+                .breed(BreedConverter.convertFromBreedToBreedEntity(breed))
+                .gender(gender)
+                .birthdate(birthdate)
+                .weight(weight)
+                .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsEntities(vaccinations))
+                .build();
+
+        PetEntity savedPet = petRepository.createPet(newPet);
+        return PetConverter.convertFromPetEntityToPet(savedPet);
     }
 }

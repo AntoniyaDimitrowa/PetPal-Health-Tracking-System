@@ -1,5 +1,14 @@
 package com.example.petpal.persistence.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 //@Entity
 //@Table(name = "users")
 public class UserEntity {

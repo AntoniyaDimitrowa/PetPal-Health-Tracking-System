@@ -21,18 +21,18 @@ public class VaccinationConverter {
     };
 
     public static VaccinationRecord convertFromVaccinationRecordDTOtoVaccinationRecord(VaccinationRecordDTO dto){
-        return new VaccinationRecord(dto.getId(),
-                convertFromVaccinationDTOtoVaccination(dto.getVaccination()),
-                dto.getDate()
-        );
+        return VaccinationRecord.builder()
+                .vaccination(convertFromVaccinationDTOtoVaccination(dto.getVaccination()))
+                .date(dto.getDate())
+                .build();
     };
 
     public static Vaccination convertFromVaccinationDTOtoVaccination(VaccinationDTO dto){
-        return new Vaccination(dto.getId(),
-                dto.getName(),
-                dto.getType(),
-                dto.getRange()
-        );
+        return Vaccination.builder()
+                .name(dto.getName())
+                .type(dto.getType())
+                .range(dto.getRange())
+                .build();
     };
 
     public static ArrayList<VaccinationRecordDTO> convertFromVaccinationRecordsToVaccinationRecordsDTOs(ArrayList<VaccinationRecord> records){

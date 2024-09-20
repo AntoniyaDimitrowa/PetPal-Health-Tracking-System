@@ -4,9 +4,9 @@ import com.example.petpal.business.IPetService;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.controller.converters.BreedConverter;
-import com.example.petpal.controller.converters.Converter;
 import com.example.petpal.controller.converters.PetConverter;
 import com.example.petpal.controller.converters.VaccinationConverter;
+import com.example.petpal.controller.dto.CreatePetResponse;
 import com.example.petpal.controller.dto.PetDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class PetController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createPet(@RequestBody PetDTO dto) {
+    public ResponseEntity<CreatePetResponse> createPet(@RequestBody PetDTO dto) {
         Pet newPet = petService.createPet(
                 dto.getName(),
                 BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()),
@@ -46,7 +46,7 @@ public class PetController {
                 dto.getWeight(),
                 VaccinationConverter.convertFromVaccinationRecordDTOsToVaccinationRecords(dto.getVaccinationRecords())
         );
-        return ResponseEntity.status(HttpStatus.CREATED).body(newPet.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(CreatePetResponse.builder().id(newPet.getId()).build());
     }
 
     @PutMapping("{id}")

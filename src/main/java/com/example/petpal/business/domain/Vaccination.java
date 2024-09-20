@@ -14,6 +14,5 @@ public class Vaccination {
     private long id;
     private String name;
     private VaccinationType type;
-
     private int range;
 }
