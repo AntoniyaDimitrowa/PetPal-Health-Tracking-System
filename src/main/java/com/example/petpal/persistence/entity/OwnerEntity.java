@@ -7,7 +7,6 @@ import lombok.Data;
 import java.util.ArrayList;
 
 @Data
-@Builder
 @AllArgsConstructor
 public class OwnerEntity extends UserEntity {
     private ArrayList<PetEntity> pets;

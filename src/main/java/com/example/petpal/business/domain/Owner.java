@@ -3,11 +3,11 @@ package com.example.petpal.business.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Date;
 @Data
-@Builder
 public class Owner extends User {
     private String address;
     private ArrayList<Pet> pets;

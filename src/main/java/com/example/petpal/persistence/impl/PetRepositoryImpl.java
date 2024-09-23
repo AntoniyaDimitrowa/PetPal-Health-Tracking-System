@@ -1,5 +1,6 @@
 package com.example.petpal.persistence.impl;
 
+import com.example.petpal.business.domain.Emoji;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
@@ -18,9 +19,9 @@ public class PetRepositoryImpl implements IPetRepository {
 
     public PetRepositoryImpl() {
         // Initialize some breed entities
-        MoodEntity energetic = new MoodEntity(1,"Energetic");
-        MoodEntity calm = new MoodEntity(2, "Calm");
-        MoodEntity protective = new MoodEntity(3, "Protective");
+        MoodEntity energetic = new MoodEntity(1,"Energetic", new Emoji());
+        MoodEntity calm = new MoodEntity(2, "Calm", new Emoji());
+        MoodEntity protective = new MoodEntity(3, "Protective", new Emoji());
 
         // Initialize some breed entities
         BreedEntity labrador = BreedEntity.builder()
