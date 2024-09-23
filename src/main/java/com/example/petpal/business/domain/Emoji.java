@@ -1,13 +1,13 @@
-package com.example.petpal.controller.dto;
+package com.example.petpal.business.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class CreatePetResponse {
+public class Emoji {
     private long id;
+    private byte[] image;
 }

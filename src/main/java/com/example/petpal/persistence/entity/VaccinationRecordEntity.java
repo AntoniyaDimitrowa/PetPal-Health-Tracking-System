@@ -4,8 +4,7 @@ import com.example.petpal.business.domain.Vaccination;
 import lombok.*;
 
 import java.util.Date;
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

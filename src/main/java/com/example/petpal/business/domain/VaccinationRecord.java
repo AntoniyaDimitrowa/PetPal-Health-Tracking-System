@@ -1,16 +1,13 @@
 package com.example.petpal.business.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 public class VaccinationRecord {
     private long id;
     private Vaccination vaccination;

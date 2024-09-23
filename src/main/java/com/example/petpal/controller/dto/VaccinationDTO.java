@@ -1,12 +1,9 @@
 package com.example.petpal.controller.dto;
 
 import com.example.petpal.business.domain.enums.VaccinationType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

@@ -9,8 +9,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

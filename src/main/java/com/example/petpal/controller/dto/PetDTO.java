@@ -4,18 +4,15 @@ import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.domain.Owner;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.Gender;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 public class PetDTO {
     private String name;
     private BreedDTO breed;

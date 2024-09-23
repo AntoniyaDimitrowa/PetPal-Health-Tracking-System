@@ -1,14 +1,13 @@
 package com.example.petpal.controller.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.example.petpal.business.domain.Emoji;
+import lombok.*;
 
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 public class MoodDTO {
     private String name;
+    private Emoji emoji;
 }

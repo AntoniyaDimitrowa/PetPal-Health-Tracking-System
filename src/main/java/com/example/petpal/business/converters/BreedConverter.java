@@ -25,6 +25,7 @@ public class BreedConverter {
         return MoodEntity.builder()
                 .id(mood.getId())
                 .name(mood.getName())
+                .emoji(mood.getEmoji())
                 .build();
     };
 
@@ -43,6 +44,7 @@ public class BreedConverter {
         return Mood.builder()
                 .id(entity.getId())
                 .name(entity.getName())
+                .emoji(entity.getEmoji())
                 .build();
     };
 }

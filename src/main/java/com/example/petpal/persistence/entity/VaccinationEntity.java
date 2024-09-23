@@ -3,8 +3,7 @@ package com.example.petpal.persistence.entity;
 import com.example.petpal.business.domain.enums.VaccinationType;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,8 +1,15 @@
 package com.example.petpal.business.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.Date;
 
+@Data
+@Builder
+@AllArgsConstructor
 public class HealthRecord {
     private long id;
     private Date date;

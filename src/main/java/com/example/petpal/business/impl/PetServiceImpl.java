@@ -56,6 +56,7 @@ public class PetServiceImpl implements IPetService {
                 .birthdate(birthdate)
                 .weight(weight)
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsEntities(vaccinations))
+                .healthRecords(new ArrayList<>())
                 .build();
 
         PetEntity savedPet = petRepository.createPet(newPet);

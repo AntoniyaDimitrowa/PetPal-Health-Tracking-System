@@ -1,14 +1,13 @@
 package com.example.petpal.business.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.ArrayList;
 
+@Data
 @AllArgsConstructor
-@Getter
 @Builder
+@NoArgsConstructor
 public class Breed {
     private long id;
     private String name;

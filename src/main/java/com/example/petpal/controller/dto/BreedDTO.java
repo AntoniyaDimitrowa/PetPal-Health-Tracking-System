@@ -1,17 +1,14 @@
 package com.example.petpal.controller.dto;
 
 import com.example.petpal.business.domain.Mood;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 public class BreedDTO {
     private String name;
     private String description;

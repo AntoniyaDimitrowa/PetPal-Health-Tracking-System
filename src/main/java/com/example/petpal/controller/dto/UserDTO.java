@@ -1,10 +1,11 @@
 package com.example.petpal.controller.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
-
+@Data
+@Builder
+@AllArgsConstructor
 public class UserDTO {
     private String name;
     private String email;

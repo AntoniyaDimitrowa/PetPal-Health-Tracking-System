@@ -1,7 +1,14 @@
 package com.example.petpal.persistence.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
+@Builder
+@AllArgsConstructor
 public class HealthRecordEntity {
     private long id;
     private Date date;
