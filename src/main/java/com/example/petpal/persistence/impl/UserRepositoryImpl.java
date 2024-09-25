@@ -2,10 +2,12 @@ package com.example.petpal.persistence.impl;
 
 import com.example.petpal.persistence.IUserRepository;
 import com.example.petpal.persistence.entity.UserEntity;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
+@Repository
 public class UserRepositoryImpl implements IUserRepository {
     private final ArrayList<UserEntity> users = new ArrayList<>();
     private static long nextUserId = 1L;

@@ -6,12 +6,14 @@ import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 import com.example.petpal.persistence.entity.MoodEntity;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class BreedRepositoryImpl implements IBreedRepository {
     private final ArrayList<BreedEntity> breeds = new ArrayList<>();
     private final ArrayList<BreedHealthInfoEntity> breedHealthInfos = new ArrayList<>();
@@ -97,11 +99,6 @@ public class BreedRepositoryImpl implements IBreedRepository {
                 .filter(info -> info.getBreed().getId() == breedId &&
                         age >= info.getAgeRangeStart() && age <= info.getAgeRangeEnd())
                 .findFirst();
-    }
-
-    @Override
-    public ArrayList<MoodEntity> getMoodsForBreed(long breedId) {
-        return getBreedById(breedId).map(breed -> (ArrayList)List.of(breed.getNormalMood())).orElse(new ArrayList<>());
     }
 
     @Override

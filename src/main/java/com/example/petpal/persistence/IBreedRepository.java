@@ -20,7 +20,5 @@ public interface IBreedRepository {
 
     Optional<BreedHealthInfoEntity> getHealthInfoForBreed(long breedId, int age);
 
-    ArrayList<MoodEntity> getMoodsForBreed(long breedId);
-
     BreedEntity updateHealthProblems(long breedId, List<String> healthProblems);
 }

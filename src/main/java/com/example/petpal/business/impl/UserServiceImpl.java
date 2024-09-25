@@ -3,10 +3,16 @@ package com.example.petpal.business.impl;
 import com.example.petpal.business.IUserService;
 import com.example.petpal.business.converters.UserConverter;
 import com.example.petpal.business.domain.User;
+import com.example.petpal.business.exception.InvalidBreedException;
+import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.persistence.IUserRepository;
+import com.example.petpal.persistence.entity.BreedEntity;
+import com.example.petpal.persistence.entity.UserEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
 
@@ -16,7 +22,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public Optional<User> getUserById(long userId) {
-        return Optional.ofNullable(UserConverter.convertFromUserEntityToUser(userRepository.getUserById(userId).get()));
+        return userRepository.getUserById(userId).map(UserConverter::convertFromUserEntityToUser);
     }
 
     @Override
@@ -25,7 +31,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User updateUser(long userId, User updatedUser) {
+    public User updateUser(long userId, User updatedUser) throws InvalidUserException {
+        Optional<UserEntity> breedOptional = userRepository.getUserById(userId);
+        if (breedOptional.isEmpty()) {
+            throw new InvalidUserException(userId);
+        }
         return UserConverter.convertFromUserEntityToUser(userRepository.updateUser(userId, UserConverter.convertFromUserToUserEntity(updatedUser)));
     }
 

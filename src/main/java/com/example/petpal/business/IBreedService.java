@@ -3,6 +3,7 @@ package com.example.petpal.business;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.Mood;
+import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 
 import java.util.ArrayList;
@@ -15,13 +16,11 @@ public interface IBreedService {
 
     Breed addBreed(Breed breed);
 
-    Breed updateBreed(long id, Breed updatedBreed);
+    Breed updateBreed(long id, Breed updatedBreed) throws InvalidBreedException;
 
     boolean deleteBreed(long id);
 
-    Optional<BreedHealthInfo> getHealthInfoForBreed(long breedId, int age);
+    Optional<BreedHealthInfo> getHealthInfoForBreed(long breedId, int age) throws InvalidBreedException;
 
-    ArrayList<Mood> getMoodsForBreed(long breedId);
-
-    Breed updateHealthProblems(long breedId, ArrayList<String> healthProblems);
+    Breed updateHealthProblems(long breedId, ArrayList<String> healthProblems) throws InvalidBreedException;
 }
