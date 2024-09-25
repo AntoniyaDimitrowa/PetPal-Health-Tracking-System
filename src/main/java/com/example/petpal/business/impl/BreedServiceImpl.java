@@ -2,11 +2,12 @@ package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IBreedService;
 import com.example.petpal.business.converters.BreedConverter;
-import com.example.petpal.business.converters.HealthRecordConverter;
+import com.example.petpal.business.converters.HealthConverter;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.persistence.IBreedRepository;
+import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public class BreedServiceImpl implements IBreedService {
 
     @Override
     public Optional<BreedHealthInfo> getHealthInfoForBreed(long breedId, int age) {
-        return breedRepository.getHealthInfoForBreed(breedId, age);
+        return Optional.ofNullable(HealthConverter.convertFromBreedHealthInfoEntityToBreedHealthInfo(breedRepository.getHealthInfoForBreed(breedId, age).get()));
     }
 
     @Override

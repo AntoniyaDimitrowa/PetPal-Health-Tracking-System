@@ -1,7 +1,11 @@
 package com.example.petpal.business.converters;
 
+import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Pet;
+import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.PetEntity;
+
+import java.util.ArrayList;
 
 public class PetConverter {
 
@@ -30,7 +34,23 @@ public class PetConverter {
                 .weight(pet.getWeight())
                 .image(pet.getImage())
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordEntitiesToVaccinationRecords(pet.getVaccinationRecords()))
-                .healthRecords(HealthRecordConverter.convertFromHealthRecordEntitiesToHealthRecords(pet.getHealthRecords()))
+                .healthRecords(HealthConverter.convertFromHealthRecordEntitiesToHealthRecords(pet.getHealthRecords()))
                 .build();
+    };
+
+    public static ArrayList<PetEntity> convertFromPetsToPetEntities(ArrayList<Pet> pets){
+        ArrayList<PetEntity> entities = new ArrayList<>();
+        for (Pet p : pets) {
+            entities.add(convertFromPetToPetEntity(p));
+        }
+        return entities;
+    };
+
+    public static ArrayList<Pet> convertFromPetEntitiesToPets(ArrayList<PetEntity> entities){
+        ArrayList<Pet> pets = new ArrayList<>();
+        for (PetEntity entity : entities) {
+            pets.add(convertFromPetEntityToPet(entity));
+        }
+        return pets;
     };
 }
