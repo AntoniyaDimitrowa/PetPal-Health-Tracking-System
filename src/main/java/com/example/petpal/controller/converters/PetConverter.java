@@ -16,6 +16,7 @@ public class PetConverter {
                 .gender(pet.getGender())
                 .birthdate(pet.getBirthdate())
                 .weight(pet.getWeight())
+                .image(pet.getImage())
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsDTOs(pet.getVaccinationRecords()))
                 .build();
     };

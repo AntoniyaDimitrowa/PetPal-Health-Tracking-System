@@ -2,8 +2,6 @@ package com.example.petpal.business.converters;
 
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Mood;
-import com.example.petpal.controller.dto.BreedDTO;
-import com.example.petpal.controller.dto.MoodDTO;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.MoodEntity;
 
@@ -25,7 +23,7 @@ public class BreedConverter {
         return MoodEntity.builder()
                 .id(mood.getId())
                 .name(mood.getName())
-                .emoji(mood.getEmoji())
+                .image(mood.getImage())
                 .build();
     };
 
@@ -44,7 +42,7 @@ public class BreedConverter {
         return Mood.builder()
                 .id(entity.getId())
                 .name(entity.getName())
-                .emoji(entity.getEmoji())
+                .image(entity.getImage())
                 .build();
     };
 }

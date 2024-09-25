@@ -3,7 +3,6 @@ package com.example.petpal.business.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @AllArgsConstructor
@@ -11,5 +10,5 @@ import lombok.Getter;
 public class Mood {
     private long id;
     private String name;
-    private Emoji emoji;
+    private Image image;
 }

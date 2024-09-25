@@ -2,7 +2,7 @@ package com.example.petpal;
 
 import com.example.petpal.business.converters.BreedConverter;
 import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.Emoji;
+import com.example.petpal.business.domain.Image;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.exception.InvalidPetException;
@@ -41,7 +41,7 @@ class PetServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        MoodEntity energetic = new MoodEntity(1,"Energetic", new Emoji());
+        MoodEntity energetic = new MoodEntity(1,"Energetic", new Image());
 
         BreedEntity breedEntity = BreedEntity.builder()
                 .id(1L)

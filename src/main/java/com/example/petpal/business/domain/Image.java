@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Emoji {
+public class Image {
     private long id;
     private byte[] image;
+    private boolean isEmoji;
 }

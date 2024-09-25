@@ -1,12 +1,13 @@
 package com.example.petpal.persistence.impl;
 
-import com.example.petpal.business.domain.Emoji;
+import com.example.petpal.business.domain.Image;
+import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.MoodEntity;
 import com.example.petpal.persistence.entity.PetEntity;
-import com.example.petpal.persistence.entity.VaccinationEntity;
+import com.example.petpal.persistence.entity.VaccinationRecordEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -19,9 +20,9 @@ public class PetRepositoryImpl implements IPetRepository {
 
     public PetRepositoryImpl() {
         // Initialize some breed entities
-        MoodEntity energetic = new MoodEntity(1,"Energetic", new Emoji());
-        MoodEntity calm = new MoodEntity(2, "Calm", new Emoji());
-        MoodEntity protective = new MoodEntity(3, "Protective", new Emoji());
+        MoodEntity energetic = new MoodEntity(1,"Energetic", new Image());
+        MoodEntity calm = new MoodEntity(2, "Calm", new Image());
+        MoodEntity protective = new MoodEntity(3, "Protective", new Image());
 
         // Initialize some breed entities
         BreedEntity labrador = BreedEntity.builder()
@@ -54,9 +55,9 @@ public class PetRepositoryImpl implements IPetRepository {
         breeds.addAll(Arrays.asList(labrador, goldenRetriever, bulldog));
 
         // Initialize some pet entities
-        PetEntity pet1 = new PetEntity(nextId++, "Buddy", labrador, Gender.Male, new Date(), 25.5, new ArrayList<>(), new ArrayList<>());
-        PetEntity pet2 = new PetEntity(nextId++, "Bella", goldenRetriever, Gender.Female, new Date(), 22.3, new ArrayList<>(), new ArrayList<>());
-        PetEntity pet3 = new PetEntity(nextId++, "Charlie", bulldog, Gender.Male, new Date(), 30.0, new ArrayList<>(), new ArrayList<>());
+        PetEntity pet1 = new PetEntity(nextId++, "Buddy", labrador, Gender.Male, new Date(), 25.5, new Image(), new ArrayList<>(), new ArrayList<>());
+        PetEntity pet2 = new PetEntity(nextId++, "Bella", goldenRetriever, Gender.Female, new Date(), 22.3, new Image(), new ArrayList<>(), new ArrayList<>());
+        PetEntity pet3 = new PetEntity(nextId++, "Charlie", bulldog, Gender.Male, new Date(), 30.0, new Image(), new ArrayList<>(), new ArrayList<>());
 
         pets.addAll(Arrays.asList(pet1, pet2, pet3));
     }
@@ -92,5 +93,16 @@ public class PetRepositoryImpl implements IPetRepository {
             pets.add(pet);
         }
         return pet;
+    }
+
+    @Override
+    public void addVaccinationToPet(long petId, VaccinationRecordEntity vaccinationRecord) {
+        PetEntity entity = getPet(petId).get();
+        entity.getVaccinationRecords().add(vaccinationRecord);
+    }
+
+    @Override
+    public ArrayList<VaccinationRecordEntity> getVaccinationRecordsByPetId(long petId) {
+        return getPet(petId).get().getVaccinationRecords();
     }
 }

@@ -21,7 +21,7 @@ public class BreedConverter {
     public static MoodDTO convertFromMoodToMoodDTO(Mood mood){
         return MoodDTO.builder()
                 .name(mood.getName())
-                .emoji(mood.getEmoji())
+                .image(mood.getImage())
                 .build();
     };
 
@@ -38,7 +38,7 @@ public class BreedConverter {
     public static Mood convertFromMoodDTOToMood(MoodDTO dto){
         return Mood.builder()
                 .name(dto.getName())
-                .emoji(dto.getEmoji())
+                .image(dto.getImage())
                 .build();
     };
 }

@@ -1,6 +1,10 @@
 package com.example.petpal.persistence.entity;
 
+import com.example.petpal.business.domain.Pet;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 @Data
 @Builder
@@ -22,4 +26,7 @@ public class UserEntity {
 //    @Column(nullable = false, unique = true)
     private String email;
     private String role;
+
+    private Optional<String> address;
+    private Optional<ArrayList<Pet>> pets;
 }

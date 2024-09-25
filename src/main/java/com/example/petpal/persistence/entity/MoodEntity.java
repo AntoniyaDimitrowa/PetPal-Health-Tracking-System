@@ -1,10 +1,9 @@
 package com.example.petpal.persistence.entity;
 
-import com.example.petpal.business.domain.Emoji;
+import com.example.petpal.business.domain.Image;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @Builder
@@ -12,5 +11,5 @@ import lombok.Getter;
 public class MoodEntity {
     private long id;
     private String name;
-    private Emoji emoji;
+    private Image image;
 }

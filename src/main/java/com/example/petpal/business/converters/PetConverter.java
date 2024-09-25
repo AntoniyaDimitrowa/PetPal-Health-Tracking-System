@@ -1,8 +1,6 @@
 package com.example.petpal.business.converters;
 
 import com.example.petpal.business.domain.Pet;
-import com.example.petpal.controller.dto.PetDTO;
-import com.example.petpal.persistence.entity.HealthRecordEntity;
 import com.example.petpal.persistence.entity.PetEntity;
 
 public class PetConverter {
@@ -17,6 +15,7 @@ public class PetConverter {
                 .gender(pet.getGender())
                 .birthdate(pet.getBirthdate())
                 .weight(pet.getWeight())
+                .image(pet.getImage())
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsEntities(pet.getVaccinationRecords()))
                 .build();
     };
@@ -29,6 +28,7 @@ public class PetConverter {
                 .gender(pet.getGender())
                 .birthdate(pet.getBirthdate())
                 .weight(pet.getWeight())
+                .image(pet.getImage())
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordEntitiesToVaccinationRecords(pet.getVaccinationRecords()))
                 .healthRecords(HealthRecordConverter.convertFromHealthRecordEntitiesToHealthRecords(pet.getHealthRecords()))
                 .build();
