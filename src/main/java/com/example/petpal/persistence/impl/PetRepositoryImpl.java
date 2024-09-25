@@ -4,10 +4,7 @@ import com.example.petpal.business.domain.Image;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.persistence.IPetRepository;
-import com.example.petpal.persistence.entity.BreedEntity;
-import com.example.petpal.persistence.entity.MoodEntity;
-import com.example.petpal.persistence.entity.PetEntity;
-import com.example.petpal.persistence.entity.VaccinationRecordEntity;
+import com.example.petpal.persistence.entity.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -104,5 +101,16 @@ public class PetRepositoryImpl implements IPetRepository {
     @Override
     public ArrayList<VaccinationRecordEntity> getVaccinationRecordsByPetId(long petId) {
         return getPet(petId).get().getVaccinationRecords();
+    }
+
+    @Override
+    public void addHealthRecordToPet(long petId, HealthRecordEntity healthRecord) {
+        PetEntity entity = getPet(petId).get();
+        entity.getHealthRecords().add(healthRecord);
+    }
+
+    @Override
+    public ArrayList<HealthRecordEntity> getHealthRecordsByPetId(long petId) {
+        return getPet(petId).get().getHealthRecords();
     }
 }

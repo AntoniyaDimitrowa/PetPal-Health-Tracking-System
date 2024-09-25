@@ -1,32 +1,31 @@
 package com.example.petpal.persistence.entity;
 
+import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.Pet;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Optional;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-//@Entity
-//@Table(name = "users")
 public class UserEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected long id;
 
-//    @Column(nullable = false, unique = true)
-    private String username;
+    protected String name;
 
-//    @Column(nullable = false)
-    private String password;
+    protected String email;
 
-//    @Column(nullable = false, unique = true)
-    private String email;
-    private String role;
+    protected String password;
+
+    private Date memberSince;
+
+    protected String role;
 
     private Optional<String> address;
-    private Optional<ArrayList<Pet>> pets;
+    private Optional<ArrayList<PetEntity>> pets;
+    private Optional<ArrayList<BreedHealthInfoEntity>> breedHealthInfos;
 }

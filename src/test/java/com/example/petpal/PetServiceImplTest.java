@@ -53,8 +53,8 @@ class PetServiceImplTest {
                 .build();
 
         breed = BreedConverter.convertFromBreedEntityToBreed(breedEntity);
-        petEntity = new PetEntity(1, "Buddy", breedEntity, Gender.Male, new Date(), 25.5, new ArrayList<>(), new ArrayList<>());
-        pet = new Pet(1, "Buddy", breed, Gender.Male, new Date(), 25.5, new ArrayList<>(), new ArrayList<>());
+        petEntity = new PetEntity(1, "Buddy", breedEntity, Gender.Male, new Date(), 25.5, new Image(), new ArrayList<>(), new ArrayList<>());
+        pet = new Pet(1, "Buddy", breed, Gender.Male, new Date(), 25.5, new Image(), new ArrayList<>(), new ArrayList<>());
     }
 
     @Test

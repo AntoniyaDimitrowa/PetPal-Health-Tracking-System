@@ -4,10 +4,7 @@ package com.example.petpal.persistence;
 
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.Gender;
-import com.example.petpal.persistence.entity.BreedEntity;
-import com.example.petpal.persistence.entity.PetEntity;
-import com.example.petpal.persistence.entity.VaccinationEntity;
-import com.example.petpal.persistence.entity.VaccinationRecordEntity;
+import com.example.petpal.persistence.entity.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,4 +17,7 @@ public interface IPetRepository {
     PetEntity createPet(PetEntity pet);
     void addVaccinationToPet(long petId, VaccinationRecordEntity vaccinationRecord);
     ArrayList<VaccinationRecordEntity> getVaccinationRecordsByPetId(long petId);
+
+    void addHealthRecordToPet(long petId, HealthRecordEntity healthRecord);
+    ArrayList<HealthRecordEntity> getHealthRecordsByPetId(long petId);
 }

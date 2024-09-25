@@ -5,6 +5,9 @@ import com.example.petpal.business.domain.Mood;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.MoodEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BreedConverter {
     private BreedConverter(){}
 
@@ -44,5 +47,35 @@ public class BreedConverter {
                 .name(entity.getName())
                 .image(entity.getImage())
                 .build();
+    };
+
+    public static ArrayList<BreedEntity> convertFromBreedsToBreedEntities(ArrayList<Breed> breeds){
+        ArrayList<BreedEntity> entities = new ArrayList<>();
+        for (Breed b : breeds) {
+            entities.add(convertFromBreedToBreedEntity(b));
+        }
+        return entities;
+    };
+    public static ArrayList<Breed> convertFromBreedEntitiesToBreeds(ArrayList<BreedEntity> entities){
+        ArrayList<Breed> breeds = new ArrayList<>();
+        for (BreedEntity entity : entities) {
+            breeds.add(convertFromBreedEntityToBreed(entity));
+        }
+        return breeds;
+    };
+
+    public static ArrayList<MoodEntity> convertFromMoodsToMoodEntities(ArrayList<Mood> moods){
+        ArrayList<MoodEntity> entities = new ArrayList<>();
+        for (Mood m : moods) {
+            entities.add(convertFromMoodToMoodEntity(m));
+        }
+        return entities;
+    };
+    public static ArrayList<Mood> convertFromMoodEntitiesToMoods(ArrayList<MoodEntity> entities){
+        ArrayList<Mood> moods = new ArrayList<>();
+        for (MoodEntity entity : entities) {
+            moods.add(convertFromMoodEntityToMood(entity));
+        }
+        return moods;
     };
 }

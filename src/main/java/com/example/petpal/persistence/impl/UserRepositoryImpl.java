@@ -1,0 +1,69 @@
+package com.example.petpal.persistence.impl;
+
+import com.example.petpal.persistence.IUserRepository;
+import com.example.petpal.persistence.entity.UserEntity;
+
+import java.util.ArrayList;
+import java.util.Optional;
+
+public class UserRepositoryImpl implements IUserRepository {
+    private final ArrayList<UserEntity> users = new ArrayList<>();
+    private static long nextUserId = 1L;
+
+    public UserRepositoryImpl() {
+        // Add some example users to the list
+        users.add(UserEntity.builder()
+                .id(nextUserId++)
+                .name("John Doe")
+                .email("john.doe@example.com")
+                .password("password123")
+                .role("USER")
+                .memberSince(new java.util.Date())
+                .address(Optional.of("1234 Main St, Hometown"))
+                .pets(Optional.empty())
+                .breedHealthInfos(Optional.empty())
+                .build());
+
+        users.add(UserEntity.builder()
+                .id(nextUserId++)
+                .name("Jane Smith")
+                .email("jane.smith@example.com")
+                .password("password456")
+                .role("ADMIN")
+                .memberSince(new java.util.Date())
+                .address(Optional.of("5678 Market St, Cityville"))
+                .pets(Optional.empty())
+                .breedHealthInfos(Optional.empty())
+                .build());
+    }
+
+    @Override
+    public Optional<UserEntity> getUserById(long userId) {
+        return users.stream().filter(user -> user.getId() == userId).findFirst();
+    }
+
+    @Override
+    public UserEntity createUser(UserEntity user) {
+        user.setId(nextUserId++);
+        users.add(user);
+        return user;
+    }
+
+    @Override
+    public UserEntity updateUser(long userId, UserEntity updatedUser) {
+        Optional<UserEntity> existingUserOpt = getUserById(userId);
+        if (existingUserOpt.isPresent()) {
+            UserEntity existingUser = existingUserOpt.get();
+            users.remove(existingUser);
+            updatedUser.setId(userId); // Keep the same ID
+            users.add(updatedUser);
+            return updatedUser;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean deleteUser(long userId) {
+        return users.removeIf(user -> user.getId() == userId);
+    }
+}
