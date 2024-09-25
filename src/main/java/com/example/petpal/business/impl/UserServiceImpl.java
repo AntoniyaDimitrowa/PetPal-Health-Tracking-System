@@ -8,9 +8,11 @@ import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.persistence.IUserRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.UserEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
 

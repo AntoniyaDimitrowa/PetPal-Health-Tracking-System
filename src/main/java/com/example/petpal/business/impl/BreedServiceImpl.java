@@ -13,10 +13,12 @@ import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 import com.example.petpal.persistence.entity.PetEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
+@Service
 public class BreedServiceImpl implements IBreedService {
     private final IBreedRepository breedRepository;
 

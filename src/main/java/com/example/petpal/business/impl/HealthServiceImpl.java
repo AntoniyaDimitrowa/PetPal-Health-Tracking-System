@@ -6,10 +6,12 @@ import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.entity.PetEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
+@Service
 public class HealthServiceImpl implements IHealthService {
     private final IPetRepository petRepository;
 
