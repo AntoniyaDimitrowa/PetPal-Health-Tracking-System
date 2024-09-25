@@ -100,11 +100,6 @@ public class BreedRepositoryImpl implements IBreedRepository {
     }
 
     @Override
-    public ArrayList<MoodEntity> getMoodsForBreed(long breedId) {
-        return getBreedById(breedId).map(breed -> (ArrayList)List.of(breed.getNormalMood())).orElse(new ArrayList<>());
-    }
-
-    @Override
     public BreedEntity updateHealthProblems(long breedId, List<String> healthProblems) {
         Optional<BreedEntity> breedOpt = getBreedById(breedId);
         if (breedOpt.isPresent()) {
