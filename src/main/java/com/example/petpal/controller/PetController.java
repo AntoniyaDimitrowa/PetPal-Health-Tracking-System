@@ -2,6 +2,7 @@ package com.example.petpal.controller;
 
 import com.example.petpal.business.IPetService;
 import com.example.petpal.business.domain.Pet;
+import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.controller.converters.BreedConverter;
 import com.example.petpal.controller.converters.PetConverter;
@@ -39,15 +40,20 @@ public class PetController {
 
     @PostMapping
     public ResponseEntity<CreateEntityResponse> createPet(@RequestBody CreatePetDTO dto) {
-        Pet newPet = petService.createPet(
-                dto.getName(),
-                BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()),
-                dto.getGender(),
-                dto.getBirthdate(),
-                dto.getWeight(),
-                VaccinationConverter.convertFromVaccinationRecordDTOsToVaccinationRecords(dto.getVaccinationRecords())
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newPet.getId()).build());
+        try {
+            Pet newPet = petService.createPet(
+                    dto.getName(),
+                    BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()),
+                    dto.getGender(),
+                    dto.getBirthdate(),
+                    dto.getWeight(),
+                    VaccinationConverter.convertFromVaccinationRecordDTOsToVaccinationRecords(dto.getVaccinationRecords())
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newPet.getId()).build());
+        } catch (InvalidBreedException e) {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @PutMapping("{id}")
@@ -63,6 +69,8 @@ public class PetController {
             // orr maybe it should be done from the vaccinationService
             return ResponseEntity.noContent().build();
         } catch (InvalidPetException e) {
+            return ResponseEntity.notFound().build();
+        } catch (InvalidBreedException e) {
             return ResponseEntity.notFound().build();
         }
     }

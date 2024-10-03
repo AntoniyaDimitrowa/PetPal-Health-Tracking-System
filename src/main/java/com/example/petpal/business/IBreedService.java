@@ -4,6 +4,7 @@ import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.exception.InvalidBreedException;
+import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 
 import java.util.ArrayList;
@@ -14,9 +15,9 @@ public interface IBreedService {
 
     Optional<Breed> getBreedById(long id);
 
-    Breed addBreed(Breed breed);
+    Breed createBreed(Breed breed) throws InvalidMoodException;
 
-    Breed updateBreed(long id, Breed updatedBreed) throws InvalidBreedException;
+    Breed updateBreed(long id, Breed updatedBreed) throws InvalidBreedException, InvalidMoodException;
 
     boolean deleteBreed(long id);
 

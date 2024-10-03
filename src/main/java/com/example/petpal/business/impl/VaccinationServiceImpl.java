@@ -4,8 +4,11 @@ import com.example.petpal.business.IVaccinationService;
 import com.example.petpal.business.converters.VaccinationConverter;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.exception.InvalidPetException;
+import com.example.petpal.business.exception.InvalidVaccinationException;
 import com.example.petpal.persistence.IPetRepository;
+import com.example.petpal.persistence.IVaccinationRepository;
 import com.example.petpal.persistence.entity.PetEntity;
+import com.example.petpal.persistence.entity.VaccinationEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,17 +18,11 @@ import java.util.Optional;
 public class VaccinationServiceImpl implements IVaccinationService {
 
     private final IPetRepository petRepository;
+    private final IVaccinationRepository vaccinationRepository;
 
-    public VaccinationServiceImpl(IPetRepository petRepository) {
+    public VaccinationServiceImpl(IPetRepository petRepository, IVaccinationRepository vaccinationRepository) {
         this.petRepository = petRepository;
-    }
-    @Override
-    public void addVaccinationRecord(long petId, VaccinationRecord vaccinationRecord) throws InvalidPetException {
-        Optional<PetEntity> petOptional = petRepository.getPet(petId);
-        if (petOptional.isEmpty()) {
-            throw new InvalidPetException(petId);
-        }
-        petRepository.addVaccinationToPet(petId, VaccinationConverter.convertFromVaccinationRecordToVaccinationRecordEntity(vaccinationRecord));
+        this.vaccinationRepository = vaccinationRepository;
     }
 
     @Override
@@ -36,4 +33,18 @@ public class VaccinationServiceImpl implements IVaccinationService {
         }
         return VaccinationConverter.convertFromVaccinationRecordEntitiesToVaccinationRecords(petRepository.getVaccinationRecordsByPetId(petId));
     }
+    @Override
+    public void createVaccinationRecord(long petId, VaccinationRecord vaccinationRecord) throws InvalidPetException, InvalidVaccinationException {
+        Optional<PetEntity> petOptional = petRepository.getPet(petId);
+        if (petOptional.isEmpty()) {
+            throw new InvalidPetException(petId);
+        }
+        Optional<VaccinationEntity> vaccinationOptional = vaccinationRepository.getVaccinationById(vaccinationRecord.getVaccination().getId());
+        if (vaccinationOptional.isEmpty()) {
+            throw new InvalidVaccinationException(petId);
+        }
+        petRepository.addVaccinationToPet(petId, VaccinationConverter.convertFromVaccinationRecordToVaccinationRecordEntity(vaccinationRecord));
+    }
+
+
 }

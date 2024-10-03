@@ -19,15 +19,6 @@ public class HealthServiceImpl implements IHealthService {
         this.petRepository = petRepository;
     }
     @Override
-    public void addHealthRecord(long petId, HealthRecord healthRecord) throws InvalidPetException {
-        Optional<PetEntity> petOptional = petRepository.getPet(petId);
-        if (petOptional.isEmpty()) {
-            throw new InvalidPetException(petId);
-        }
-        petRepository.addHealthRecordToPet(petId, HealthConverter.convertFromHealthRecordToHealthRecordEntity(healthRecord));
-    }
-
-    @Override
     public ArrayList<HealthRecord> getHealthRecordsByPetId(long petId) throws InvalidPetException {
         Optional<PetEntity> petOptional = petRepository.getPet(petId);
         if (petOptional.isEmpty()) {
@@ -35,4 +26,15 @@ public class HealthServiceImpl implements IHealthService {
         }
         return HealthConverter.convertFromHealthRecordEntitiesToHealthRecords(petRepository.getHealthRecordsByPetId(petId));
     }
+
+    @Override
+    public void createHealthRecord(long petId, HealthRecord healthRecord) throws InvalidPetException {
+        Optional<PetEntity> petOptional = petRepository.getPet(petId);
+        if (petOptional.isEmpty()) {
+            throw new InvalidPetException(petId);
+        }
+        petRepository.addHealthRecordToPet(petId, HealthConverter.convertFromHealthRecordToHealthRecordEntity(healthRecord));
+    }
+
+
 }
