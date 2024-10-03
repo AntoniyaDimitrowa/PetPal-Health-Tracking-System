@@ -29,16 +29,11 @@ public class BreedConverter {
         return Breed.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
-                .normalMood(convertFromMoodDTOToMood(dto.getNormalMood()))
+                .normalMood(MoodConverter.convertFromMoodDTOToMood(dto.getNormalMood()))
                 .minimumExercisePerDay(dto.getMinimumExercisePerDay())
                 .commonHealthProblems(dto.getCommonHealthProblems())
                 .build();
     };
 
-    public static Mood convertFromMoodDTOToMood(MoodDTO dto){
-        return Mood.builder()
-                .name(dto.getName())
-                .image(dto.getImage())
-                .build();
-    };
+
 }
