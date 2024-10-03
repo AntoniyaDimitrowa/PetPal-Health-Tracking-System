@@ -3,19 +3,18 @@ package com.example.petpal.controller;
 import com.example.petpal.business.IBreedService;
 import com.example.petpal.business.IPetService;
 import com.example.petpal.business.domain.Breed;
+import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.business.exception.InvalidUserException;
-import com.example.petpal.controller.converters.BreedConverter;
-import com.example.petpal.controller.converters.PetConverter;
-import com.example.petpal.controller.converters.UserConverter;
-import com.example.petpal.controller.converters.VaccinationConverter;
+import com.example.petpal.controller.converters.*;
 import com.example.petpal.controller.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +37,12 @@ public class BreedController {
         return ResponseEntity.ok(breedDTO);
     }
 
+    @GetMapping()
+    public ResponseEntity<ArrayList<BreedDTO>> getAllBreeds() {
+        ArrayList<BreedDTO> breedDTOs = BreedConverter.convertFromBreedsToBreedDTOs(breedService.getAllBreeds());
+        return ResponseEntity.ok(breedDTOs);
+    }
+
     @PostMapping
     public ResponseEntity<CreateEntityResponse> createBreed(@RequestBody BreedDTO dto) {
         try {
@@ -49,5 +54,13 @@ public class BreedController {
         }
 
     }
-
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteBreed(@PathVariable long id) {
+        boolean deleted = breedService.deleteBreed(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
