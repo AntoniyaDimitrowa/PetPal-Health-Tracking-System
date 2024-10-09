@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(allowedHeaders = "*", origins = "*")
 @RequestMapping("/breeds")
 public class BreedController {
     private final IBreedService breedService;
