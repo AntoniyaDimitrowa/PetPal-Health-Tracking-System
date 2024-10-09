@@ -75,9 +75,8 @@ public class PetRepositoryImpl implements IPetRepository {
     }
 
     @Override
-    public void deletePet(long petId) {
-
-        pets.removeIf(pet -> pet.getId() == petId);
+    public boolean deletePet(long petId) {
+        return pets.removeIf(pet -> pet.getId() == petId);
     }
 
     @Override

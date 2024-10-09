@@ -5,9 +5,12 @@ import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.VaccinationType;
 import com.example.petpal.business.exception.InvalidPetException;
+import com.example.petpal.business.exception.InvalidVaccinationException;
 import com.example.petpal.business.impl.VaccinationServiceImpl;
 import com.example.petpal.persistence.IPetRepository;
+import com.example.petpal.persistence.IVaccinationRepository;
 import com.example.petpal.persistence.entity.PetEntity;
+import com.example.petpal.persistence.entity.VaccinationEntity;
 import com.example.petpal.persistence.entity.VaccinationRecordEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +29,9 @@ class VaccinationServiceImplTest {
 
     @Mock
     private IPetRepository petRepository;
+
+    @Mock
+    private IVaccinationRepository vaccinationRepository;
 
     @InjectMocks
     private VaccinationServiceImpl vaccinationService;
@@ -58,21 +64,35 @@ class VaccinationServiceImplTest {
     }
 
     @Test
-    void addVaccinationRecord_shouldThrowExceptionIfPetNotFound() {
+    void createVaccinationRecord_shouldThrowExceptionIfPetNotFound() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidPetException.class, () -> vaccinationService.addVaccinationRecord(100L, vaccinationRecord));
+        assertThrows(InvalidPetException.class, () -> vaccinationService.createVaccinationRecord(100L, vaccinationRecord));
         verify(petRepository, times(1)).getPet(100L);
     }
 
     @Test
-    void addVaccinationRecord_shouldAddRecordIfPetExists() throws InvalidPetException {
+    void createVaccinationRecord_shouldThrowExceptionIfVaccinationNotFound() {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
 
-        vaccinationService.addVaccinationRecord(1L, vaccinationRecord);
+        when(vaccinationRepository.getVaccinationById(100L)).thenReturn(Optional.empty());
+
+        assertThrows(InvalidVaccinationException.class, () -> vaccinationService.createVaccinationRecord(1L, vaccinationRecord));
+        verify(vaccinationRepository, times(1)).getVaccinationById(1L);  // Ensure vaccination lookup
+    }
+
+    @Test
+    void createVaccinationRecord_shouldCreateRecordIfPetAndVaccinationExist() throws InvalidPetException, InvalidVaccinationException {
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+
+        when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(new VaccinationEntity()));
+
+        vaccinationService.createVaccinationRecord(1L, vaccinationRecord);
 
         verify(petRepository, times(1)).addVaccinationToPet(eq(1L), any(VaccinationRecordEntity.class));
+        verify(vaccinationRepository, times(1)).getVaccinationById(1L);  // Ensure vaccination lookup
     }
+
 
     @Test
     void getVaccinationRecordsByPetId_shouldThrowExceptionIfPetNotFound() {

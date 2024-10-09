@@ -5,8 +5,10 @@ import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Image;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.enums.Gender;
+import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.impl.PetServiceImpl;
+import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.MoodEntity;
@@ -29,6 +31,9 @@ class PetServiceImplTest {
 
     @Mock
     private IPetRepository petRepository;
+
+    @Mock
+    private IBreedRepository breedRepository;
 
     @InjectMocks
     private PetServiceImpl petService;
@@ -90,12 +95,27 @@ class PetServiceImplTest {
     }
 
     @Test
-    void updatePet_shouldUpdatePetWhenPetExists() throws InvalidPetException {
+    void updatePet_shouldThrowInvalidBreedExceptionWhenBreedDoesNotExist() {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
+
+        Breed invalidBreed = Breed.builder().id(100L).build();
+        assertThrows(InvalidBreedException.class, () -> {
+            petService.updatePet(1L, "Buddy", breed, Gender.Male, new Date(), 12.0);
+        });
+
+        verify(breedRepository, times(1)).getBreedById(1L);
+    }
+
+    @Test
+    void updatePet_shouldUpdatePetWhenPetAndBreedExist() throws InvalidPetException, InvalidBreedException {
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(new BreedEntity())); // Mock breed exists
 
         petService.updatePet(1L, "Buddy", breed, Gender.Male, new Date(), 12.0);
 
         verify(petRepository, times(1)).updatePet(eq(1L), eq("Buddy"), any(), eq(Gender.Male), any(), eq(12.0));
+        verify(breedRepository, times(1)).getBreedById(1L); // Verify breed lookup
     }
 
     @Test
@@ -106,8 +126,9 @@ class PetServiceImplTest {
     }
 
     @Test
-    void createPet_shouldReturnCreatedPet() {
+    void createPet_shouldReturnCreatedPet() throws InvalidBreedException {
         when(petRepository.createPet(any(PetEntity.class))).thenReturn(petEntity);
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(new BreedEntity()));
 
         Pet result = petService.createPet("Buddy", breed, Gender.Male, new Date(), 25.5, new ArrayList<>());
 

@@ -7,7 +7,8 @@ import com.example.petpal.business.exception.InvalidPetException;
 import java.util.ArrayList;
 
 public interface IHealthService {
-    void addHealthRecord(long petId, HealthRecord healthRecord) throws InvalidPetException;
-
     ArrayList<HealthRecord> getHealthRecordsByPetId(long petId) throws InvalidPetException;
+
+    void createHealthRecord(long petId, HealthRecord healthRecord) throws InvalidPetException;
+
 }

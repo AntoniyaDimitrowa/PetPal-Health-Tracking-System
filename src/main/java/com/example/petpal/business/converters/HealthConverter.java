@@ -12,7 +12,6 @@ import java.util.List;
 
 public class HealthConverter {
 
-    // Convert a list of HealthRecordEntity objects to HealthRecord objects
     public static ArrayList<HealthRecord> convertFromHealthRecordEntitiesToHealthRecords(List<HealthRecordEntity> entities) {
         ArrayList<HealthRecord> result = new ArrayList<>();
         for (HealthRecordEntity entity : entities) {
@@ -21,7 +20,6 @@ public class HealthConverter {
         return result;
     }
 
-    // Convert a single HealthRecordEntity to HealthRecord
     public static HealthRecord convertFromHealthRecordEntityToHealthRecord(HealthRecordEntity entity) {
         return new HealthRecord(
                 entity.getId(),
@@ -34,7 +32,6 @@ public class HealthConverter {
         );
     }
 
-    // Convert a list of HealthRecord objects to HealthRecordEntity objects
     public static ArrayList<HealthRecordEntity> convertFromHealthRecordsToHealthRecordEntities(List<HealthRecord> records) {
         ArrayList<HealthRecordEntity> result = new ArrayList<>();
         for (HealthRecord record : records) {
@@ -43,7 +40,6 @@ public class HealthConverter {
         return result;
     }
 
-    // Convert a single HealthRecord to HealthRecordEntity
     public static HealthRecordEntity convertFromHealthRecordToHealthRecordEntity(HealthRecord record) {
         return HealthRecordEntity.builder()
                 .id(record.getId())

@@ -38,15 +38,15 @@ class HealthServiceImplTest {
     void addHealthRecord_shouldThrowExceptionIfPetNotFound() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidPetException.class, () -> healthService.addHealthRecord(100L, new HealthRecord()));
+        assertThrows(InvalidPetException.class, () -> healthService.createHealthRecord(100L, new HealthRecord()));
         verify(petRepository, times(1)).getPet(100L);
     }
 
     @Test
-    void addHealthRecord_shouldAddRecordIfPetExists() throws InvalidPetException {
+    void createHealthRecord_shouldCreateRecordIfPetExists() throws InvalidPetException {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
 
-        healthService.addHealthRecord(1L, new HealthRecord());
+        healthService.createHealthRecord(1L, new HealthRecord());
 
         verify(petRepository, times(1)).addHealthRecordToPet(eq(1L), any());
     }

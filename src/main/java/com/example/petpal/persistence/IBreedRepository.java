@@ -2,7 +2,6 @@ package com.example.petpal.persistence;
 
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
-import com.example.petpal.persistence.entity.MoodEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ public interface IBreedRepository {
     ArrayList<BreedEntity> getAllBreeds();
     Optional<BreedEntity> getBreedById(long id);
 
-    BreedEntity addBreed(BreedEntity breed);
+    BreedEntity createBreed(BreedEntity breed);
 
     BreedEntity updateBreed(long id, BreedEntity updatedBreed);
 

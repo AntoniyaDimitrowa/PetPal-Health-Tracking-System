@@ -1,12 +1,8 @@
 package com.example.petpal.controller.dto;
 
-import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.domain.Image;
 import com.example.petpal.business.domain.enums.Gender;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +11,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PetDTO {
+public class CreatePetDTO {
     private String name;
     private BreedDTO breed;
     private Gender gender;
@@ -24,6 +20,4 @@ public class PetDTO {
     private Image image;
 
     private ArrayList<VaccinationRecordDTO> vaccinationRecords;
-    private ArrayList<HealthRecordDTO> healthRecords;
-
 }

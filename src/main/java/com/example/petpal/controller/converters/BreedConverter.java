@@ -5,6 +5,8 @@ import com.example.petpal.business.domain.Mood;
 import com.example.petpal.controller.dto.BreedDTO;
 import com.example.petpal.controller.dto.MoodDTO;
 
+import java.util.ArrayList;
+
 public class BreedConverter {
     private BreedConverter(){}
 
@@ -12,16 +14,9 @@ public class BreedConverter {
         return BreedDTO.builder()
                 .name(breed.getName())
                 .description(breed.getDescription())
-                .normalMood(convertFromMoodToMoodDTO(breed.getNormalMood()))
+                .normalMood(MoodConverter.convertFromMoodToMoodDTO(breed.getNormalMood()))
                 .minimumExercisePerDay(breed.getMinimumExercisePerDay())
                 .commonHealthProblems(breed.getCommonHealthProblems())
-                .build();
-    };
-
-    public static MoodDTO convertFromMoodToMoodDTO(Mood mood){
-        return MoodDTO.builder()
-                .name(mood.getName())
-                .image(mood.getImage())
                 .build();
     };
 
@@ -29,16 +24,19 @@ public class BreedConverter {
         return Breed.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
-                .normalMood(convertFromMoodDTOToMood(dto.getNormalMood()))
+                .normalMood(MoodConverter.convertFromMoodDTOToMood(dto.getNormalMood()))
                 .minimumExercisePerDay(dto.getMinimumExercisePerDay())
                 .commonHealthProblems(dto.getCommonHealthProblems())
                 .build();
     };
 
-    public static Mood convertFromMoodDTOToMood(MoodDTO dto){
-        return Mood.builder()
-                .name(dto.getName())
-                .image(dto.getImage())
-                .build();
-    };
+    public static ArrayList<BreedDTO> convertFromBreedsToBreedDTOs(ArrayList<Breed> breeds) {
+        ArrayList<BreedDTO> dtos = new ArrayList<>();
+        for (Breed b : breeds) {
+            dtos.add(convertFromBreedToBreedDTO(b));
+        }
+        return dtos;
+    }
+
+
 }

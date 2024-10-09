@@ -3,11 +3,10 @@ package com.example.petpal.controller.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class CreatePetResponse {
+public class CreateEntityResponse {
     private long id;
 }
