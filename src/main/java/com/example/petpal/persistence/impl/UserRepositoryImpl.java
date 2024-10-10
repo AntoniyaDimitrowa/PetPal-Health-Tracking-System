@@ -1,6 +1,9 @@
 package com.example.petpal.persistence.impl;
 
+import com.example.petpal.persistence.IBreedRepository;
+import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IUserRepository;
+import com.example.petpal.persistence.entity.PetEntity;
 import com.example.petpal.persistence.entity.UserEntity;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +15,7 @@ public class UserRepositoryImpl implements IUserRepository {
     private final ArrayList<UserEntity> users = new ArrayList<>();
     private static long nextUserId = 1L;
 
-    public UserRepositoryImpl() {
+    public UserRepositoryImpl(IPetRepository petRepo) {
         // Add some example users to the list
         users.add(UserEntity.builder()
                 .id(nextUserId++)
@@ -22,7 +25,11 @@ public class UserRepositoryImpl implements IUserRepository {
                 .role("USER")
                 .memberSince(new java.util.Date())
                 .address(Optional.of("1234 Main St, Hometown"))
-                .pets(Optional.empty())
+                .pets(Optional.of(new ArrayList<PetEntity>() {
+                    {
+                        add(petRepo.getPet(1L).get());
+                    }
+                }))
                 .breedHealthInfos(Optional.empty())
                 .build());
 

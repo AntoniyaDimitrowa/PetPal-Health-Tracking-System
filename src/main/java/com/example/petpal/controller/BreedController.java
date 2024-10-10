@@ -10,6 +10,7 @@ import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.controller.converters.*;
 import com.example.petpal.controller.dto.*;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,9 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(allowedHeaders = "*", origins = "*")
 @RequestMapping("/breeds")
+@AllArgsConstructor
 public class BreedController {
     private final IBreedService breedService;
-
-    public BreedController(IBreedService breedService) {
-        this.breedService = breedService;
-    }
 
     @GetMapping("{id}")
     public ResponseEntity<BreedDTO> getBreed(@PathVariable(value = "id") final long id) {

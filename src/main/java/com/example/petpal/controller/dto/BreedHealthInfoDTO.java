@@ -9,6 +9,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class BreedHealthInfoDTO {
+
     private BreedDTO breed;
     private int ageRangeStart;
     private int ageRangeEnd;
