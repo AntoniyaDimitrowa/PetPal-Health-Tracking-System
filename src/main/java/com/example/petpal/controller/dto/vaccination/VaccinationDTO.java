@@ -1,4 +1,4 @@
-package com.example.petpal.controller.dto;
+package com.example.petpal.controller.dto.vaccination;
 
 import com.example.petpal.business.domain.enums.VaccinationType;
 import lombok.*;

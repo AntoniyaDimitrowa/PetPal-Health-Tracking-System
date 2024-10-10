@@ -1,5 +1,7 @@
-package com.example.petpal.controller.dto;
+package com.example.petpal.controller.dto.user;
 
+import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
+import com.example.petpal.controller.dto.pet.PetDTO;
 import lombok.*;
 
 import java.util.ArrayList;

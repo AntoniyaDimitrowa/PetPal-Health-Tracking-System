@@ -1,8 +1,10 @@
-package com.example.petpal.controller.dto;
+package com.example.petpal.controller.dto.pet;
 
-import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.domain.Image;
 import com.example.petpal.business.domain.enums.Gender;
+import com.example.petpal.controller.dto.health.HealthRecordDTO;
+import com.example.petpal.controller.dto.vaccination.VaccinationRecordDTO;
+import com.example.petpal.controller.dto.breed.BreedDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PetDTO {
+    private long id;
     private String name;
     private BreedDTO breed;
     private Gender gender;

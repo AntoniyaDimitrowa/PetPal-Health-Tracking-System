@@ -1,4 +1,4 @@
-package com.example.petpal.controller.dto;
+package com.example.petpal.controller.dto.mood;
 
 import com.example.petpal.business.domain.Image;
 import lombok.*;

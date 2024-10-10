@@ -3,6 +3,7 @@ package com.example.petpal.business.impl;
 import com.example.petpal.business.IBreedService;
 import com.example.petpal.business.converters.BreedConverter;
 import com.example.petpal.business.converters.HealthConverter;
+import com.example.petpal.business.converters.MoodConverter;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.exception.InvalidBreedException;
@@ -37,25 +38,27 @@ public class BreedServiceImpl implements IBreedService {
     }
 
     @Override
-    public Breed createBreed(Breed breed) throws InvalidMoodException {
-        Optional<MoodEntity> moodOptional = moodRepository.getMoodById(breed.getNormalMood().getId());
+    public long createBreed(Breed breed, long normalMoodId) throws InvalidMoodException {
+        Optional<MoodEntity> moodOptional = moodRepository.getMoodById(normalMoodId);
         if (moodOptional.isEmpty()) {
             throw new InvalidMoodException(breed.getNormalMood().getId());
         }
-        return BreedConverter.convertFromBreedEntityToBreed(breedRepository.createBreed(BreedConverter.convertFromBreedToBreedEntity(breed)));
+        breed.setNormalMood(MoodConverter.convertFromMoodEntityToMood(moodOptional.get()));
+        return BreedConverter.convertFromBreedEntityToBreed(breedRepository.createBreed(BreedConverter.convertFromBreedToBreedEntity(breed))).getId();
     }
 
     @Override
-    public Breed updateBreed(long id, Breed updatedBreed) throws InvalidBreedException, InvalidMoodException {
-        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(id);
+    public Breed updateBreed(Breed updatedBreed, long normalMoodId) throws InvalidBreedException, InvalidMoodException {
+        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(updatedBreed.getId());
         if (breedOptional.isEmpty()) {
-            throw new InvalidBreedException(id);
+            throw new InvalidBreedException(updatedBreed.getId());
         }
-        Optional<MoodEntity> moodOptional = moodRepository.getMoodById(updatedBreed.getNormalMood().getId());
+        Optional<MoodEntity> moodOptional = moodRepository.getMoodById(normalMoodId);
         if (moodOptional.isEmpty()) {
             throw new InvalidMoodException(updatedBreed.getNormalMood().getId());
         }
-        return BreedConverter.convertFromBreedEntityToBreed(breedRepository.updateBreed(id, BreedConverter.convertFromBreedToBreedEntity(updatedBreed)));
+        updatedBreed.setNormalMood(MoodConverter.convertFromMoodEntityToMood(moodOptional.get()));
+        return BreedConverter.convertFromBreedEntityToBreed(breedRepository.updateBreed(updatedBreed.getId(), BreedConverter.convertFromBreedToBreedEntity(updatedBreed)));
     }
 
     @Override

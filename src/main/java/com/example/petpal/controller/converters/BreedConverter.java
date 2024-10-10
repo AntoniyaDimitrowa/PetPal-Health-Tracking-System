@@ -1,9 +1,9 @@
 package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.Mood;
-import com.example.petpal.controller.dto.BreedDTO;
-import com.example.petpal.controller.dto.MoodDTO;
+import com.example.petpal.controller.dto.breed.BreedDTO;
+import com.example.petpal.controller.dto.breed.CreateBreedDTO;
+import com.example.petpal.controller.dto.breed.UpdateBreedDTO;
 
 import java.util.ArrayList;
 
@@ -12,6 +12,7 @@ public class BreedConverter {
 
     public static BreedDTO convertFromBreedToBreedDTO(Breed breed){
         return BreedDTO.builder()
+                .id(breed.getId())
                 .name(breed.getName())
                 .description(breed.getDescription())
                 .normalMood(MoodConverter.convertFromMoodToMoodDTO(breed.getNormalMood()))
@@ -39,4 +40,22 @@ public class BreedConverter {
     }
 
 
+    public static Breed convertFromCreateBreedDTOToBreed(CreateBreedDTO dto) {
+        return Breed.builder()
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .minimumExercisePerDay(dto.getMinimumExercisePerDay())
+                .commonHealthProblems(dto.getCommonHealthProblems())
+                .build();
+    }
+
+    public static Breed convertFromUpdateBreedDTOToBreed(UpdateBreedDTO dto) {
+        return Breed.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .minimumExercisePerDay(dto.getMinimumExercisePerDay())
+                .commonHealthProblems(dto.getCommonHealthProblems())
+                .build();
+    }
 }

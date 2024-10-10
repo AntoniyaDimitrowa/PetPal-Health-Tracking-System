@@ -65,13 +65,13 @@ public class PetRepositoryImpl implements IPetRepository {
     }
 
     @Override
-    public void updatePet(long id, String name, BreedEntity breed, Gender gender, Date birthdate, Double weight) {
+    public void updatePet(long id, PetEntity pet) {
         PetEntity entity = getPet(id).get();
-        entity.setName(name);
-        entity.setBreed(breed);
-        entity.setGender(gender);
-        entity.setBirthdate(birthdate);
-        entity.setWeight(weight);
+        entity.setName(pet.getName());
+        entity.setBreed(pet.getBreed());
+        entity.setGender(pet.getGender());
+        entity.setBirthdate(pet.getBirthdate());
+        entity.setWeight(pet.getWeight());
     }
 
     @Override

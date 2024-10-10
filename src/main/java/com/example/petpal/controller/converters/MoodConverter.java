@@ -1,8 +1,7 @@
 package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.Mood;
-import com.example.petpal.controller.dto.MoodDTO;
-import com.example.petpal.persistence.entity.MoodEntity;
+import com.example.petpal.controller.dto.mood.MoodDTO;
 
 import java.util.ArrayList;
 

@@ -88,7 +88,7 @@ class PetServiceImplTest {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
 
         assertThrows(InvalidPetException.class, () -> {
-            petService.updatePet(100L, "Buddy", breed, Gender.Male, new Date(), 10.0);
+            petService.updatePet(100L, "Buddy", breed.getId(), Gender.Male, new Date(), 10.0);
         });
 
         verify(petRepository, times(1)).getPet(100L);
@@ -101,7 +101,7 @@ class PetServiceImplTest {
 
         Breed invalidBreed = Breed.builder().id(100L).build();
         assertThrows(InvalidBreedException.class, () -> {
-            petService.updatePet(1L, "Buddy", breed, Gender.Male, new Date(), 12.0);
+            petService.updatePet(1L, "Buddy", breed.getId(), Gender.Male, new Date(), 12.0);
         });
 
         verify(breedRepository, times(1)).getBreedById(1L);
@@ -112,9 +112,9 @@ class PetServiceImplTest {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(new BreedEntity())); // Mock breed exists
 
-        petService.updatePet(1L, "Buddy", breed, Gender.Male, new Date(), 12.0);
+        petService.updatePet(1L, "Buddy", breed.getId(), Gender.Male, new Date(), 12.0);
 
-        verify(petRepository, times(1)).updatePet(eq(1L), eq("Buddy"), any(), eq(Gender.Male), any(), eq(12.0));
+        verify(petRepository, times(1)).updatePet(eq(1L), any(PetEntity.class));
         verify(breedRepository, times(1)).getBreedById(1L); // Verify breed lookup
     }
 
@@ -130,7 +130,7 @@ class PetServiceImplTest {
         when(petRepository.createPet(any(PetEntity.class))).thenReturn(petEntity);
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(new BreedEntity()));
 
-        Pet result = petService.createPet("Buddy", breed, Gender.Male, new Date(), 25.5, new ArrayList<>());
+        Pet result = petService.createPet("Buddy", breed.getId(), Gender.Male, new Date(), 25.5, new ArrayList<>());
 
         assertNotNull(result);
         assertEquals(pet, result);

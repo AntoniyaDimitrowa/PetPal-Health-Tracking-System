@@ -8,8 +8,8 @@ import com.example.petpal.controller.converters.BreedConverter;
 import com.example.petpal.controller.converters.PetConverter;
 import com.example.petpal.controller.converters.VaccinationConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
-import com.example.petpal.controller.dto.CreatePetDTO;
-import com.example.petpal.controller.dto.PetDTO;
+import com.example.petpal.controller.dto.pet.CreatePetDTO;
+import com.example.petpal.controller.dto.pet.PetDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,11 +44,11 @@ public class PetController {
         try {
             Pet newPet = petService.createPet(
                     dto.getName(),
-                    BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()),
+                    dto.getBreedId(),
                     dto.getGender(),
                     dto.getBirthdate(),
                     dto.getWeight(),
-                    VaccinationConverter.convertFromVaccinationRecordDTOsToVaccinationRecords(dto.getVaccinationRecords())
+                    dto.getVaccinationRecordsIds()
             );
             return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newPet.getId()).build());
         } catch (InvalidBreedException e) {
@@ -62,12 +62,10 @@ public class PetController {
         try {
             petService.updatePet(id,
                     dto.getName(),
-                    BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()),
+                    dto.getBreedId(),
                     dto.getGender(),
                     dto.getBirthdate(),
                     dto.getWeight());
-            //maybe I should update the VaccinationRecords and Health Records from here as well
-            // orr maybe it should be done from the vaccinationService
             return ResponseEntity.noContent().build();
         } catch (InvalidPetException e) {
             return ResponseEntity.notFound().build();

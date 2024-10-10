@@ -1,11 +1,8 @@
 package com.example.petpal.controller.converters;
 
-import com.example.petpal.controller.converters.HealthConverter;
-import com.example.petpal.controller.converters.PetConverter;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.controller.dto.RegisterDTO;
-import com.example.petpal.controller.dto.UserDTO;
-import com.example.petpal.persistence.entity.UserEntity;
+import com.example.petpal.controller.dto.user.UserDTO;
 
 import java.util.Date;
 

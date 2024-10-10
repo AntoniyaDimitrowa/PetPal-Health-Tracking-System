@@ -36,18 +36,18 @@ public class PetServiceImpl implements IPetService {
     }
 
     @Override
-    public Pet createPet(String name, Breed breed, Gender gender, Date birthdate, double weight, ArrayList<VaccinationRecord> vaccinations) throws InvalidBreedException {
-        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(breed.getId());
+    public Pet createPet(String name, long breedId, Gender gender, Date birthdate, double weight, ArrayList<Long> vaccinationsIds) throws InvalidBreedException {
+        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(breedId);
         if (breedOptional.isEmpty()) {
-            throw new InvalidBreedException(breed.getId());
+            throw new InvalidBreedException(breedId);
         }
         PetEntity newPet = PetEntity.builder()
                 .name(name)
-                .breed(BreedConverter.convertFromBreedToBreedEntity(breed))
+                //.breed(BreedConverter.convertFromBreedToBreedEntity(breedOptional.get()))
                 .gender(gender)
                 .birthdate(birthdate)
                 .weight(weight)
-                .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsEntities(vaccinations))
+                //.vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsEntities(vaccinations))
                 .healthRecords(new ArrayList<>())
                 .build();
 
@@ -56,18 +56,19 @@ public class PetServiceImpl implements IPetService {
     }
 
     @Override
-    public void updatePet(long id, String name, Breed breed, Gender gender, Date birthdate, double weight) throws InvalidPetException, InvalidBreedException {
+    public void updatePet(long id, String name, long breedId, Gender gender, Date birthdate, double weight) throws InvalidPetException, InvalidBreedException {
         Optional<PetEntity> petOptional = petRepository.getPet(id);
         if (petOptional.isEmpty()) {
             throw new InvalidPetException(id);
         }
-        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(breed.getId());
+        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(breedId);
         if (breedOptional.isEmpty()) {
-            throw new InvalidBreedException(breed.getId());
+            throw new InvalidBreedException(breedId);
         }
         PetEntity petEntity = petOptional.get();
+        petEntity.setBreed(breedOptional.get());
 
-        petRepository.updatePet(id, name, BreedConverter.convertFromBreedToBreedEntity(breed), gender, birthdate, weight);
+        petRepository.updatePet(id, petEntity);
     }
 
     @Override

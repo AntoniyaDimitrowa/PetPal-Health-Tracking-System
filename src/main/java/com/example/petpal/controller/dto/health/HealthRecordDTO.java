@@ -1,4 +1,4 @@
-package com.example.petpal.controller.dto;
+package com.example.petpal.controller.dto.health;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

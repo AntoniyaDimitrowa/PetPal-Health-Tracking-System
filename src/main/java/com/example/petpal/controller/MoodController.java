@@ -1,15 +1,10 @@
 package com.example.petpal.controller;
 
-import com.example.petpal.business.IBreedService;
 import com.example.petpal.business.IMoodService;
-import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Mood;
-import com.example.petpal.business.exception.InvalidMoodException;
-import com.example.petpal.controller.converters.BreedConverter;
 import com.example.petpal.controller.converters.MoodConverter;
-import com.example.petpal.controller.dto.BreedDTO;
 import com.example.petpal.controller.dto.CreateEntityResponse;
-import com.example.petpal.controller.dto.MoodDTO;
+import com.example.petpal.controller.dto.mood.MoodDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

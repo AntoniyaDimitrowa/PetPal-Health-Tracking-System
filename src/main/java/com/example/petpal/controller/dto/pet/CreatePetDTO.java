@@ -1,7 +1,9 @@
-package com.example.petpal.controller.dto;
+package com.example.petpal.controller.dto.pet;
 
 import com.example.petpal.business.domain.Image;
 import com.example.petpal.business.domain.enums.Gender;
+import com.example.petpal.controller.dto.vaccination.VaccinationRecordDTO;
+import com.example.petpal.controller.dto.breed.BreedDTO;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -14,11 +16,11 @@ import java.util.Date;
 public class CreatePetDTO {
 
     private String name;
-    private BreedDTO breed;
+    private long breedId;
     private Gender gender;
     private Date birthdate;
     private double weight;
     private Image image;
 
-    private ArrayList<VaccinationRecordDTO> vaccinationRecords;
+    private ArrayList<Long> vaccinationRecordsIds;
 }

@@ -2,9 +2,8 @@ package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
-import com.example.petpal.controller.dto.MoodDTO;
-import com.example.petpal.controller.dto.VaccinationDTO;
-import com.example.petpal.controller.dto.VaccinationRecordDTO;
+import com.example.petpal.controller.dto.vaccination.VaccinationDTO;
+import com.example.petpal.controller.dto.vaccination.VaccinationRecordDTO;
 
 import java.util.ArrayList;
 

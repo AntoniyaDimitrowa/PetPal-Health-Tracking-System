@@ -6,7 +6,7 @@ import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.controller.converters.UserConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.RegisterDTO;
-import com.example.petpal.controller.dto.UserDTO;
+import com.example.petpal.controller.dto.user.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

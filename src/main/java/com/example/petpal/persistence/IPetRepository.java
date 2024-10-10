@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface IPetRepository {
     Optional<PetEntity> getPet(long petId);
-    void updatePet(long id, String name, BreedEntity breed, Gender gender, Date birthdate, Double weight);
+    void updatePet(long id, PetEntity pet);
     boolean deletePet(long petId);
     PetEntity createPet(PetEntity pet);
     void addVaccinationToPet(long petId, VaccinationRecordEntity vaccinationRecord);
