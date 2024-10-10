@@ -8,12 +8,24 @@ variables:
 stages:
   - build
   - test
+  - deploy
+
 build:
   stage: build
   script:
     - ./gradlew assemble
+    - ls -l build/libs/
+  artifacts:
+    paths:
+      - build/libs/
+      - build/classes/
 
 test:
   stage: test
   script:
     - ./gradlew test
+
+deploy:
+  stage: deploy
+  script:
+    - docker-compose up --build -d
