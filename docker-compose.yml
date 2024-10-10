@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   petPal-app:
     image: semester3-individualproject-petpal:latest
