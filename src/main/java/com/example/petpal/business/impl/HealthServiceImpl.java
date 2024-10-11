@@ -6,18 +6,17 @@ import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.entity.PetEntity;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class HealthServiceImpl implements IHealthService {
     private final IPetRepository petRepository;
 
-    public HealthServiceImpl(IPetRepository petRepository) {
-        this.petRepository = petRepository;
-    }
     @Override
     public ArrayList<HealthRecord> getHealthRecordsByPetId(long petId) throws InvalidPetException {
         Optional<PetEntity> petOptional = petRepository.getPet(petId);

@@ -19,7 +19,7 @@ public class PetConverter {
                 .gender(pet.getGender())
                 .birthdate(pet.getBirthdate())
                 .weight(pet.getWeight())
-                .image(ImageConverter.encodeToBase64(pet.getImage()))
+                .image(pet.getImage())
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsEntities(pet.getVaccinationRecords()))
                 .build();
     };
@@ -32,7 +32,7 @@ public class PetConverter {
                 .gender(pet.getGender())
                 .birthdate(pet.getBirthdate())
                 .weight(pet.getWeight())
-                .image(ImageConverter.decodeFromBase64(pet.getImage()))
+                .image(pet.getImage())
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordEntitiesToVaccinationRecords(pet.getVaccinationRecords()))
                 .healthRecords(HealthConverter.convertFromHealthRecordEntitiesToHealthRecords(pet.getHealthRecords()))
                 .build();

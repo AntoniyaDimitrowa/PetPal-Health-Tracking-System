@@ -11,7 +11,7 @@ public class MoodConverter {
         return MoodEntity.builder()
                 .id(mood.getId())
                 .name(mood.getName())
-                .emoji(ImageConverter.encodeToBase64(mood.getEmoji()))
+                .emoji(mood.getEmoji())
                 .build();
     };
 
@@ -19,7 +19,7 @@ public class MoodConverter {
         return Mood.builder()
                 .id(entity.getId())
                 .name(entity.getName())
-                .emoji(ImageConverter.decodeFromBase64(entity.getEmoji()))
+                .emoji(entity.getEmoji())
                 .build();
     };
 

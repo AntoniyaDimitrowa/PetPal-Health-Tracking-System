@@ -42,15 +42,12 @@ public class PetController {
     @PostMapping
     public ResponseEntity<CreateEntityResponse> createPet(@RequestBody CreatePetDTO dto) {
         try {
-            Pet newPet = petService.createPet(
-                    dto.getName(),
+            long newPetId = petService.createPet(
+                    PetConverter.convertFromCreatePetDTOToPet(dto),
                     dto.getBreedId(),
-                    dto.getGender(),
-                    dto.getBirthdate(),
-                    dto.getWeight(),
                     dto.getVaccinationRecordsIds()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newPet.getId()).build());
+            return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newPetId).build());
         } catch (InvalidBreedException e) {
             return ResponseEntity.notFound().build();
         }
@@ -60,12 +57,9 @@ public class PetController {
     @PutMapping("{id}")
     public ResponseEntity<Void> updatePet(@PathVariable long id, @RequestBody CreatePetDTO dto) {
         try {
-            petService.updatePet(id,
-                    dto.getName(),
-                    dto.getBreedId(),
-                    dto.getGender(),
-                    dto.getBirthdate(),
-                    dto.getWeight());
+            petService.updatePet(
+                    PetConverter.convertFromCreatePetDTOToPet(dto),
+                    dto.getBreedId());
             return ResponseEntity.noContent().build();
         } catch (InvalidPetException e) {
             return ResponseEntity.notFound().build();

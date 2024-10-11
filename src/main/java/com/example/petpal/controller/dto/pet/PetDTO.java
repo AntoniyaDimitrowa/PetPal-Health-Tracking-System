@@ -23,7 +23,7 @@ public class PetDTO {
     private Gender gender;
     private Date birthdate;
     private double weight;
-    private byte[] image;
+    private String image;
 
     private ArrayList<VaccinationRecordDTO> vaccinationRecords;
     private ArrayList<HealthRecordDTO> healthRecords;

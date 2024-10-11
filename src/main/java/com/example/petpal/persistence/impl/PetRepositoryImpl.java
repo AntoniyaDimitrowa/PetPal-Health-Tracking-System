@@ -78,7 +78,7 @@ public class PetRepositoryImpl implements IPetRepository {
     }
 
     @Override
-    public PetEntity createPet(PetEntity pet) {
+    public long createPet(PetEntity pet) {
         if (pet.getId() == 0) {
             pet.setId(nextId++);
             pets.add(pet);
@@ -86,7 +86,7 @@ public class PetRepositoryImpl implements IPetRepository {
             pets.removeIf(p -> p.getId() == pet.getId());
             pets.add(pet);
         }
-        return pet;
+        return pet.getId();
     }
 
     @Override

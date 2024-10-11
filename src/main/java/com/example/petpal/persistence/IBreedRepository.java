@@ -11,7 +11,7 @@ public interface IBreedRepository {
     ArrayList<BreedEntity> getAllBreeds();
     Optional<BreedEntity> getBreedById(long id);
 
-    BreedEntity createBreed(BreedEntity breed);
+    long createBreed(BreedEntity breed);
 
     BreedEntity updateBreed(long id, BreedEntity updatedBreed);
 

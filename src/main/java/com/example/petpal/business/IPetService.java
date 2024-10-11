@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface IPetService {
     Optional<Pet> getPet(long petId);
-    Pet createPet(String name, long breedId, Gender gender, Date birthdate, double weight, ArrayList<Long> vaccinationsIds) throws InvalidBreedException;
-    void updatePet(long id, String name, long breedId, Gender gender, Date birthdate, double weight) throws InvalidPetException, InvalidBreedException;
+    long createPet(Pet pet, long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException;
+    void updatePet(Pet pet, long breedId) throws InvalidPetException, InvalidBreedException;
     boolean deletePet(long petId);
 }

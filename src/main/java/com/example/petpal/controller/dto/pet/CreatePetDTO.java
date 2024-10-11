@@ -17,7 +17,7 @@ public class CreatePetDTO {
     private Gender gender;
     private Date birthdate;
     private double weight;
-    private byte[] image;
+    private String image;
 
     private ArrayList<Long> vaccinationRecordsIds;
 }

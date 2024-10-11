@@ -10,5 +10,5 @@ import lombok.Data;
 public class Mood {
     private long id;
     private String name;
-    private byte[] emoji;
+    private String emoji;
 }

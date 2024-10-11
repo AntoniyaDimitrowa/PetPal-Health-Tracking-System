@@ -9,21 +9,18 @@ import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IVaccinationRepository;
 import com.example.petpal.persistence.entity.PetEntity;
 import com.example.petpal.persistence.entity.VaccinationEntity;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class VaccinationServiceImpl implements IVaccinationService {
 
     private final IPetRepository petRepository;
     private final IVaccinationRepository vaccinationRepository;
-
-    public VaccinationServiceImpl(IPetRepository petRepository, IVaccinationRepository vaccinationRepository) {
-        this.petRepository = petRepository;
-        this.vaccinationRepository = vaccinationRepository;
-    }
 
     @Override
     public ArrayList<VaccinationRecord> getVaccinationRecordsByPetId(long petId) throws InvalidPetException {

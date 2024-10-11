@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateMoodDTO {
     private String name;
-    private byte[] emoji;
+    private String emoji;
 }

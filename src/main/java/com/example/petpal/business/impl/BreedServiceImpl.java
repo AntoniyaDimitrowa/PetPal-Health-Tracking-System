@@ -12,20 +12,17 @@ import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IMoodRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.MoodEntity;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class BreedServiceImpl implements IBreedService {
     private final IBreedRepository breedRepository;
     private final IMoodRepository moodRepository;
-
-    public BreedServiceImpl(IBreedRepository breedRepository, IMoodRepository moodRepository) {
-        this.breedRepository = breedRepository;
-        this.moodRepository = moodRepository;
-    }
 
     @Override
     public ArrayList<Breed> getAllBreeds() {
@@ -44,7 +41,7 @@ public class BreedServiceImpl implements IBreedService {
             throw new InvalidMoodException(breed.getNormalMood().getId());
         }
         breed.setNormalMood(MoodConverter.convertFromMoodEntityToMood(moodOptional.get()));
-        return BreedConverter.convertFromBreedEntityToBreed(breedRepository.createBreed(BreedConverter.convertFromBreedToBreedEntity(breed))).getId();
+        return breedRepository.createBreed(BreedConverter.convertFromBreedToBreedEntity(breed));
     }
 
     @Override

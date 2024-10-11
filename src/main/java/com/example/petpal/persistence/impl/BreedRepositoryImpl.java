@@ -67,10 +67,10 @@ public class BreedRepositoryImpl implements IBreedRepository {
     }
 
     @Override
-    public BreedEntity createBreed(BreedEntity breed) {
+    public long createBreed(BreedEntity breed) {
         breed.setId(nextBreedId++);
         breeds.add(breed);
-        return breed;
+        return breed.getId();
     }
 
     @Override
