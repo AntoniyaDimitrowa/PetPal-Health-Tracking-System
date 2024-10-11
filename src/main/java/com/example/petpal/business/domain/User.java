@@ -11,17 +11,19 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    protected long id;
+    private long id;
 
-    protected String name;
+    private String name;
 
-    protected String email;
+    private String email;
 
-    protected String password;
+    private String password;
 
     private Date memberSince;
 
-    protected String role;
+    private String role;
+
+    private String image;
 
     private Optional<String> address;
     private Optional<ArrayList<Pet>> pets;

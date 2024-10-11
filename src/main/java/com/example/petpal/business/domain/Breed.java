@@ -15,4 +15,5 @@ public class Breed {
     private Mood normalMood;
     private double minimumExercisePerDay; //in hours
     private ArrayList<String> commonHealthProblems;
+
 }

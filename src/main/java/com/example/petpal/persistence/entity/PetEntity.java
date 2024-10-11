@@ -1,6 +1,5 @@
 package com.example.petpal.persistence.entity;
 
-import com.example.petpal.business.domain.Image;
 import com.example.petpal.business.domain.enums.Gender;
 import lombok.*;
 
@@ -18,7 +17,7 @@ public class PetEntity {
     private Gender gender;
     private Date birthdate;
     private double weight;
-    private Image image;
+    private String image;
 
     private ArrayList<VaccinationRecordEntity> vaccinationRecords;
     private ArrayList<HealthRecordEntity> healthRecords;

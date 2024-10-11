@@ -2,7 +2,6 @@ package com.example.petpal;
 
 import com.example.petpal.business.converters.BreedConverter;
 import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.Image;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.business.impl.BreedServiceImpl;
@@ -43,7 +42,7 @@ class BreedServiceImplTest {
         moodEntity = MoodEntity.builder()
                 .id(1L)
                 .name("Happy")
-                .image(new Image())
+                .emoji("")
                 .build();
 
         breedEntity = BreedEntity.builder()

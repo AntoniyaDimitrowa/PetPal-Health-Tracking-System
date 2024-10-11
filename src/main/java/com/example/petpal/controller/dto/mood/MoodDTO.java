@@ -1,6 +1,5 @@
 package com.example.petpal.controller.dto.mood;
 
-import com.example.petpal.business.domain.Image;
 import lombok.*;
 
 @Data
@@ -8,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MoodDTO {
+    private long id;
     private String name;
-    private Image image;
+    private byte[] emoji;
 }

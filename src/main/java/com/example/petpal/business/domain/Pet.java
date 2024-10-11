@@ -17,7 +17,7 @@ public class Pet {
     private Gender gender;
     private Date birthdate;
     private double weight;
-    private Image image;
+    private byte[] image;
     private ArrayList<VaccinationRecord> vaccinationRecords;
     private ArrayList<HealthRecord> healthRecords;
 }

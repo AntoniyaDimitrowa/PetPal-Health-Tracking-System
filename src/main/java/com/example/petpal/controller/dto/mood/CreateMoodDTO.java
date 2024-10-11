@@ -1,4 +1,4 @@
-package com.example.petpal.business.domain;
+package com.example.petpal.controller.dto.mood;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Image {
-    private long id;
-    private byte[] image;
-    private boolean isEmoji;
+public class CreateMoodDTO {
+    private String name;
+    private byte[] emoji;
 }

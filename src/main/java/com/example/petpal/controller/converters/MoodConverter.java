@@ -9,15 +9,17 @@ public class MoodConverter {
     private MoodConverter(){}
     public static MoodDTO convertFromMoodToMoodDTO(Mood mood){
         return MoodDTO.builder()
+                .id(mood.getId())
                 .name(mood.getName())
-                .image(mood.getImage())
+                .emoji(mood.getEmoji())
                 .build();
     };
 
     public static Mood convertFromMoodDTOToMood(MoodDTO dto){
         return Mood.builder()
+                .id(dto.getId())
                 .name(dto.getName())
-                .image(dto.getImage())
+                .emoji(dto.getEmoji())
                 .build();
     };
 

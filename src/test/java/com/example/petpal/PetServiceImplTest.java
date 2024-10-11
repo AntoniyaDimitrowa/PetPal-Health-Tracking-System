@@ -2,7 +2,6 @@ package com.example.petpal;
 
 import com.example.petpal.business.converters.BreedConverter;
 import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.Image;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.exception.InvalidBreedException;
@@ -46,7 +45,7 @@ class PetServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        MoodEntity energetic = new MoodEntity(1,"Energetic", new Image());
+        MoodEntity energetic = new MoodEntity(1,"Energetic", "");
 
         BreedEntity breedEntity = BreedEntity.builder()
                 .id(1L)
@@ -58,8 +57,8 @@ class PetServiceImplTest {
                 .build();
 
         breed = BreedConverter.convertFromBreedEntityToBreed(breedEntity);
-        petEntity = new PetEntity(1, "Buddy", breedEntity, Gender.Male, new Date(), 25.5, new Image(), new ArrayList<>(), new ArrayList<>());
-        pet = new Pet(1, "Buddy", breed, Gender.Male, new Date(), 25.5, new Image(), new ArrayList<>(), new ArrayList<>());
+        petEntity = new PetEntity(1, "Buddy", breedEntity, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
+        pet = new Pet(1, "Buddy", breed, Gender.Male, new Date(), 25.5, new byte[]{}, new ArrayList<>(), new ArrayList<>());
     }
 
     @Test

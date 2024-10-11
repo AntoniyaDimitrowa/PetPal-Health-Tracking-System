@@ -1,6 +1,5 @@
 package com.example.petpal.controller.dto.pet;
 
-import com.example.petpal.business.domain.Image;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
 import com.example.petpal.controller.dto.vaccination.VaccinationRecordDTO;
@@ -24,7 +23,7 @@ public class PetDTO {
     private Gender gender;
     private Date birthdate;
     private double weight;
-    private Image image;
+    private byte[] image;
 
     private ArrayList<VaccinationRecordDTO> vaccinationRecords;
     private ArrayList<HealthRecordDTO> healthRecords;
