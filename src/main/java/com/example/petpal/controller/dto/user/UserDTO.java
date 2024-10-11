@@ -17,7 +17,8 @@ public class UserDTO {
     private String password;
     private Date memberSince;
     private String role;
-    private Optional<String> address;
+    private String address;
     private Optional<ArrayList<PetDTO>> pets;
     private Optional<ArrayList<BreedHealthInfoDTO>> breedHealthInfos;
+    private String image;
 }

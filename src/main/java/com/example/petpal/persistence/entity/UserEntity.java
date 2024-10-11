@@ -25,7 +25,12 @@ public class UserEntity {
 
     protected String role;
 
-    private Optional<String> address;
+    private String address;
+
+    private String image;
+
     private Optional<ArrayList<PetEntity>> pets;
+
     private Optional<ArrayList<BreedHealthInfoEntity>> breedHealthInfos;
+
 }

@@ -43,6 +43,15 @@ public class VaccinationConverter {
         return result;
     };
 
+    public static ArrayList<VaccinationDTO> convertFromVaccinationsToVaccinationsDTOs(ArrayList<Vaccination> vaccinations){
+        ArrayList<VaccinationDTO> result = new ArrayList<>();
+
+        for (Vaccination v : vaccinations) {
+            result.add(convertFromVaccinationToVaccinationDTO(v));
+        }
+        return result;
+    };
+
     public static VaccinationRecordDTO convertFromVaccinationRecordToVaccinationRecordDTO(VaccinationRecord record){
         return VaccinationRecordDTO.builder()
                 .vaccination(convertFromVaccinationToVaccinationDTO(record.getVaccination()))

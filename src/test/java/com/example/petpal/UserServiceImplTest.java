@@ -38,7 +38,7 @@ class UserServiceImplTest {
                 .password("password123")
                 .role("USER")
                 .memberSince(new java.util.Date())
-                .address(Optional.of("1234 Main St, Hometown"))
+                .address("1234 Main St, Hometown")
                 .pets(Optional.empty())
                 .breedHealthInfos(Optional.empty())
                 .build();

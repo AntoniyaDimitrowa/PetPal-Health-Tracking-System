@@ -15,6 +15,7 @@ public class UserConverter {
                 .memberSince(user.getMemberSince())
                 .role(user.getRole())
                 .address(user.getAddress())
+                .image(user.getImage())
                 .pets(user.getPets().map(petList -> PetConverter.convertFromPetsToPetDTOs(petList)))
                 .breedHealthInfos(user.getBreedHealthInfos().map(breedInfoList ->
                         HealthConverter.convertFromBreedHealthInfosToDTOs(breedInfoList)))
@@ -30,6 +31,7 @@ public class UserConverter {
                 .memberSince(userDTO.getMemberSince())
                 .role(userDTO.getRole())
                 .address(userDTO.getAddress())
+                .image(userDTO.getImage())
                 .pets(userDTO.getPets().map(petDTOList -> PetConverter.convertFromPetDTOsToPets(petDTOList)))
                 .breedHealthInfos(userDTO.getBreedHealthInfos().map(breedInfoDTOList ->
                         HealthConverter.convertFromDTOsToBreedHealthInfos(breedInfoDTOList)))

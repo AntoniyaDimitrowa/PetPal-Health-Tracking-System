@@ -20,6 +20,15 @@ public class VaccinationConverter {
         return result;
     };
 
+    public static ArrayList<Vaccination> convertFromVaccinationEntitiesToVaccination(ArrayList<VaccinationEntity> entities){
+        ArrayList<Vaccination> result = new ArrayList<>();
+
+        for (VaccinationEntity entity : entities) {
+            result.add(convertFromVaccinationEntitytoVaccination(entity));
+        }
+        return result;
+    };
+
     public static VaccinationRecord convertFromVaccinationRecordEntitytoVaccinationRecord(VaccinationRecordEntity entity){
         return new VaccinationRecord(entity.getId(),
                 convertFromVaccinationEntitytoVaccination(entity.getVaccination()),

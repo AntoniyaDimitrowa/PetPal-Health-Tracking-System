@@ -25,7 +25,8 @@ public class User {
 
     private String image;
 
-    private Optional<String> address;
+    private String address;
+
     private Optional<ArrayList<Pet>> pets;
     private Optional<ArrayList<BreedHealthInfo>> breedHealthInfos;
 }

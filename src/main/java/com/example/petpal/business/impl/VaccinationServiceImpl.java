@@ -2,6 +2,7 @@ package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IVaccinationService;
 import com.example.petpal.business.converters.VaccinationConverter;
+import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.exception.InvalidVaccinationException;
@@ -43,5 +44,7 @@ public class VaccinationServiceImpl implements IVaccinationService {
         petRepository.addVaccinationToPet(petId, VaccinationConverter.convertFromVaccinationRecordToVaccinationRecordEntity(vaccinationRecord));
     }
 
-
+    public ArrayList<Vaccination> getVaccinations() {
+        return VaccinationConverter.convertFromVaccinationEntitiesToVaccination(vaccinationRepository.getAllVaccinations());
+    }
 }

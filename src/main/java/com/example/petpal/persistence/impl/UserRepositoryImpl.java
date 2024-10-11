@@ -24,7 +24,7 @@ public class UserRepositoryImpl implements IUserRepository {
                 .password("password123")
                 .role("USER")
                 .memberSince(new java.util.Date())
-                .address(Optional.of("1234 Main St, Hometown"))
+                .address("1234 Main St, Hometown")
                 .pets(Optional.of(new ArrayList<PetEntity>() {
                     {
                         add(petRepo.getPet(1L).get());
@@ -40,7 +40,7 @@ public class UserRepositoryImpl implements IUserRepository {
                 .password("password456")
                 .role("ADMIN")
                 .memberSince(new java.util.Date())
-                .address(Optional.of("5678 Market St, Cityville"))
+                .address("5678 Market St, Cityville")
                 .pets(Optional.empty())
                 .breedHealthInfos(Optional.empty())
                 .build());
