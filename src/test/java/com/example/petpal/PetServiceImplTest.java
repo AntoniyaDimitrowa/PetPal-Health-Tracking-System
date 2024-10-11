@@ -2,6 +2,7 @@ package com.example.petpal;
 
 import com.example.petpal.business.converters.BreedConverter;
 import com.example.petpal.business.domain.Breed;
+import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.exception.InvalidBreedException;
@@ -58,7 +59,7 @@ class PetServiceImplTest {
 
         breed = BreedConverter.convertFromBreedEntityToBreed(breedEntity);
         petEntity = new PetEntity(1, "Buddy", breedEntity, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
-        pet = new Pet(1, "Buddy", breed, Gender.Male, new Date(), 25.5, new byte[]{}, new ArrayList<>(), new ArrayList<>());
+        pet = new Pet(1, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
     }
 
     @Test
@@ -104,7 +105,7 @@ class PetServiceImplTest {
             petService.updatePet(pet, 100L);
         });
 
-        verify(breedRepository, times(1)).getBreedById(1L);
+        verify(breedRepository, times(1)).getBreedById(100L);
     }
 
     @Test
@@ -129,13 +130,34 @@ class PetServiceImplTest {
 
     @Test
     void createPet_shouldReturnCreatedPet() throws InvalidBreedException {
-        when(petRepository.createPet(any(PetEntity.class))).thenReturn(anyLong());
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(new BreedEntity()));
+        MoodEntity moodEntity = new MoodEntity(1L, "Energetic", "");
+        Mood mood = new Mood(1L, "Energetic", "");
 
-        Pet newPet = pet;
+        BreedEntity breedEntity = BreedEntity.builder()
+                .id(1L)
+                .name("Labrador")
+                .normalMood(moodEntity)
+                .description("Labrador description")
+                .minimumExercisePerDay(1.5)
+                .commonHealthProblems(new ArrayList<>())
+                .build();
+
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breedEntity));
+
+        when(petRepository.createPet(any(PetEntity.class))).thenReturn(50L);
+
+        Pet newPet = new Pet();
         newPet.setId(50L);
-        long result = petService.createPet(newPet, breed.getId(), new ArrayList<>());
+        newPet.setName("Buddy");
+        newPet.setBreed(new Breed(1L, "Labrador", "Friendly dog", mood, 1.5, new ArrayList<>()));
+        newPet.setGender(Gender.Male);
+        newPet.setBirthdate(new Date());
+        newPet.setWeight(25.5);
+
+        long result = petService.createPet(newPet, breedEntity.getId(), new ArrayList<>());
 
         verify(petRepository, times(1)).createPet(any(PetEntity.class));
+
+        assertEquals(50L, result);
     }
 }

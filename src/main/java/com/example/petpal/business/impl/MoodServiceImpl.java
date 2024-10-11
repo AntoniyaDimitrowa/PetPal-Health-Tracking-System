@@ -28,8 +28,8 @@ public class MoodServiceImpl implements IMoodService {
     }
 
     @Override
-    public Mood createMood(Mood mood) {
-        return MoodConverter.convertFromMoodEntityToMood(moodRepository.createMood(MoodConverter.convertFromMoodToMoodEntity(mood)));
+    public long createMood(Mood mood) {
+        return moodRepository.createMood(MoodConverter.convertFromMoodToMoodEntity(mood));
     }
 
     @Override

@@ -41,8 +41,8 @@ public class MoodController {
 
     @PostMapping
     public ResponseEntity<CreateEntityResponse> createMood(@RequestBody MoodDTO dto) {
-        Mood newMood = moodService.createMood(MoodConverter.convertFromMoodDTOToMood(dto));
-        return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newMood.getId()).build());
+        long newMoodId = moodService.createMood(MoodConverter.convertFromMoodDTOToMood(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newMoodId).build());
     }
 
     @DeleteMapping("{id}")
