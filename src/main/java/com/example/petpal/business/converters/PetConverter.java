@@ -21,6 +21,7 @@ public class PetConverter {
                 .weight(pet.getWeight())
                 .image(pet.getImage())
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsEntities(pet.getVaccinationRecords()))
+                .healthRecords(HealthConverter.convertFromHealthRecordsToHealthRecordEntities(pet.getHealthRecords()))
                 .build();
     };
 

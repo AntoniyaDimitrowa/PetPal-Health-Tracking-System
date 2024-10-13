@@ -23,6 +23,7 @@ public class BreedConverter {
 
     public static Breed convertFromBreedDTOToBreed(BreedDTO dto){
         return Breed.builder()
+                .id(dto.getId())
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .normalMood(MoodConverter.convertFromMoodDTOToMood(dto.getNormalMood()))

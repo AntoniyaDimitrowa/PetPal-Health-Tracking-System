@@ -51,6 +51,7 @@ public class PetServiceImpl implements IPetService {
         }
         pet.setBreed(BreedConverter.convertFromBreedEntityToBreed(breedOptional.get()));
         pet.setVaccinationRecords(vaccinations);
+        pet.setHealthRecords(new ArrayList<>());
 
         PetEntity newPet = PetConverter.convertFromPetToPetEntity(pet);
 

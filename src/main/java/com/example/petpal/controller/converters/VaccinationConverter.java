@@ -61,6 +61,7 @@ public class VaccinationConverter {
 
     public static VaccinationDTO convertFromVaccinationToVaccinationDTO(Vaccination vaccination){
         return VaccinationDTO.builder()
+                .id(vaccination.getId())
                 .name(vaccination.getName())
                 .type(vaccination.getType())
                 .range(vaccination.getRange())

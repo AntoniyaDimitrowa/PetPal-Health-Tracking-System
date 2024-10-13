@@ -21,8 +21,8 @@ import java.util.ArrayList;
 public class VaccinationController {
     private IVaccinationService vaccinationService;
     @GetMapping()
-    public ResponseEntity<ArrayList<VaccinationDTO>> getAllBreeds() {
-        ArrayList<VaccinationDTO> vaccinationDTOS = VaccinationConverter.convertFromVaccinationsToVaccinationsDTOs(vaccinationService.getVaccinations());
-        return ResponseEntity.ok(vaccinationDTOS);
+    public ResponseEntity<ArrayList<VaccinationDTO>> getAllVaccinations() {
+        ArrayList<VaccinationDTO> vaccinationDTOs = VaccinationConverter.convertFromVaccinationsToVaccinationsDTOs(vaccinationService.getVaccinations());
+        return ResponseEntity.ok(vaccinationDTOs);
     }
 }
