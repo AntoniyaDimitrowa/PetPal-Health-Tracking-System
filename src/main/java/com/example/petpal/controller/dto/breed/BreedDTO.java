@@ -1,6 +1,6 @@
-package com.example.petpal.controller.dto;
+package com.example.petpal.controller.dto.breed;
 
-import com.example.petpal.business.domain.Mood;
+import com.example.petpal.controller.dto.mood.MoodDTO;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -8,12 +8,11 @@ import java.util.ArrayList;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class BreedDTO {
-
+    private long id;
     private String name;
     private String description;
-    private MoodDTO normalMood;
+    private MoodDTO normalMood;;
     private double minimumExercisePerDay; //in hours
     private ArrayList<String> commonHealthProblems;
 }

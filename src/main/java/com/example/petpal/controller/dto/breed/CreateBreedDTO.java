@@ -1,18 +1,19 @@
-package com.example.petpal.persistence.entity;
+package com.example.petpal.controller.dto.breed;
 
-import com.example.petpal.business.domain.Mood;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class BreedEntity {
-    private long id;
+public class CreateBreedDTO {
     private String name;
     private String description;
-    private MoodEntity normalMood;
+    private long normalMoodId;
     private double minimumExercisePerDay; //in hours
     private ArrayList<String> commonHealthProblems;
 }

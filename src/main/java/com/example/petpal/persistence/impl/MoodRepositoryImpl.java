@@ -21,8 +21,8 @@ public class MoodRepositoryImpl implements IMoodRepository {
     }
 
     @Override
-    public MoodEntity createMood(MoodEntity mood) {
-        return null;
+    public long createMood(MoodEntity mood) {
+        return 0;
     }
 
     @Override

@@ -15,9 +15,9 @@ public interface IBreedService {
 
     Optional<Breed> getBreedById(long id);
 
-    Breed createBreed(Breed breed) throws InvalidMoodException;
+    long createBreed(Breed breed, long normalMoodId) throws InvalidMoodException;
 
-    Breed updateBreed(long id, Breed updatedBreed) throws InvalidBreedException, InvalidMoodException;
+    Breed updateBreed(Breed updatedBreed, long normalMoodId) throws InvalidBreedException, InvalidMoodException;
 
     boolean deleteBreed(long id);
 

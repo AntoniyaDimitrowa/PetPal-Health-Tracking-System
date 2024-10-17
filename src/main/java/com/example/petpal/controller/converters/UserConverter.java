@@ -1,11 +1,8 @@
 package com.example.petpal.controller.converters;
 
-import com.example.petpal.controller.converters.HealthConverter;
-import com.example.petpal.controller.converters.PetConverter;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.controller.dto.RegisterDTO;
-import com.example.petpal.controller.dto.UserDTO;
-import com.example.petpal.persistence.entity.UserEntity;
+import com.example.petpal.controller.dto.user.UserDTO;
 
 import java.util.Date;
 
@@ -18,6 +15,7 @@ public class UserConverter {
                 .memberSince(user.getMemberSince())
                 .role(user.getRole())
                 .address(user.getAddress())
+                .image(user.getImage())
                 .pets(user.getPets().map(petList -> PetConverter.convertFromPetsToPetDTOs(petList)))
                 .breedHealthInfos(user.getBreedHealthInfos().map(breedInfoList ->
                         HealthConverter.convertFromBreedHealthInfosToDTOs(breedInfoList)))
@@ -33,6 +31,7 @@ public class UserConverter {
                 .memberSince(userDTO.getMemberSince())
                 .role(userDTO.getRole())
                 .address(userDTO.getAddress())
+                .image(userDTO.getImage())
                 .pets(userDTO.getPets().map(petDTOList -> PetConverter.convertFromPetDTOsToPets(petDTOList)))
                 .breedHealthInfos(userDTO.getBreedHealthInfos().map(breedInfoDTOList ->
                         HealthConverter.convertFromDTOsToBreedHealthInfos(breedInfoDTOList)))

@@ -11,7 +11,6 @@ import java.util.Optional;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserEntity {
     protected long id;
 
@@ -25,7 +24,12 @@ public class UserEntity {
 
     protected String role;
 
-    private Optional<String> address;
+    private String address;
+
+    private String image;
+
     private Optional<ArrayList<PetEntity>> pets;
+
     private Optional<ArrayList<BreedHealthInfoEntity>> breedHealthInfos;
+
 }

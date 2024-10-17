@@ -9,15 +9,15 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class Pet {
+    @Setter(AccessLevel.NONE)
     private long id;
     private String name;
     private Breed breed;
     private Gender gender;
     private Date birthdate;
     private double weight;
-    private Image image;
+    private String image;
     private ArrayList<VaccinationRecord> vaccinationRecords;
     private ArrayList<HealthRecord> healthRecords;
 }

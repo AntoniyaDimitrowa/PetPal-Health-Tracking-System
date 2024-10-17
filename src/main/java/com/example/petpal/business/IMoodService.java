@@ -13,7 +13,7 @@ public interface IMoodService {
 
     Optional<Mood> getMoodById(long id);
 
-    Mood createMood(Mood mood);
+    long createMood(Mood mood);
 
     boolean deleteMood(long id);
 }

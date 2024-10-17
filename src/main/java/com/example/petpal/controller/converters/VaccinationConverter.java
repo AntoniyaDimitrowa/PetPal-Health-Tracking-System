@@ -2,9 +2,8 @@ package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
-import com.example.petpal.controller.dto.MoodDTO;
-import com.example.petpal.controller.dto.VaccinationDTO;
-import com.example.petpal.controller.dto.VaccinationRecordDTO;
+import com.example.petpal.controller.dto.vaccination.VaccinationDTO;
+import com.example.petpal.controller.dto.vaccination.VaccinationRecordDTO;
 
 import java.util.ArrayList;
 
@@ -44,6 +43,15 @@ public class VaccinationConverter {
         return result;
     };
 
+    public static ArrayList<VaccinationDTO> convertFromVaccinationsToVaccinationsDTOs(ArrayList<Vaccination> vaccinations){
+        ArrayList<VaccinationDTO> result = new ArrayList<>();
+
+        for (Vaccination v : vaccinations) {
+            result.add(convertFromVaccinationToVaccinationDTO(v));
+        }
+        return result;
+    };
+
     public static VaccinationRecordDTO convertFromVaccinationRecordToVaccinationRecordDTO(VaccinationRecord record){
         return VaccinationRecordDTO.builder()
                 .vaccination(convertFromVaccinationToVaccinationDTO(record.getVaccination()))
@@ -53,6 +61,7 @@ public class VaccinationConverter {
 
     public static VaccinationDTO convertFromVaccinationToVaccinationDTO(Vaccination vaccination){
         return VaccinationDTO.builder()
+                .id(vaccination.getId())
                 .name(vaccination.getName())
                 .type(vaccination.getType())
                 .range(vaccination.getRange())

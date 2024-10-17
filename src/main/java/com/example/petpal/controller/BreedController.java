@@ -1,15 +1,16 @@
 package com.example.petpal.controller;
 
 import com.example.petpal.business.IBreedService;
-import com.example.petpal.business.IPetService;
 import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.Mood;
-import com.example.petpal.business.domain.Pet;
-import com.example.petpal.business.domain.User;
+import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
-import com.example.petpal.business.exception.InvalidUserException;
+import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.controller.converters.*;
 import com.example.petpal.controller.dto.*;
+import com.example.petpal.controller.dto.breed.BreedDTO;
+import com.example.petpal.controller.dto.breed.CreateBreedDTO;
+import com.example.petpal.controller.dto.breed.UpdateBreedDTO;
+import com.example.petpal.controller.dto.pet.CreatePetDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(allowedHeaders = "*", origins = "*")
 @RequestMapping("/breeds")
 @AllArgsConstructor
 public class BreedController {
@@ -43,16 +43,30 @@ public class BreedController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateEntityResponse> createBreed(@RequestBody BreedDTO dto) {
+    public ResponseEntity<CreateEntityResponse> createBreed(@RequestBody CreateBreedDTO dto) {
         try {
-            Breed newBreed = breedService.createBreed(BreedConverter.convertFromBreedDTOToBreed(dto));
-            return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newBreed.getId()).build());
+            long newBreedId = breedService.createBreed(BreedConverter.convertFromCreateBreedDTOToBreed(dto), dto.getNormalMoodId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newBreedId).build());
         }
         catch (InvalidMoodException e) {
             return ResponseEntity.notFound().build();
         }
 
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<BreedDTO> updateBreed(@RequestBody UpdateBreedDTO dto) {
+        try {
+            breedService.updateBreed(BreedConverter.convertFromUpdateBreedDTOToBreed(dto), dto.getNormalMoodId());
+
+            return ResponseEntity.noContent().build();
+        } catch (InvalidMoodException e) {
+            return ResponseEntity.notFound().build();
+        } catch (InvalidBreedException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteBreed(@PathVariable long id) {
         boolean deleted = breedService.deleteBreed(id);

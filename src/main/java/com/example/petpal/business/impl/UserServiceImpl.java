@@ -8,17 +8,15 @@ import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.persistence.IUserRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.UserEntity;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
-
-    public UserServiceImpl(IUserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public Optional<User> getUserById(long userId) {

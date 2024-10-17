@@ -1,4 +1,4 @@
-package com.example.petpal.controller.dto;
+package com.example.petpal.controller.dto.health;
 
 import com.example.petpal.business.domain.Breed;
 import lombok.AllArgsConstructor;
@@ -9,8 +9,8 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class BreedHealthInfoDTO {
-
-    private BreedDTO breed;
+    private long id;
+    private long breedId;
     private int ageRangeStart;
     private int ageRangeEnd;
     private double normalFoodIntake; // in grams

@@ -1,7 +1,5 @@
 package com.example.petpal.persistence.impl;
 
-import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.Image;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
@@ -20,9 +18,9 @@ public class BreedRepositoryImpl implements IBreedRepository {
     private static long nextBreedId = 1L;
 
     public BreedRepositoryImpl() {
-        MoodEntity energetic = new MoodEntity(1,"Energetic", new Image());
-        MoodEntity calm = new MoodEntity(2, "Calm", new Image());
-        MoodEntity protective = new MoodEntity(3, "Protective", new Image());
+        MoodEntity energetic = new MoodEntity(1,"Energetic", "");
+        MoodEntity calm = new MoodEntity(2, "Calm", "");
+        MoodEntity protective = new MoodEntity(3, "Protective", "");
 
         // Initialize some breed entities
         BreedEntity labrador = BreedEntity.builder()
@@ -69,10 +67,10 @@ public class BreedRepositoryImpl implements IBreedRepository {
     }
 
     @Override
-    public BreedEntity createBreed(BreedEntity breed) {
+    public long createBreed(BreedEntity breed) {
         breed.setId(nextBreedId++);
         breeds.add(breed);
-        return breed;
+        return breed.getId();
     }
 
     @Override

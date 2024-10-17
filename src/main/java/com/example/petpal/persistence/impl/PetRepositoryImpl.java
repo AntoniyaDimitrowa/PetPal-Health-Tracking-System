@@ -1,7 +1,5 @@
 package com.example.petpal.persistence.impl;
 
-import com.example.petpal.business.domain.Image;
-import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.entity.*;
@@ -17,9 +15,9 @@ public class PetRepositoryImpl implements IPetRepository {
 
     public PetRepositoryImpl() {
         // Initialize some breed entities
-        MoodEntity energetic = new MoodEntity(1,"Energetic", new Image());
-        MoodEntity calm = new MoodEntity(2, "Calm", new Image());
-        MoodEntity protective = new MoodEntity(3, "Protective", new Image());
+        MoodEntity energetic = new MoodEntity(1,"Energetic", "");
+        MoodEntity calm = new MoodEntity(2, "Calm", "");
+        MoodEntity protective = new MoodEntity(3, "Protective", "");
 
         // Initialize some breed entities
         BreedEntity labrador = BreedEntity.builder()
@@ -52,9 +50,9 @@ public class PetRepositoryImpl implements IPetRepository {
         breeds.addAll(Arrays.asList(labrador, goldenRetriever, bulldog));
 
         // Initialize some pet entities
-        PetEntity pet1 = new PetEntity(nextId++, "Buddy", labrador, Gender.Male, new Date(), 25.5, new Image(), new ArrayList<>(), new ArrayList<>());
-        PetEntity pet2 = new PetEntity(nextId++, "Bella", goldenRetriever, Gender.Female, new Date(), 22.3, new Image(), new ArrayList<>(), new ArrayList<>());
-        PetEntity pet3 = new PetEntity(nextId++, "Charlie", bulldog, Gender.Male, new Date(), 30.0, new Image(), new ArrayList<>(), new ArrayList<>());
+        PetEntity pet1 = new PetEntity(nextId++, "Buddy", labrador, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
+        PetEntity pet2 = new PetEntity(nextId++, "Bella", goldenRetriever, Gender.Female, new Date(), 22.3, "", new ArrayList<>(), new ArrayList<>());
+        PetEntity pet3 = new PetEntity(nextId++, "Charlie", bulldog, Gender.Male, new Date(), 30.0, "", new ArrayList<>(), new ArrayList<>());
 
         pets.addAll(Arrays.asList(pet1, pet2, pet3));
     }
@@ -65,13 +63,13 @@ public class PetRepositoryImpl implements IPetRepository {
     }
 
     @Override
-    public void updatePet(long id, String name, BreedEntity breed, Gender gender, Date birthdate, Double weight) {
+    public void updatePet(long id, PetEntity pet) {
         PetEntity entity = getPet(id).get();
-        entity.setName(name);
-        entity.setBreed(breed);
-        entity.setGender(gender);
-        entity.setBirthdate(birthdate);
-        entity.setWeight(weight);
+        entity.setName(pet.getName());
+        entity.setBreed(pet.getBreed());
+        entity.setGender(pet.getGender());
+        entity.setBirthdate(pet.getBirthdate());
+        entity.setWeight(pet.getWeight());
     }
 
     @Override
@@ -80,7 +78,7 @@ public class PetRepositoryImpl implements IPetRepository {
     }
 
     @Override
-    public PetEntity createPet(PetEntity pet) {
+    public long createPet(PetEntity pet) {
         if (pet.getId() == 0) {
             pet.setId(nextId++);
             pets.add(pet);
@@ -88,7 +86,7 @@ public class PetRepositoryImpl implements IPetRepository {
             pets.removeIf(p -> p.getId() == pet.getId());
             pets.add(pet);
         }
-        return pet;
+        return pet.getId();
     }
 
     @Override

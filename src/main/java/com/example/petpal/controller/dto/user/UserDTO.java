@@ -1,5 +1,7 @@
-package com.example.petpal.controller.dto;
+package com.example.petpal.controller.dto.user;
 
+import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
+import com.example.petpal.controller.dto.pet.PetDTO;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -15,7 +17,8 @@ public class UserDTO {
     private String password;
     private Date memberSince;
     private String role;
-    private Optional<String> address;
+    private String address;
     private Optional<ArrayList<PetDTO>> pets;
     private Optional<ArrayList<BreedHealthInfoDTO>> breedHealthInfos;
+    private String image;
 }

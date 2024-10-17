@@ -1,12 +1,9 @@
 package com.example.petpal.controller.converters;
 
-import com.example.petpal.controller.converters.BreedConverter;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
-import com.example.petpal.controller.dto.BreedHealthInfoDTO;
-import com.example.petpal.controller.dto.HealthRecordDTO;
-import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
-import com.example.petpal.persistence.entity.HealthRecordEntity;
+import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
+import com.example.petpal.controller.dto.health.HealthRecordDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +50,7 @@ public class HealthConverter {
 
     public static BreedHealthInfo convertFromBreedHealthInfoDTOToBreedHealthInfo(BreedHealthInfoDTO dto) {
         return BreedHealthInfo.builder()
-                .breed(BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()))
+                //.breed(BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()))
                 .ageRangeEnd(dto.getAgeRangeEnd())
                 .ageRangeStart(dto.getAgeRangeStart())
                 .normalFoodIntake(dto.getNormalFoodIntake())
@@ -63,7 +60,7 @@ public class HealthConverter {
 
     public static BreedHealthInfoDTO convertFromBreedHealthInfoToBreedHealthInfoDTO(BreedHealthInfo info) {
         return BreedHealthInfoDTO.builder()
-                .breed(BreedConverter.convertFromBreedToBreedDTO(info.getBreed()))
+                //.breed(BreedConverter.convertFromBreedToBreedDTO(info.getBreed()))
                 .ageRangeEnd(info.getAgeRangeEnd())
                 .ageRangeStart(info.getAgeRangeStart())
                 .normalFoodIntake(info.getNormalFoodIntake())

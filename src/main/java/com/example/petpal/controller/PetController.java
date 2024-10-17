@@ -8,16 +8,17 @@ import com.example.petpal.controller.converters.BreedConverter;
 import com.example.petpal.controller.converters.PetConverter;
 import com.example.petpal.controller.converters.VaccinationConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
-import com.example.petpal.controller.dto.CreatePetDTO;
-import com.example.petpal.controller.dto.PetDTO;
+import com.example.petpal.controller.dto.breed.BreedDTO;
+import com.example.petpal.controller.dto.pet.CreatePetDTO;
+import com.example.petpal.controller.dto.pet.PetDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(allowedHeaders = "*", origins = "*")
 @RequestMapping("/pets")
 public class PetController {
 
@@ -42,15 +43,12 @@ public class PetController {
     @PostMapping
     public ResponseEntity<CreateEntityResponse> createPet(@RequestBody CreatePetDTO dto) {
         try {
-            Pet newPet = petService.createPet(
-                    dto.getName(),
-                    BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()),
-                    dto.getGender(),
-                    dto.getBirthdate(),
-                    dto.getWeight(),
-                    VaccinationConverter.convertFromVaccinationRecordDTOsToVaccinationRecords(dto.getVaccinationRecords())
+            long newPetId = petService.createPet(
+                    PetConverter.convertFromCreatePetDTOToPet(dto),
+                    dto.getBreedId(),
+                    dto.getVaccinationRecordsIds()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newPet.getId()).build());
+            return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newPetId).build());
         } catch (InvalidBreedException e) {
             return ResponseEntity.notFound().build();
         }
@@ -60,14 +58,9 @@ public class PetController {
     @PutMapping("{id}")
     public ResponseEntity<Void> updatePet(@PathVariable long id, @RequestBody CreatePetDTO dto) {
         try {
-            petService.updatePet(id,
-                    dto.getName(),
-                    BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()),
-                    dto.getGender(),
-                    dto.getBirthdate(),
-                    dto.getWeight());
-            //maybe I should update the VaccinationRecords and Health Records from here as well
-            // orr maybe it should be done from the vaccinationService
+            petService.updatePet(
+                    PetConverter.convertFromCreatePetDTOToPet(dto),
+                    dto.getBreedId());
             return ResponseEntity.noContent().build();
         } catch (InvalidPetException e) {
             return ResponseEntity.notFound().build();

@@ -9,21 +9,24 @@ import java.util.Optional;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class User {
-    protected long id;
+    @Setter(AccessLevel.NONE)
+    private long id;
 
-    protected String name;
+    private String name;
 
-    protected String email;
+    private String email;
 
-    protected String password;
+    private String password;
 
     private Date memberSince;
 
-    protected String role;
+    private String role;
 
-    private Optional<String> address;
+    private String image;
+
+    private String address;
+
     private Optional<ArrayList<Pet>> pets;
     private Optional<ArrayList<BreedHealthInfo>> breedHealthInfos;
 }

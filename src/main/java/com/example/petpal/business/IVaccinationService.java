@@ -1,5 +1,6 @@
 package com.example.petpal.business;
 
+import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.exception.InvalidVaccinationException;
@@ -11,4 +12,5 @@ public interface IVaccinationService {
 
     void createVaccinationRecord(long petId, VaccinationRecord vaccinationRecord) throws InvalidPetException, InvalidVaccinationException;
 
+    public ArrayList<Vaccination> getVaccinations();
 }

@@ -6,18 +6,17 @@ import com.example.petpal.business.converters.MoodConverter;
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IMoodRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class MoodServiceImpl implements IMoodService {
     private final IMoodRepository moodRepository;
 
-    public MoodServiceImpl(IMoodRepository moodRepository) {
-        this.moodRepository = moodRepository;
-    }
     @Override
     public ArrayList<Mood> getAllMoods() {
         return MoodConverter.convertFromMoodEntitiesToMoods(moodRepository.getAllMoods());
@@ -29,8 +28,8 @@ public class MoodServiceImpl implements IMoodService {
     }
 
     @Override
-    public Mood createMood(Mood mood) {
-        return MoodConverter.convertFromMoodEntityToMood(moodRepository.createMood(MoodConverter.convertFromMoodToMoodEntity(mood)));
+    public long createMood(Mood mood) {
+        return moodRepository.createMood(MoodConverter.convertFromMoodToMoodEntity(mood));
     }
 
     @Override

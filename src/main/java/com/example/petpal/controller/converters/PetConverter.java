@@ -1,8 +1,8 @@
 package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.Pet;
-import com.example.petpal.controller.dto.CreatePetDTO;
-import com.example.petpal.controller.dto.PetDTO;
+import com.example.petpal.controller.dto.pet.CreatePetDTO;
+import com.example.petpal.controller.dto.pet.PetDTO;
 
 import java.util.ArrayList;
 
@@ -12,6 +12,7 @@ public class PetConverter {
 
     public static PetDTO convertFromPetToPetDTO(Pet pet){
         return PetDTO.builder()
+                .id(pet.getId())
                 .name(pet.getName())
                 .breed(BreedConverter.convertFromBreedToBreedDTO(pet.getBreed()))
                 .gender(pet.getGender())
@@ -25,6 +26,7 @@ public class PetConverter {
 
     public static Pet convertFromPetDTOToPet(PetDTO pet){
         return Pet.builder()
+                .id(pet.getId())
                 .name(pet.getName())
                 .breed(BreedConverter.convertFromBreedDTOToBreed(pet.getBreed()))
                 .gender(pet.getGender())
@@ -32,18 +34,17 @@ public class PetConverter {
                 .weight(pet.getWeight())
                 .image(pet.getImage())
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordDTOsToVaccinationRecords(pet.getVaccinationRecords()))
+                .healthRecords(HealthConverter.convertFromHealthRecordDTOsToHealthRecords(pet.getHealthRecords()))
                 .build();
     };
 
     public static Pet convertFromCreatePetDTOToPet(CreatePetDTO pet){
         return Pet.builder()
                 .name(pet.getName())
-                .breed(BreedConverter.convertFromBreedDTOToBreed(pet.getBreed()))
                 .gender(pet.getGender())
                 .birthdate(pet.getBirthdate())
                 .weight(pet.getWeight())
                 .image(pet.getImage())
-                .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordDTOsToVaccinationRecords(pet.getVaccinationRecords()))
                 .build();
     };
 
