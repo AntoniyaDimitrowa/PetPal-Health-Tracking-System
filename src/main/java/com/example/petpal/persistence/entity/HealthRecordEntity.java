@@ -10,7 +10,6 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class HealthRecordEntity {
     private long id;
     private Date date;

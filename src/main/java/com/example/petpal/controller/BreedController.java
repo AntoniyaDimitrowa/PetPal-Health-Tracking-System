@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(allowedHeaders = "*", origins = "*")
 @RequestMapping("/breeds")
 @AllArgsConstructor
 public class BreedController {

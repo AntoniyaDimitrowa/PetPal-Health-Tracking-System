@@ -11,7 +11,6 @@ import java.util.Optional;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserEntity {
     protected long id;
 

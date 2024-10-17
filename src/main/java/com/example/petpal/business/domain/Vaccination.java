@@ -6,8 +6,8 @@ import lombok.*;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class Vaccination {
+    @Setter(AccessLevel.NONE)
     private long id;
     private String name;
     private VaccinationType type;

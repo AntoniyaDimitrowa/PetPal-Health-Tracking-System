@@ -9,8 +9,8 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class Pet {
+    @Setter(AccessLevel.NONE)
     private long id;
     private String name;
     private Breed breed;

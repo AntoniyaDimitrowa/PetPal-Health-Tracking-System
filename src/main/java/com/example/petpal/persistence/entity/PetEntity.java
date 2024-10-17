@@ -9,7 +9,6 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class PetEntity {
     private long id;
     private String name;

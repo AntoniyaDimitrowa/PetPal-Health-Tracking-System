@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 
 @RestController
-@CrossOrigin(allowedHeaders = "*", origins = "*")
 @RequestMapping("/vaccinations")
 @AllArgsConstructor
 public class VaccinationController {

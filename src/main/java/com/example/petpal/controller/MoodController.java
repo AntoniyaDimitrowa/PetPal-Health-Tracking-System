@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(allowedHeaders = "*", origins = "*")
 @RequestMapping("/moods")
 public class MoodController {
     private final IMoodService moodService;

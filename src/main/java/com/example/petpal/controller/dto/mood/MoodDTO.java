@@ -5,7 +5,6 @@ import lombok.*;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class MoodDTO {
     private long id;
     private String name;

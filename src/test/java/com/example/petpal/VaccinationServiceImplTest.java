@@ -44,8 +44,7 @@ class VaccinationServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        petEntity = new PetEntity();
-        petEntity.setId(1L);
+        petEntity = PetEntity.builder().id(1L).build();
 
         Vaccination vaccination = Vaccination.builder()
                 .id(1L)
@@ -85,7 +84,7 @@ class VaccinationServiceImplTest {
     void createVaccinationRecord_shouldCreateRecordIfPetAndVaccinationExist() throws InvalidPetException, InvalidVaccinationException {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
 
-        when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(new VaccinationEntity()));
+        when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(VaccinationEntity.builder().build()));
 
         vaccinationService.createVaccinationRecord(1L, vaccinationRecord);
 

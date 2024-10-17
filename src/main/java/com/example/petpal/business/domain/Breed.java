@@ -7,8 +7,8 @@ import java.util.ArrayList;
 @Data
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor
 public class Breed {
+    @Setter(AccessLevel.NONE)
     private long id;
     private String name;
     private String description;

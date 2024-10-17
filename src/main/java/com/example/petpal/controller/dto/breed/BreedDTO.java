@@ -8,7 +8,6 @@ import java.util.ArrayList;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class BreedDTO {
     private long id;
     private String name;

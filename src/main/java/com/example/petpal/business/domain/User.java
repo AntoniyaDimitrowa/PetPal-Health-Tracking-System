@@ -9,8 +9,8 @@ import java.util.Optional;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class User {
+    @Setter(AccessLevel.NONE)
     private long id;
 
     private String name;

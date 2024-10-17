@@ -30,7 +30,7 @@ class HealthServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        petEntity = new PetEntity();
+        petEntity = PetEntity.builder().build();
         petEntity.setId(1L);
     }
 
@@ -38,7 +38,7 @@ class HealthServiceImplTest {
     void addHealthRecord_shouldThrowExceptionIfPetNotFound() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidPetException.class, () -> healthService.createHealthRecord(100L, new HealthRecord()));
+        assertThrows(InvalidPetException.class, () -> healthService.createHealthRecord(100L, HealthRecord.builder().build()));
         verify(petRepository, times(1)).getPet(100L);
     }
 
@@ -46,7 +46,7 @@ class HealthServiceImplTest {
     void createHealthRecord_shouldCreateRecordIfPetExists() throws InvalidPetException {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
 
-        healthService.createHealthRecord(1L, new HealthRecord());
+        healthService.createHealthRecord(1L, HealthRecord.builder().build());
 
         verify(petRepository, times(1)).addHealthRecordToPet(eq(1L), any());
     }

@@ -7,8 +7,8 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class VaccinationRecord {
+    @Setter(AccessLevel.NONE)
     private long id;
     private Vaccination vaccination;
     private Date date;

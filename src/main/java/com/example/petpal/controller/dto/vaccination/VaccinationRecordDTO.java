@@ -8,7 +8,6 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class VaccinationRecordDTO {
     private VaccinationDTO vaccination;
     private Date date;

@@ -1,9 +1,6 @@
 package com.example.petpal.business.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,8 +8,8 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class HealthRecord {
+    @Setter(AccessLevel.NONE)
     private long id;
     private Date date;
     private double foodIntake;  // in grams

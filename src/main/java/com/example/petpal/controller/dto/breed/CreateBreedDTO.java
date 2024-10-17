@@ -10,7 +10,6 @@ import java.util.ArrayList;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class CreateBreedDTO {
     private String name;
     private String description;

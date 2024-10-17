@@ -5,10 +5,9 @@ import lombok.*;
 
 import java.util.ArrayList;
 
+@Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-@Data
 public class BreedEntity {
     private long id;
     private String name;

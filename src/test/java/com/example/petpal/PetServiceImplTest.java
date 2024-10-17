@@ -87,8 +87,7 @@ class PetServiceImplTest {
     void updatePet_shouldThrowInvalidPetExceptionWhenPetDoesNotExist() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
 
-        Pet newPet = pet;
-        newPet.setId(100L);
+        Pet newPet = new Pet(100L, "Buddy", new Breed(1L, "Labrador", "Friendly dog", Mood.builder().build(), 1.5, new ArrayList<>()), Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
         assertThrows(InvalidPetException.class, () -> {
             petService.updatePet(newPet, breed.getId());
         });
@@ -111,7 +110,7 @@ class PetServiceImplTest {
     @Test
     void updatePet_shouldUpdatePetWhenPetAndBreedExist() throws InvalidPetException, InvalidBreedException {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(new BreedEntity())); // Mock breed exists
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(BreedEntity.builder().build())); // Mock breed exists
 
         Pet newPet = pet;
         newPet.setName("123");
@@ -146,13 +145,7 @@ class PetServiceImplTest {
 
         when(petRepository.createPet(any(PetEntity.class))).thenReturn(50L);
 
-        Pet newPet = new Pet();
-        newPet.setId(50L);
-        newPet.setName("Buddy");
-        newPet.setBreed(new Breed(1L, "Labrador", "Friendly dog", mood, 1.5, new ArrayList<>()));
-        newPet.setGender(Gender.Male);
-        newPet.setBirthdate(new Date());
-        newPet.setWeight(25.5);
+        Pet newPet = new Pet(50L, "Buddy", new Breed(1L, "Labrador", "Friendly dog", mood, 1.5, new ArrayList<>()), Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
 
         long result = petService.createPet(newPet, breedEntity.getId(), new ArrayList<>());
 

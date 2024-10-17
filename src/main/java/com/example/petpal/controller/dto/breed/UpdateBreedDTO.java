@@ -10,7 +10,6 @@ import java.util.ArrayList;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class UpdateBreedDTO {
     private long id;
     private String name;
