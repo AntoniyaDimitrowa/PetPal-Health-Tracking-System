@@ -9,10 +9,10 @@ import java.util.ArrayList;
 @Builder
 @AllArgsConstructor
 public class BreedDTO {
-    private long id;
+    private Long id;
     private String name;
     private String description;
-    private MoodDTO normalMood;;
+    private MoodDTO normalMood;
     private double minimumExercisePerDay; //in hours
     private ArrayList<String> commonHealthProblems;
 }

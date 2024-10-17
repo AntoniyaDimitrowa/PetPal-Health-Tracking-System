@@ -10,7 +10,7 @@ public interface IMoodRepository {
     Optional<MoodEntity> getMoodById(long id);
 
     ArrayList<MoodEntity> getAllMoods();
-    long createMood(MoodEntity mood);
+    Long createMood(MoodEntity mood);
 
     boolean deleteMood(long id);
 

@@ -11,7 +11,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 public class HealthRecordEntity {
-    private long id;
+    private Long id;
     private Date date;
     private double foodIntake;  // in grams
     private double waterIntake; // in liters

@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class Message {
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
     private User sender;
     private String content;
     private Timestamp timestamp;

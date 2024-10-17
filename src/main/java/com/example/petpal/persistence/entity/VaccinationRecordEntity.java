@@ -8,7 +8,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 public class VaccinationRecordEntity {
-    private long id;
+    private Long id;
     private VaccinationEntity vaccination;
     private Date date;
 

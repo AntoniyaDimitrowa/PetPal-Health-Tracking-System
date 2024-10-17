@@ -11,7 +11,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class User {
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
 
     private String name;
 

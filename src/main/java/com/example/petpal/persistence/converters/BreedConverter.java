@@ -1,12 +1,9 @@
-package com.example.petpal.business.converters;
+package com.example.petpal.persistence.converters;
 
 import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.Mood;
 import com.example.petpal.persistence.entity.BreedEntity;
-import com.example.petpal.persistence.entity.MoodEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class BreedConverter {
     private BreedConverter(){}

@@ -14,7 +14,7 @@ public interface IPetRepository {
     Optional<PetEntity> getPet(long petId);
     void updatePet(long id, PetEntity pet);
     boolean deletePet(long petId);
-    long createPet(PetEntity pet);
+    Long createPet(PetEntity pet);
     void addVaccinationToPet(long petId, VaccinationRecordEntity vaccinationRecord);
     ArrayList<VaccinationRecordEntity> getVaccinationRecordsByPetId(long petId);
 

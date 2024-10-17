@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class HealthRecord {
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
     private Date date;
     private double foodIntake;  // in grams
     private double waterIntake; // in liters

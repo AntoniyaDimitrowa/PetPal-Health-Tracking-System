@@ -1,12 +1,10 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IUserService;
-import com.example.petpal.business.converters.UserConverter;
+import com.example.petpal.persistence.converters.UserConverter;
 import com.example.petpal.business.domain.User;
-import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.persistence.IUserRepository;
-import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

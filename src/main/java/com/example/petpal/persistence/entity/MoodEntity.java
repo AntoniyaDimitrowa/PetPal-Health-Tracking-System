@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 public class MoodEntity {
-    private long id;
+    private Long id;
     private String name;
     private String emoji;
 }

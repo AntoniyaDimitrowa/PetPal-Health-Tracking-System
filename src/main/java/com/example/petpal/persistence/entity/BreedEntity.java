@@ -9,7 +9,7 @@ import java.util.ArrayList;
 @Builder
 @AllArgsConstructor
 public class BreedEntity {
-    private long id;
+    private Long id;
     private String name;
     private String description;
     private MoodEntity normalMood;

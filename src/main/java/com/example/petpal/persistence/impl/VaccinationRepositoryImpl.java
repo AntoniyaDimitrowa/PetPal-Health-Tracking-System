@@ -17,28 +17,28 @@ public class VaccinationRepositoryImpl implements IVaccinationRepository {
     // Constructor to populate the list
     public VaccinationRepositoryImpl() {
         vaccinations.add(VaccinationEntity.builder()
-                .id(1)
+                .id(1L)
                 .name("Distemper")
                 .type(VaccinationType.ForPuppy)
                 .range(6) // 6-8 weeks
                 .build());
 
         vaccinations.add(VaccinationEntity.builder()
-                .id(2)
+                .id(2L)
                 .name("Parvovirus")
                 .type(VaccinationType.ForPuppy)
                 .range(6) // 6-8 weeks
                 .build());
 
         vaccinations.add(VaccinationEntity.builder()
-                .id(3)
+                .id(3L)
                 .name("Adenovirus")
                 .type(VaccinationType.ForPuppy)
                 .range(10) // 10-12 weeks
                 .build());
 
         vaccinations.add(VaccinationEntity.builder()
-                .id(4)
+                .id(4L)
                 .name("Rabies")
                 .type(VaccinationType.ForPuppy)
                 .range(12) // 12-16 weeks

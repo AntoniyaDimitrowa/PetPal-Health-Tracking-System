@@ -1,6 +1,6 @@
 package com.example.petpal;
 
-import com.example.petpal.business.converters.BreedConverter;
+import com.example.petpal.persistence.converters.BreedConverter;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
@@ -57,8 +57,8 @@ class BreedServiceImplTest {
 
     @Test
     void getAllBreeds_shouldReturnAllBreeds() {
-        ArrayList<BreedEntity> breeds = new ArrayList<>();
-        breeds.add(breedEntity);
+        ArrayList<Breed> breeds = new ArrayList<>();
+        breeds.add(breed);
         when(breedRepository.getAllBreeds()).thenReturn(breeds);
 
         ArrayList<Breed> result = breedService.getAllBreeds();
@@ -70,7 +70,7 @@ class BreedServiceImplTest {
 
     @Test
     void getBreedById_shouldReturnBreedWhenExists() {
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breedEntity));
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
 
         Optional<Breed> result = breedService.getBreedById(1L);
 
@@ -89,45 +89,49 @@ class BreedServiceImplTest {
         verify(breedRepository, times(1)).getBreedById(100L);
     }
 
-    //TODO after done with dtos corrections fix the tests
-//    @Test
-//    void updateBreed_shouldThrowExceptionWhenBreedNotFound() {
-//        when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
-//
-//        assertThrows(InvalidBreedException.class, () -> breedService.updateBreed(breed, 1L));
-//        verify(breedRepository, times(1)).getBreedById(100L);
-//    }
+    @Test
+    void updateBreed_shouldThrowExceptionWhenBreedNotFound() {
+        when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
 
-//    @Test
-//    void updateBreed_shouldThrowInvalidMoodExceptionWhenMoodNotFound() {
-//        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breedEntity));
-//
-//        when(moodRepository.getMoodById(100L)).thenReturn(Optional.empty());
-//
-//        assertThrows(InvalidMoodException.class, () -> breedService.updateBreed(breed, 100L));
-//
-//        verify(breedRepository, times(1)).getBreedById(1L);
-//        verify(moodRepository, times(1)).getMoodById(1L);  // Ensure mood lookup is happening
-//    }
+        assertThrows(InvalidBreedException.class, () -> {
+            breedService.updateBreed(breed, 100L);
+        });
+
+        verify(breedRepository, times(1)).getBreedById(100L);
+    }
+
+
+    @Test
+    void updateBreed_shouldThrowInvalidMoodExceptionWhenMoodNotFound() {
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
+        when(moodRepository.getMoodById(100L)).thenReturn(Optional.empty());
+
+        assertThrows(InvalidMoodException.class, () -> breedService.updateBreed(breed, 100L));
+
+        verify(breedRepository, times(1)).getBreedById(1L);
+        verify(moodRepository, times(1)).getMoodById(100L);
+    }
 
     @Test
     void updateBreed_shouldUpdateBreedWhenExistsAndMoodIsValid() throws InvalidBreedException, InvalidMoodException {
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breedEntity));
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
         when(moodRepository.getMoodById(1L)).thenReturn(Optional.of(moodEntity));
-
-        when(breedRepository.updateBreed(eq(1L), any(BreedEntity.class))).thenReturn(breedEntity);
+        when(breedRepository.updateBreed(eq(1L), any(Breed.class))).thenReturn(breed);
 
         Breed result = breedService.updateBreed(breed, 1L);
 
         assertNotNull(result);
-        verify(breedRepository, times(1)).updateBreed(eq(1L), any(BreedEntity.class));
+        verify(breedRepository, times(1)).updateBreed(eq(1L), any(Breed.class));
         verify(moodRepository, times(1)).getMoodById(1L);
     }
 
     @Test
     void deleteBreed_shouldCallRepositoryDelete() {
-        breedService.deleteBreed(1L);
+        when(breedRepository.deleteBreed(1L)).thenReturn(true);
 
+        boolean result = breedService.deleteBreed(1L);
+
+        assertTrue(result);
         verify(breedRepository, times(1)).deleteBreed(1L);
     }
 

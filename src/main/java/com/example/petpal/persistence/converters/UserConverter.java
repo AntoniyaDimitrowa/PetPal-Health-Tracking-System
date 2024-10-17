@@ -1,11 +1,7 @@
-package com.example.petpal.business.converters;
+package com.example.petpal.persistence.converters;
 
-import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.User;
-import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.UserEntity;
-
-import java.util.ArrayList;
 
 public class UserConverter {
     public static UserEntity convertFromUserToUserEntity(User user) {

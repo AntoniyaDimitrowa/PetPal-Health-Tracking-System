@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class VaccinationEntity {
-    private long id;
+    private Long id;
     private String name;
     private VaccinationType type;
     private int range;

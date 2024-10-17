@@ -1,4 +1,4 @@
-package com.example.petpal.business.converters;
+package com.example.petpal.persistence.converters;
 
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;

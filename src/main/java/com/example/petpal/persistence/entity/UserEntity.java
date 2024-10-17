@@ -12,7 +12,7 @@ import java.util.Optional;
 @Builder
 @AllArgsConstructor
 public class UserEntity {
-    protected long id;
+    protected Long id;
 
     protected String name;
 

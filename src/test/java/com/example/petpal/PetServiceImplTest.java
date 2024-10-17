@@ -1,6 +1,6 @@
 package com.example.petpal;
 
-import com.example.petpal.business.converters.BreedConverter;
+import com.example.petpal.persistence.converters.BreedConverter;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.domain.Pet;
@@ -46,7 +46,7 @@ class PetServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        MoodEntity energetic = new MoodEntity(1,"Energetic", "");
+        MoodEntity energetic = new MoodEntity(1L,"Energetic", "");
 
         BreedEntity breedEntity = BreedEntity.builder()
                 .id(1L)
@@ -58,8 +58,8 @@ class PetServiceImplTest {
                 .build();
 
         breed = BreedConverter.convertFromBreedEntityToBreed(breedEntity);
-        petEntity = new PetEntity(1, "Buddy", breedEntity, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
-        pet = new Pet(1, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
+        petEntity = new PetEntity(1L, "Buddy", breedEntity, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
+        pet = new Pet(1L, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
     }
 
     @Test
@@ -110,15 +110,28 @@ class PetServiceImplTest {
     @Test
     void updatePet_shouldUpdatePetWhenPetAndBreedExist() throws InvalidPetException, InvalidBreedException {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(BreedEntity.builder().build())); // Mock breed exists
+
+        // Use a valid Mood and Breed when mocking
+        Mood mood = new Mood(1L, "Energetic", ""); // Create a Mood object
+        Breed mockBreed = Breed.builder()
+                .id(1L)
+                .name("Labrador")
+                .description("Friendly dog")
+                .normalMood(mood) // Set the mood here
+                .minimumExercisePerDay(1.5)
+                .commonHealthProblems(new ArrayList<>())
+                .build();
+
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(mockBreed)); // Mock breed exists
 
         Pet newPet = pet;
-        newPet.setName("123");
+        newPet.setName("Buddy Updated");
         petService.updatePet(newPet, breed.getId());
 
         verify(petRepository, times(1)).updatePet(eq(1L), any(PetEntity.class));
         verify(breedRepository, times(1)).getBreedById(1L); // Verify breed lookup
     }
+
 
     @Test
     void deletePet_shouldCallRepositoryDelete() {
@@ -141,7 +154,7 @@ class PetServiceImplTest {
                 .commonHealthProblems(new ArrayList<>())
                 .build();
 
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breedEntity));
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
 
         when(petRepository.createPet(any(PetEntity.class))).thenReturn(50L);
 

@@ -1,11 +1,9 @@
-package com.example.petpal.business.converters;
+package com.example.petpal.persistence.converters;
 
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
-import com.example.petpal.business.domain.Pet;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 import com.example.petpal.persistence.entity.HealthRecordEntity;
-import com.example.petpal.persistence.entity.PetEntity;
 
 import java.util.ArrayList;
 import java.util.List;

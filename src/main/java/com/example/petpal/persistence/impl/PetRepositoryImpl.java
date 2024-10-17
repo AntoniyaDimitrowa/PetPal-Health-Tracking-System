@@ -15,9 +15,9 @@ public class PetRepositoryImpl implements IPetRepository {
 
     public PetRepositoryImpl() {
         // Initialize some breed entities
-        MoodEntity energetic = new MoodEntity(1,"Energetic", "");
-        MoodEntity calm = new MoodEntity(2, "Calm", "");
-        MoodEntity protective = new MoodEntity(3, "Protective", "");
+        MoodEntity energetic = new MoodEntity(1L,"Energetic", "");
+        MoodEntity calm = new MoodEntity(2L, "Calm", "");
+        MoodEntity protective = new MoodEntity(3L, "Protective", "");
 
         // Initialize some breed entities
         BreedEntity labrador = BreedEntity.builder()
@@ -78,7 +78,7 @@ public class PetRepositoryImpl implements IPetRepository {
     }
 
     @Override
-    public long createPet(PetEntity pet) {
+    public Long createPet(PetEntity pet) {
         if (pet.getId() == 0) {
             pet.setId(nextId++);
             pets.add(pet);

@@ -1,14 +1,13 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IPetService;
-import com.example.petpal.business.converters.BreedConverter;
-import com.example.petpal.business.converters.VaccinationConverter;
-import com.example.petpal.business.converters.PetConverter;
 import com.example.petpal.business.domain.Breed;
+import com.example.petpal.persistence.converters.BreedConverter;
+import com.example.petpal.persistence.converters.VaccinationConverter;
+import com.example.petpal.persistence.converters.PetConverter;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
-import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.persistence.IBreedRepository;
@@ -19,7 +18,6 @@ import com.example.petpal.persistence.entity.PetEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -38,7 +36,7 @@ public class PetServiceImpl implements IPetService {
 
     @Override
     public long createPet(Pet pet, long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException {
-        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(breedId);
+        Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
         if (breedOptional.isEmpty()) {
             throw new InvalidBreedException(breedId);
         }
@@ -47,9 +45,9 @@ public class PetServiceImpl implements IPetService {
 
         for (long id : vaccinationsIds) {
             Vaccination v = VaccinationConverter.convertFromVaccinationEntitytoVaccination(vaccinationRepository.getVaccinationById(id).get());
-            vaccinations.add(new VaccinationRecord(1, v, new Date()));
+            vaccinations.add(new VaccinationRecord(1L, v, new Date()));
         }
-        pet.setBreed(BreedConverter.convertFromBreedEntityToBreed(breedOptional.get()));
+        pet.setBreed(breedOptional.get());
         pet.setVaccinationRecords(vaccinations);
         pet.setHealthRecords(new ArrayList<>());
 
@@ -65,12 +63,12 @@ public class PetServiceImpl implements IPetService {
         if (petOptional.isEmpty()) {
             throw new InvalidPetException(pet.getId());
         }
-        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(breedId);
+        Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
         if (breedOptional.isEmpty()) {
             throw new InvalidBreedException(breedId);
         }
         PetEntity petEntity = PetConverter.convertFromPetToPetEntity(pet);
-        petEntity.setBreed(breedOptional.get());
+        petEntity.setBreed(BreedConverter.convertFromBreedToBreedEntity(breedOptional.get()));
 
         petRepository.updatePet(pet.getId(), petEntity);
     }

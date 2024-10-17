@@ -1,7 +1,7 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IHealthService;
-import com.example.petpal.business.converters.HealthConverter;
+import com.example.petpal.persistence.converters.HealthConverter;
 import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.persistence.IPetRepository;

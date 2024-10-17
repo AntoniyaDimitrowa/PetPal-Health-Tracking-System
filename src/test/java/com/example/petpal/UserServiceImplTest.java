@@ -1,6 +1,6 @@
 package com.example.petpal;
 
-import com.example.petpal.business.converters.UserConverter;
+import com.example.petpal.persistence.converters.UserConverter;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.business.impl.UserServiceImpl;

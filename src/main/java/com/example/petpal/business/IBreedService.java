@@ -13,15 +13,15 @@ import java.util.Optional;
 public interface IBreedService {
     ArrayList<Breed> getAllBreeds();
 
-    Optional<Breed> getBreedById(long id);
+    Optional<Breed> getBreedById(Long id);
 
-    long createBreed(Breed breed, long normalMoodId) throws InvalidMoodException;
+    Long createBreed(Breed breed, Long normalMoodId) throws InvalidMoodException;
 
-    Breed updateBreed(Breed updatedBreed, long normalMoodId) throws InvalidBreedException, InvalidMoodException;
+    Breed updateBreed(Breed updatedBreed, Long normalMoodId) throws InvalidBreedException, InvalidMoodException;
 
-    boolean deleteBreed(long id);
+    boolean deleteBreed(Long id);
 
-    Optional<BreedHealthInfo> getHealthInfoForBreed(long breedId, int age) throws InvalidBreedException;
+    Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age) throws InvalidBreedException;
 
-    Breed updateHealthProblems(long breedId, ArrayList<String> healthProblems) throws InvalidBreedException;
+    Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems) throws InvalidBreedException;
 }

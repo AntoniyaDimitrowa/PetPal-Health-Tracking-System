@@ -16,7 +16,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 public class PetDTO {
-    private long id;
+    private Long id;
     private String name;
     private BreedDTO breed;
     private Gender gender;

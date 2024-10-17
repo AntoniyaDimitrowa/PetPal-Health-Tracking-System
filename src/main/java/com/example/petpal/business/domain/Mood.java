@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 public class Mood {
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
     private String name;
     private String emoji;
 }

@@ -1,7 +1,7 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IVaccinationService;
-import com.example.petpal.business.converters.VaccinationConverter;
+import com.example.petpal.persistence.converters.VaccinationConverter;
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.exception.InvalidPetException;

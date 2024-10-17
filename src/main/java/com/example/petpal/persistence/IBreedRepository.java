@@ -1,5 +1,7 @@
 package com.example.petpal.persistence;
 
+import com.example.petpal.business.domain.Breed;
+import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 
@@ -8,16 +10,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IBreedRepository {
-    ArrayList<BreedEntity> getAllBreeds();
-    Optional<BreedEntity> getBreedById(long id);
+    ArrayList<Breed> getAllBreeds();
+    Optional<Breed> getBreedById(Long id);
 
-    long createBreed(BreedEntity breed);
+    Long createBreed(Breed breed);
 
-    BreedEntity updateBreed(long id, BreedEntity updatedBreed);
+    boolean deleteBreed(Long id);
 
-    boolean deleteBreed(long id);
+    Breed updateBreed(Long id, Breed updatedBreed);
 
-    Optional<BreedHealthInfoEntity> getHealthInfoForBreed(long breedId, int age);
+    Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age);
 
-    BreedEntity updateHealthProblems(long breedId, List<String> healthProblems);
+    Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems);
 }

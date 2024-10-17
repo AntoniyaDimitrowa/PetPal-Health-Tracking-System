@@ -9,7 +9,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class VaccinationRecord {
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
     private Vaccination vaccination;
     private Date date;
 }

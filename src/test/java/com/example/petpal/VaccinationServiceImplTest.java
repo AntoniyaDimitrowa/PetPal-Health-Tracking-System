@@ -1,6 +1,6 @@
 package com.example.petpal;
 
-import com.example.petpal.business.converters.VaccinationConverter;
+import com.example.petpal.persistence.converters.VaccinationConverter;
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.VaccinationType;

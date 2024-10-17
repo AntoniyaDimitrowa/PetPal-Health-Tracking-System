@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class CreateBreedDTO {
     private String name;
     private String description;
-    private long normalMoodId;
+    private Long normalMoodId;
     private double minimumExercisePerDay; //in hours
     private ArrayList<String> commonHealthProblems;
 }
