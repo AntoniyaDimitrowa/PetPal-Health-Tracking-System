@@ -14,9 +14,9 @@ public class UserConverter {
                 .role(user.getRole())
                 .address(user.getAddress())
                 .image(user.getImage())
-                .pets(user.getPets().map(petList -> PetConverter.convertFromPetsToPetEntities(petList))) // Optional Pet Conversion
+                .pets(user.getPets().map(petList -> PetConverter.convertFromPetsToPetEntities(petList)).get())
                 .breedHealthInfos(user.getBreedHealthInfos().map(breedInfoList ->
-                        HealthConverter.convertFromBreedHealthInfosToEntities(breedInfoList))) // Optional BreedHealthInfo Conversion
+                        HealthConverter.convertFromBreedHealthInfosToEntities(breedInfoList)).get())
                 .build();
     }
 

@@ -19,15 +19,16 @@ public class HealthConverter {
     }
 
     public static HealthRecord convertFromHealthRecordEntityToHealthRecord(HealthRecordEntity entity) {
-        return new HealthRecord(
-                entity.getId(),
-                entity.getDate(),
-                entity.getFoodIntake(),
-                entity.getWaterIntake(),
-                entity.getMood(),
-                entity.getBehavior(),
-                entity.getNotes()
-        );
+        return HealthRecord.builder()
+                .id(entity.getId())
+                .date(entity.getDate())
+                .foodIntake(entity.getFoodIntake())
+                .waterIntake(entity.getWaterIntake())
+                .mood(MoodConverter.convertFromMoodEntityToMood(entity.getMood()))
+                .activityLevel(entity.getActivityLevel())
+                .socialInteraction(entity.getSocialInteraction())
+                .notes(entity.getNotes())
+                .build();
     }
 
     public static ArrayList<HealthRecordEntity> convertFromHealthRecordsToHealthRecordEntities(List<HealthRecord> records) {
@@ -44,8 +45,9 @@ public class HealthConverter {
                 .date(record.getDate())
                 .foodIntake(record.getFoodIntake())
                 .waterIntake(record.getWaterIntake())
-                .mood(record.getMood())
-                .behavior(record.getBehavior())
+                .mood(MoodConverter.convertFromMoodToMoodEntity(record.getMood()))
+                .activityLevel(record.getActivityLevel())
+                .socialInteraction(record.getSocialInteraction())
                 .notes(record.getNotes())
                 .build();
     }

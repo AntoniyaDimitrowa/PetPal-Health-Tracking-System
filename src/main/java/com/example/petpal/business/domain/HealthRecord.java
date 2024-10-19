@@ -1,5 +1,7 @@
 package com.example.petpal.business.domain;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -14,7 +16,8 @@ public class HealthRecord {
     private Date date;
     private double foodIntake;  // in grams
     private double waterIntake; // in liters
-    private String mood;        // "Happy", "Lethargic"
-    private String behavior;    // "Active", "Restless"
+    private Mood mood;
+    private int activityLevel;    // Activity level (1-10 scale)
+    private String socialInteraction;
     private String notes;
 }

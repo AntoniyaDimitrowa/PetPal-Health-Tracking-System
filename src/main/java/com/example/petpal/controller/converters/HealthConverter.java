@@ -2,6 +2,7 @@ package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
+import com.example.petpal.controller.MoodController;
 import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
 
@@ -23,8 +24,9 @@ public class HealthConverter {
                 .date(dto.getDate())
                 .foodIntake(dto.getFoodIntake())
                 .waterIntake(dto.getWaterIntake())
-                .mood(dto.getMood())
-                .behavior(dto.getBehavior())
+                .mood(MoodConverter.convertFromMoodDTOToMood(dto.getMood()))
+                .activityLevel(dto.getActivityLevel())
+                .socialInteraction(dto.getSocialInteraction())
                 .notes(dto.getNotes())
                 .build();
     }
@@ -42,8 +44,9 @@ public class HealthConverter {
                 .date(record.getDate())
                 .foodIntake(record.getFoodIntake())
                 .waterIntake(record.getWaterIntake())
-                .mood(record.getMood())
-                .behavior(record.getBehavior())
+                .mood(MoodConverter.convertFromMoodToMoodDTO(record.getMood()))
+                .activityLevel(record.getActivityLevel())
+                .socialInteraction(record.getSocialInteraction())
                 .notes(record.getNotes())
                 .build();
     }

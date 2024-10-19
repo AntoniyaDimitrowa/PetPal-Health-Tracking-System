@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,8 +40,8 @@ class UserServiceImplTest {
                 .role("USER")
                 .memberSince(new java.util.Date())
                 .address("1234 Main St, Hometown")
-                .pets(Optional.empty())
-                .breedHealthInfos(Optional.empty())
+                .pets(new ArrayList<>())
+                .breedHealthInfos(new ArrayList<>())
                 .build();
         user = UserConverter.convertFromUserEntityToUser(userEntity);
     }
