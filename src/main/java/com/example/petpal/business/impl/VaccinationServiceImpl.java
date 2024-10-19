@@ -1,6 +1,7 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IVaccinationService;
+import com.example.petpal.persistence.converters.PetConverter;
 import com.example.petpal.persistence.converters.VaccinationConverter;
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
@@ -29,7 +30,7 @@ public class VaccinationServiceImpl implements IVaccinationService {
         if (petOptional.isEmpty()) {
             throw new InvalidPetException(petId);
         }
-        return VaccinationConverter.convertFromVaccinationRecordEntitiesToVaccinationRecords(petRepository.getVaccinationRecordsByPetId(petId));
+        return vaccinationRepository.getVaccinationRecordsByPetId(petId);
     }
     @Override
     public void createVaccinationRecord(long petId, VaccinationRecord vaccinationRecord) throws InvalidPetException, InvalidVaccinationException {
@@ -37,14 +38,14 @@ public class VaccinationServiceImpl implements IVaccinationService {
         if (petOptional.isEmpty()) {
             throw new InvalidPetException(petId);
         }
-        Optional<VaccinationEntity> vaccinationOptional = vaccinationRepository.getVaccinationById(vaccinationRecord.getVaccination().getId());
+        Optional<Vaccination> vaccinationOptional = vaccinationRepository.getVaccinationById(vaccinationRecord.getVaccination().getId());
         if (vaccinationOptional.isEmpty()) {
             throw new InvalidVaccinationException(petId);
         }
-        petRepository.addVaccinationToPet(petId, VaccinationConverter.convertFromVaccinationRecordToVaccinationRecordEntity(vaccinationRecord));
+        vaccinationRepository.addVaccinationRecordToPet(PetConverter.convertFromPetEntityToPet(petOptional.get()), vaccinationRecord);
     }
 
     public ArrayList<Vaccination> getVaccinations() {
-        return VaccinationConverter.convertFromVaccinationEntitiesToVaccination(vaccinationRepository.getAllVaccinations());
+        return vaccinationRepository.getAllVaccinations();
     }
 }

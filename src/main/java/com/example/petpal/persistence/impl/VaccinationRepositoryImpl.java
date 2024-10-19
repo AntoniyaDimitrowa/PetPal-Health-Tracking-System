@@ -1,58 +1,65 @@
 package com.example.petpal.persistence.impl;
 
-import com.example.petpal.business.domain.enums.VaccinationType;
+import com.example.petpal.business.domain.Pet;
+import com.example.petpal.business.domain.Vaccination;
+import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.persistence.IVaccinationRepository;
+import com.example.petpal.persistence.IVaccinationRepositoryJPA;
+import com.example.petpal.persistence.IVaccinationRecordRepositoryJPA;
+import com.example.petpal.persistence.converters.PetConverter;
+import com.example.petpal.persistence.converters.VaccinationConverter;
 import com.example.petpal.persistence.entity.VaccinationEntity;
+import com.example.petpal.persistence.entity.VaccinationRecordEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class VaccinationRepositoryImpl implements IVaccinationRepository {
 
-    private List<VaccinationEntity> vaccinations = new ArrayList<>();
+    private final IVaccinationRepositoryJPA vaccinationRepositoryJPA;
+    private final IVaccinationRecordRepositoryJPA vaccinationRecordRepositoryJPA;
 
-    // Constructor to populate the list
-    public VaccinationRepositoryImpl() {
-        vaccinations.add(VaccinationEntity.builder()
-                .id(1L)
-                .name("Distemper")
-                .type(VaccinationType.ForPuppy)
-                .range(6) // 6-8 weeks
-                .build());
-
-        vaccinations.add(VaccinationEntity.builder()
-                .id(2L)
-                .name("Parvovirus")
-                .type(VaccinationType.ForPuppy)
-                .range(6) // 6-8 weeks
-                .build());
-
-        vaccinations.add(VaccinationEntity.builder()
-                .id(3L)
-                .name("Adenovirus")
-                .type(VaccinationType.ForPuppy)
-                .range(10) // 10-12 weeks
-                .build());
-
-        vaccinations.add(VaccinationEntity.builder()
-                .id(4L)
-                .name("Rabies")
-                .type(VaccinationType.ForPuppy)
-                .range(12) // 12-16 weeks
-                .build());
+    @Autowired
+    public VaccinationRepositoryImpl(IVaccinationRepositoryJPA vaccinationRepositoryJPA,
+                                     IVaccinationRecordRepositoryJPA vaccinationRecordRepositoryJPA) {
+        this.vaccinationRepositoryJPA = vaccinationRepositoryJPA;
+        this.vaccinationRecordRepositoryJPA = vaccinationRecordRepositoryJPA;
     }
 
     @Override
-    public Optional<VaccinationEntity> getVaccinationById(long id) {
-        return vaccinations.stream()
-                .filter(vaccination -> vaccination.getId() == id)
-                .findFirst();
+    public Optional<Vaccination> getVaccinationById(long id) {
+        Optional<VaccinationEntity> vaccinationEntityOptional = vaccinationRepositoryJPA.findById(id);
+        return vaccinationEntityOptional.map(VaccinationConverter::convertFromVaccinationEntityToVaccination);  // Use converter
     }
 
-    public ArrayList<VaccinationEntity> getAllVaccinations() {
-        return new ArrayList<>(vaccinations);
+    @Override
+    public ArrayList<Vaccination> getAllVaccinations() {
+        List<VaccinationEntity> vaccinationEntities = vaccinationRepositoryJPA.findAll();
+        return vaccinationEntities.stream()
+                .map(VaccinationConverter::convertFromVaccinationEntityToVaccination)  // Convert to domain objects
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public Long addVaccinationRecordToPet(Pet pet, VaccinationRecord vaccinationRecord) {
+        VaccinationRecordEntity recordEntity = VaccinationConverter.convertFromVaccinationRecordToVaccinationRecordEntity(vaccinationRecord);
+        recordEntity.setPet(PetConverter.convertFromPetToPetEntity(pet));
+
+        VaccinationRecordEntity savedRecord = vaccinationRecordRepositoryJPA.save(recordEntity);  // Save the record
+        return savedRecord.getId();
+    }
+
+    @Override
+    public ArrayList<VaccinationRecord> getVaccinationRecordsByPetId(long petId) {
+        List<VaccinationRecordEntity> recordEntities = vaccinationRecordRepositoryJPA.findByPetId(petId);
+
+        return recordEntities.stream()
+                .map(VaccinationConverter::convertFromVaccinationRecordEntityToVaccinationRecord)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

@@ -13,7 +13,6 @@ import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IVaccinationRepository;
-import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.PetEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,7 +43,7 @@ public class PetServiceImpl implements IPetService {
         ArrayList<VaccinationRecord> vaccinations = new ArrayList<>();
 
         for (long id : vaccinationsIds) {
-            Vaccination v = VaccinationConverter.convertFromVaccinationEntitytoVaccination(vaccinationRepository.getVaccinationById(id).get());
+            Vaccination v = vaccinationRepository.getVaccinationById(id).get();
             vaccinations.add(new VaccinationRecord(1L, v, new Date()));
         }
         pet.setBreed(breedOptional.get());

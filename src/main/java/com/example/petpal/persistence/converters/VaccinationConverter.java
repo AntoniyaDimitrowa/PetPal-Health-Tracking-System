@@ -15,7 +15,7 @@ public class VaccinationConverter {
         ArrayList<VaccinationRecord> result = new ArrayList<>();
 
         for (VaccinationRecordEntity entity : entities) {
-            result.add(convertFromVaccinationRecordEntitytoVaccinationRecord(entity));
+            result.add(convertFromVaccinationRecordEntityToVaccinationRecord(entity));
         }
         return result;
     };
@@ -24,19 +24,19 @@ public class VaccinationConverter {
         ArrayList<Vaccination> result = new ArrayList<>();
 
         for (VaccinationEntity entity : entities) {
-            result.add(convertFromVaccinationEntitytoVaccination(entity));
+            result.add(convertFromVaccinationEntityToVaccination(entity));
         }
         return result;
     };
 
-    public static VaccinationRecord convertFromVaccinationRecordEntitytoVaccinationRecord(VaccinationRecordEntity entity){
+    public static VaccinationRecord convertFromVaccinationRecordEntityToVaccinationRecord(VaccinationRecordEntity entity){
         return new VaccinationRecord(entity.getId(),
-                convertFromVaccinationEntitytoVaccination(entity.getVaccination()),
+                convertFromVaccinationEntityToVaccination(entity.getVaccination()),
                 entity.getDate()
         );
     };
 
-    public static Vaccination convertFromVaccinationEntitytoVaccination(VaccinationEntity entity){
+    public static Vaccination convertFromVaccinationEntityToVaccination(VaccinationEntity entity){
         return new Vaccination(entity.getId(),
                 entity.getName(),
                 entity.getType(),

@@ -90,17 +90,6 @@ public class PetRepositoryImpl implements IPetRepository {
     }
 
     @Override
-    public void addVaccinationToPet(long petId, VaccinationRecordEntity vaccinationRecord) {
-        PetEntity entity = getPet(petId).get();
-        entity.getVaccinationRecords().add(vaccinationRecord);
-    }
-
-    @Override
-    public ArrayList<VaccinationRecordEntity> getVaccinationRecordsByPetId(long petId) {
-        return getPet(petId).get().getVaccinationRecords();
-    }
-
-    @Override
     public void addHealthRecordToPet(long petId, HealthRecordEntity healthRecord) {
         PetEntity entity = getPet(petId).get();
         entity.getHealthRecords().add(healthRecord);
