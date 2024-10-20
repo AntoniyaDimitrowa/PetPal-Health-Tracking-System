@@ -49,9 +49,9 @@ public class UserEntity {
 
     // One user can have multiple pets
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<PetEntity> pets = new ArrayList<>();
+    private ArrayList<PetEntity> pets;
 
     // One user can have multiple breed health info records
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<BreedHealthInfoEntity> breedHealthInfos = new ArrayList<>();
+    private ArrayList<BreedHealthInfoEntity> breedHealthInfos;
 }

@@ -1,5 +1,6 @@
 package com.example.petpal;
 
+import com.example.petpal.business.domain.Mood;
 import com.example.petpal.persistence.converters.BreedConverter;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.exception.InvalidBreedException;
@@ -93,8 +94,9 @@ class BreedServiceImplTest {
     void updateBreed_shouldThrowExceptionWhenBreedNotFound() {
         when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
 
+        Breed breedWithNonExistingId = Breed.builder().id(100L).build();
         assertThrows(InvalidBreedException.class, () -> {
-            breedService.updateBreed(breed, 100L);
+            breedService.updateBreed(breedWithNonExistingId, 100L);
         });
 
         verify(breedRepository, times(1)).getBreedById(100L);
@@ -115,7 +117,7 @@ class BreedServiceImplTest {
     @Test
     void updateBreed_shouldUpdateBreedWhenExistsAndMoodIsValid() throws InvalidBreedException, InvalidMoodException {
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
-        when(moodRepository.getMoodById(1L)).thenReturn(Optional.of(moodEntity));
+        when(moodRepository.getMoodById(1L)).thenReturn(Optional.of(Mood.builder().build()));
         when(breedRepository.updateBreed(eq(1L), any(Breed.class))).thenReturn(breed);
 
         Breed result = breedService.updateBreed(breed, 1L);

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class MoodConverter {
     private MoodConverter(){}
     public static MoodEntity convertFromMoodToMoodEntity(Mood mood){
+        if (mood == null) return null;
         return MoodEntity.builder()
                 .id(mood.getId())
                 .name(mood.getName())
@@ -16,6 +17,7 @@ public class MoodConverter {
     };
 
     public static Mood convertFromMoodEntityToMood(MoodEntity entity){
+        if (entity == null) return null;
         return Mood.builder()
                 .id(entity.getId())
                 .name(entity.getName())

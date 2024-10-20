@@ -2,7 +2,6 @@ package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
-import com.example.petpal.controller.MoodController;
 import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
 
@@ -20,6 +19,7 @@ public class HealthConverter {
     }
 
     public static HealthRecord convertFromHealthRecordDTOToHealthRecord(HealthRecordDTO dto) {
+        if (dto == null) return null;
         return HealthRecord.builder()
                 .date(dto.getDate())
                 .foodIntake(dto.getFoodIntake())
@@ -40,6 +40,7 @@ public class HealthConverter {
     }
 
     public static HealthRecordDTO convertFromHealthRecordToHealthRecordDTO(HealthRecord record) {
+        if (record == null) return null;
         return HealthRecordDTO.builder()
                 .date(record.getDate())
                 .foodIntake(record.getFoodIntake())
@@ -52,8 +53,8 @@ public class HealthConverter {
     }
 
     public static BreedHealthInfo convertFromBreedHealthInfoDTOToBreedHealthInfo(BreedHealthInfoDTO dto) {
+        if (dto == null) return null;
         return BreedHealthInfo.builder()
-                //.breed(BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()))
                 .ageRangeEnd(dto.getAgeRangeEnd())
                 .ageRangeStart(dto.getAgeRangeStart())
                 .normalFoodIntake(dto.getNormalFoodIntake())
@@ -62,8 +63,8 @@ public class HealthConverter {
     }
 
     public static BreedHealthInfoDTO convertFromBreedHealthInfoToBreedHealthInfoDTO(BreedHealthInfo info) {
+        if (info == null) return null;
         return BreedHealthInfoDTO.builder()
-                //.breed(BreedConverter.convertFromBreedToBreedDTO(info.getBreed()))
                 .ageRangeEnd(info.getAgeRangeEnd())
                 .ageRangeStart(info.getAgeRangeStart())
                 .normalFoodIntake(info.getNormalFoodIntake())
@@ -71,19 +72,19 @@ public class HealthConverter {
                 .build();
     }
 
-    public static ArrayList<BreedHealthInfoDTO> convertFromBreedHealthInfosToDTOs(ArrayList<BreedHealthInfo> infos){
+    public static ArrayList<BreedHealthInfoDTO> convertFromBreedHealthInfosToDTOs(ArrayList<BreedHealthInfo> infos) {
         ArrayList<BreedHealthInfoDTO> entities = new ArrayList<>();
         for (BreedHealthInfo info : infos) {
             entities.add(convertFromBreedHealthInfoToBreedHealthInfoDTO(info));
         }
         return entities;
-    };
+    }
 
-    public static ArrayList<BreedHealthInfo> convertFromDTOsToBreedHealthInfos(ArrayList<BreedHealthInfoDTO> dtos){
+    public static ArrayList<BreedHealthInfo> convertFromDTOsToBreedHealthInfos(ArrayList<BreedHealthInfoDTO> dtos) {
         ArrayList<BreedHealthInfo> infos = new ArrayList<>();
         for (BreedHealthInfoDTO dto : dtos) {
             infos.add(convertFromBreedHealthInfoDTOToBreedHealthInfo(dto));
         }
         return infos;
-    };
+    }
 }

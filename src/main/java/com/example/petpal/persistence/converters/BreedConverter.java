@@ -13,7 +13,8 @@ public class BreedConverter {
                 .id(breed.getId())
                 .name(breed.getName())
                 .description(breed.getDescription())
-                .normalMood(MoodConverter.convertFromMoodToMoodEntity(breed.getNormalMood()))
+                .normalMood(breed.getNormalMood() != null ?
+                        MoodConverter.convertFromMoodToMoodEntity(breed.getNormalMood()) : null)
                 .minimumExercisePerDay(breed.getMinimumExercisePerDay())
                 .commonHealthProblems(breed.getCommonHealthProblems())
                 .build();
@@ -22,11 +23,13 @@ public class BreedConverter {
 
 
     public static Breed convertFromBreedEntityToBreed(BreedEntity entity){
+        if (entity == null) return null;
         return Breed.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .description(entity.getDescription())
-                .normalMood(MoodConverter.convertFromMoodEntityToMood(entity.getNormalMood()))
+                .normalMood(entity.getNormalMood() != null ?
+                        MoodConverter.convertFromMoodEntityToMood(entity.getNormalMood()) : null)
                 .minimumExercisePerDay(entity.getMinimumExercisePerDay())
                 .commonHealthProblems(entity.getCommonHealthProblems())
                 .build();

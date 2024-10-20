@@ -10,10 +10,10 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 public class UpdateUserDTO {
+    private Long id;
     private String name;
     private String email;
     private String password;
-    private Date memberSince;
     private String address;
     private String image;
 }

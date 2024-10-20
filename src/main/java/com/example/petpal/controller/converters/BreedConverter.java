@@ -8,9 +8,10 @@ import com.example.petpal.controller.dto.breed.UpdateBreedDTO;
 import java.util.ArrayList;
 
 public class BreedConverter {
-    private BreedConverter(){}
+    private BreedConverter() {}
 
-    public static BreedDTO convertFromBreedToBreedDTO(Breed breed){
+    public static BreedDTO convertFromBreedToBreedDTO(Breed breed) {
+        if (breed == null) return null;
         return BreedDTO.builder()
                 .id(breed.getId())
                 .name(breed.getName())
@@ -19,9 +20,10 @@ public class BreedConverter {
                 .minimumExercisePerDay(breed.getMinimumExercisePerDay())
                 .commonHealthProblems(breed.getCommonHealthProblems())
                 .build();
-    };
+    }
 
-    public static Breed convertFromBreedDTOToBreed(BreedDTO dto){
+    public static Breed convertFromBreedDTOToBreed(BreedDTO dto) {
+        if (dto == null) return null;
         return Breed.builder()
                 .id(dto.getId())
                 .name(dto.getName())
@@ -30,16 +32,16 @@ public class BreedConverter {
                 .minimumExercisePerDay(dto.getMinimumExercisePerDay())
                 .commonHealthProblems(dto.getCommonHealthProblems())
                 .build();
-    };
+    }
 
     public static ArrayList<BreedDTO> convertFromBreedsToBreedDTOs(ArrayList<Breed> breeds) {
+        if (breeds == null) return new ArrayList<>();
         ArrayList<BreedDTO> dtos = new ArrayList<>();
         for (Breed b : breeds) {
             dtos.add(convertFromBreedToBreedDTO(b));
         }
         return dtos;
     }
-
 
     public static Breed convertFromCreateBreedDTOToBreed(CreateBreedDTO dto) {
         return Breed.builder()

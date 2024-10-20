@@ -30,10 +30,11 @@ public class VaccinationConverter {
     };
 
     public static VaccinationRecord convertFromVaccinationRecordEntityToVaccinationRecord(VaccinationRecordEntity entity){
-        return new VaccinationRecord(entity.getId(),
-                convertFromVaccinationEntityToVaccination(entity.getVaccination()),
-                entity.getDate()
-        );
+        return VaccinationRecord.builder()
+                .id(entity.getId())
+                .vaccination(entity.getVaccination() != null ? convertFromVaccinationEntityToVaccination(entity.getVaccination()) : null)
+                .date(entity.getDate())
+                .build();
     };
 
     public static Vaccination convertFromVaccinationEntityToVaccination(VaccinationEntity entity){
@@ -54,9 +55,10 @@ public class VaccinationConverter {
     };
 
     public static VaccinationRecordEntity convertFromVaccinationRecordToVaccinationRecordEntity(VaccinationRecord record){
+        if (record == null) return null;
         return VaccinationRecordEntity.builder()
                 .id(record.getId())
-                .vaccination(convertFromVaccinationToVaccinationEntity(record.getVaccination()))
+                .vaccination(record.getVaccination() != null ? convertFromVaccinationToVaccinationEntity(record.getVaccination()) : null)
                 .date(record.getDate())
                 .build();
     };

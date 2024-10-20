@@ -3,7 +3,12 @@ package com.example.petpal.persistence.converters;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.persistence.entity.UserEntity;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 public class UserConverter {
+
+    // Convert from User to UserEntity
     public static UserEntity convertFromUserToUserEntity(User user) {
         return UserEntity.builder()
                 .id(user.getId())
@@ -14,13 +19,13 @@ public class UserConverter {
                 .role(user.getRole())
                 .address(user.getAddress())
                 .image(user.getImage())
-                .pets(user.getPets().map(petList -> PetConverter.convertFromPetsToPetEntities(petList)).get())
-                .breedHealthInfos(user.getBreedHealthInfos().map(breedInfoList ->
-                        HealthConverter.convertFromBreedHealthInfosToEntities(breedInfoList)).get())
+                .pets(user.getPets() != null ? PetConverter.convertFromPetsToPetEntities(user.getPets().get()) : new ArrayList<>())
+                .breedHealthInfos(user.getBreedHealthInfos() != null ?
+                        HealthConverter.convertFromBreedHealthInfosToEntities(user.getBreedHealthInfos().get()) : new ArrayList<>())
                 .build();
     }
 
-    // Converts from UserEntity to User
+    // Convert from UserEntity to User
     public static User convertFromUserEntityToUser(UserEntity userEntity) {
         return User.builder()
                 .id(userEntity.getId())
@@ -31,11 +36,11 @@ public class UserConverter {
                 .role(userEntity.getRole())
                 .address(userEntity.getAddress())
                 .image(userEntity.getImage())
-                .pets(userEntity.getPets().map(petEntityList -> PetConverter.convertFromPetEntitiesToPets(petEntityList))) // Optional Pet Conversion
-                .breedHealthInfos(userEntity.getBreedHealthInfos().map(breedInfoEntityList ->
-                        HealthConverter.convertFromEntitiesToBreedHealthInfos(breedInfoEntityList))) // Optional BreedHealthInfo Conversion
+                .pets(userEntity.getPets() != null ?
+                        Optional.of(PetConverter.convertFromPetEntitiesToPets(userEntity.getPets())) : Optional.empty())
+                .breedHealthInfos(userEntity.getBreedHealthInfos() != null ?
+                        Optional.of(HealthConverter.convertFromEntitiesToBreedHealthInfos(userEntity.getBreedHealthInfos())) : Optional.empty())
                 .build();
     }
 
 }
-

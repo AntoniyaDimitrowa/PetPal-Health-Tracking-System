@@ -3,6 +3,7 @@ package com.example.petpal.business.impl;
 import com.example.petpal.business.IBreedService;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.BreedHealthInfo;
+import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.persistence.IBreedRepository;
@@ -35,11 +36,11 @@ public class BreedServiceImpl implements IBreedService {
 
     @Override
     public Long createBreed(Breed breed, Long normalMoodId) throws InvalidMoodException {
-        Optional<MoodEntity> moodOptional = moodRepository.getMoodById(normalMoodId);
+        Optional<Mood> moodOptional = moodRepository.getMoodById(normalMoodId);
         if (moodOptional.isEmpty()) {
             throw new InvalidMoodException(normalMoodId);
         }
-        breed.setNormalMood(MoodConverter.convertFromMoodEntityToMood(moodOptional.get()));
+        breed.setNormalMood(moodOptional.get());
         return breedRepository.createBreed(breed);
     }
 
@@ -49,11 +50,11 @@ public class BreedServiceImpl implements IBreedService {
         if (existingBreedOpt.isEmpty()) {
             throw new InvalidBreedException(updatedBreed.getId());
         }
-        Optional<MoodEntity> moodOptional = moodRepository.getMoodById(normalMoodId);
+        Optional<Mood> moodOptional = moodRepository.getMoodById(normalMoodId);
         if (moodOptional.isEmpty()) {
             throw new InvalidMoodException(normalMoodId);
         }
-        updatedBreed.setNormalMood(MoodConverter.convertFromMoodEntityToMood(moodOptional.get()));
+        updatedBreed.setNormalMood(moodOptional.get());
         return breedRepository.updateBreed(updatedBreed.getId(), updatedBreed);
     }
 

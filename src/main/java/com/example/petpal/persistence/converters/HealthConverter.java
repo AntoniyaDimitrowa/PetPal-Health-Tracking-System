@@ -19,12 +19,13 @@ public class HealthConverter {
     }
 
     public static HealthRecord convertFromHealthRecordEntityToHealthRecord(HealthRecordEntity entity) {
+        if (entity == null) return null;
         return HealthRecord.builder()
                 .id(entity.getId())
                 .date(entity.getDate())
                 .foodIntake(entity.getFoodIntake())
                 .waterIntake(entity.getWaterIntake())
-                .mood(MoodConverter.convertFromMoodEntityToMood(entity.getMood()))
+                .mood(entity.getMood() != null ? MoodConverter.convertFromMoodEntityToMood(entity.getMood()) : null)
                 .activityLevel(entity.getActivityLevel())
                 .socialInteraction(entity.getSocialInteraction())
                 .notes(entity.getNotes())
@@ -40,12 +41,13 @@ public class HealthConverter {
     }
 
     public static HealthRecordEntity convertFromHealthRecordToHealthRecordEntity(HealthRecord record) {
+        if (record == null) return null;
         return HealthRecordEntity.builder()
                 .id(record.getId())
                 .date(record.getDate())
                 .foodIntake(record.getFoodIntake())
                 .waterIntake(record.getWaterIntake())
-                .mood(MoodConverter.convertFromMoodToMoodEntity(record.getMood()))
+                .mood(record.getMood() != null ? MoodConverter.convertFromMoodToMoodEntity(record.getMood()) : null)
                 .activityLevel(record.getActivityLevel())
                 .socialInteraction(record.getSocialInteraction())
                 .notes(record.getNotes())
@@ -53,8 +55,9 @@ public class HealthConverter {
     }
 
     public static BreedHealthInfo convertFromBreedHealthInfoEntityToBreedHealthInfo(BreedHealthInfoEntity entity) {
+        if (entity == null) return null;
         return BreedHealthInfo.builder()
-                .breed(BreedConverter.convertFromBreedEntityToBreed(entity.getBreed()))
+                .breed(entity.getBreed() != null ? BreedConverter.convertFromBreedEntityToBreed(entity.getBreed()) : null)
                 .ageRangeEnd(entity.getAgeRangeEnd())
                 .ageRangeStart(entity.getAgeRangeStart())
                 .normalFoodIntake(entity.getNormalFoodIntake())
@@ -63,8 +66,9 @@ public class HealthConverter {
     }
 
     public static BreedHealthInfoEntity convertFromBreedHealthInfoToBreedHealthInfoEntity(BreedHealthInfo info) {
+        if (info == null) return null;
         return BreedHealthInfoEntity.builder()
-                .breed(BreedConverter.convertFromBreedToBreedEntity(info.getBreed()))
+                .breed(info.getBreed() != null ? BreedConverter.convertFromBreedToBreedEntity(info.getBreed()) : null)
                 .ageRangeEnd(info.getAgeRangeEnd())
                 .ageRangeStart(info.getAgeRangeStart())
                 .normalFoodIntake(info.getNormalFoodIntake())

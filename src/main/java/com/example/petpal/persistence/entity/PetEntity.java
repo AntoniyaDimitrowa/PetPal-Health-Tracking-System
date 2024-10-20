@@ -48,8 +48,8 @@ public class PetEntity {
     private String image;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<VaccinationRecordEntity> vaccinationRecords = new ArrayList<>();
+    private ArrayList<VaccinationRecordEntity> vaccinationRecords;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<HealthRecordEntity> healthRecords = new ArrayList<>();
+    private ArrayList<HealthRecordEntity> healthRecords;
 }

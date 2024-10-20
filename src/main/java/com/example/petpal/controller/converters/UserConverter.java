@@ -2,12 +2,17 @@ package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.User;
 import com.example.petpal.controller.dto.RegisterDTO;
+import com.example.petpal.controller.dto.user.UpdateUserDTO;
 import com.example.petpal.controller.dto.user.UserDTO;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
 public class UserConverter {
+
     public static UserDTO convertFromUserToUserDTO(User user) {
+        if (user == null) return null;
         return UserDTO.builder()
                 .name(user.getName())
                 .email(user.getEmail())
@@ -16,14 +21,13 @@ public class UserConverter {
                 .role(user.getRole())
                 .address(user.getAddress())
                 .image(user.getImage())
-                .pets(user.getPets().map(petList -> PetConverter.convertFromPetsToPetDTOs(petList)))
-                .breedHealthInfos(user.getBreedHealthInfos().map(breedInfoList ->
-                        HealthConverter.convertFromBreedHealthInfosToDTOs(breedInfoList)))
+                .pets(Optional.of(user.getPets().map(PetConverter::convertFromPetsToPetDTOs).orElse(new ArrayList<>())))
+                .breedHealthInfos(Optional.of(user.getBreedHealthInfos().map(HealthConverter::convertFromBreedHealthInfosToDTOs).orElse(new ArrayList<>())))
                 .build();
     }
 
-    // Converts from UserEntity to User
     public static User convertFromUserDTOToUser(UserDTO userDTO) {
+        if (userDTO == null) return null;
         return User.builder()
                 .name(userDTO.getName())
                 .email(userDTO.getEmail())
@@ -32,19 +36,41 @@ public class UserConverter {
                 .role(userDTO.getRole())
                 .address(userDTO.getAddress())
                 .image(userDTO.getImage())
-                .pets(userDTO.getPets().map(petDTOList -> PetConverter.convertFromPetDTOsToPets(petDTOList)))
-                .breedHealthInfos(userDTO.getBreedHealthInfos().map(breedInfoDTOList ->
-                        HealthConverter.convertFromDTOsToBreedHealthInfos(breedInfoDTOList)))
+                .pets(Optional.of(userDTO.getPets().map(PetConverter::convertFromPetDTOsToPets).orElse(new ArrayList<>())))
+                .breedHealthInfos(Optional.of(userDTO.getBreedHealthInfos().map(HealthConverter::convertFromDTOsToBreedHealthInfos).orElse(new ArrayList<>())))
                 .build();
     }
+
     public static User convertFromRegisterDTOToUser(RegisterDTO userDTO) {
+            if (userDTO == null) return null;
+            return User.builder()
+                    .name(userDTO.getName())
+                    .email(userDTO.getEmail())
+                    .password(userDTO.getPassword())
+                    .memberSince(new Date())
+                    .role("Owner")
+                    .address(userDTO.getAddress())
+                    .build();
+        }
+
+    public static User convertFromUpdateUserDTOToUser(UpdateUserDTO updateUserDTO) {
+        if (updateUserDTO == null) return null;
         return User.builder()
-                .name(userDTO.getName())
-                .email(userDTO.getEmail())
-                .password(userDTO.getPassword())
-                .memberSince(new Date())
-                .role("Owner")
+                .id(updateUserDTO.getId())
+                .name(updateUserDTO.getName())
+                .email(updateUserDTO.getEmail())
+                .password(updateUserDTO.getPassword())
+                .address(updateUserDTO.getAddress())
+                .image(updateUserDTO.getImage())
                 .build();
+    }
+
+    public static ArrayList<UserDTO> convertFromUsersToUserDTOs(ArrayList<User> users) {
+        if (users == null) return new ArrayList<>();
+        ArrayList<UserDTO> dtos = new ArrayList<>();
+        for (User user : users) {
+            dtos.add(convertFromUserToUserDTO(user));
+        }
+        return dtos;
     }
 }
-

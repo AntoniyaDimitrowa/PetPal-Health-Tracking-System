@@ -20,6 +20,7 @@ public class VaccinationConverter {
     };
 
     public static VaccinationRecord convertFromVaccinationRecordDTOtoVaccinationRecord(VaccinationRecordDTO dto){
+        if (dto == null) return null;
         return VaccinationRecord.builder()
                 .vaccination(convertFromVaccinationDTOtoVaccination(dto.getVaccination()))
                 .date(dto.getDate())
@@ -27,6 +28,7 @@ public class VaccinationConverter {
     };
 
     public static Vaccination convertFromVaccinationDTOtoVaccination(VaccinationDTO dto){
+        if (dto == null) return null;
         return Vaccination.builder()
                 .name(dto.getName())
                 .type(dto.getType())
@@ -53,6 +55,7 @@ public class VaccinationConverter {
     };
 
     public static VaccinationRecordDTO convertFromVaccinationRecordToVaccinationRecordDTO(VaccinationRecord record){
+        if (record == null) return null;
         return VaccinationRecordDTO.builder()
                 .vaccination(convertFromVaccinationToVaccinationDTO(record.getVaccination()))
                 .date(record.getDate())
@@ -60,6 +63,7 @@ public class VaccinationConverter {
     };
 
     public static VaccinationDTO convertFromVaccinationToVaccinationDTO(Vaccination vaccination){
+        if (vaccination == null) return null;
         return VaccinationDTO.builder()
                 .id(vaccination.getId())
                 .name(vaccination.getName())
