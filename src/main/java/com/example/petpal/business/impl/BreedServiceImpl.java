@@ -64,15 +64,6 @@ public class BreedServiceImpl implements IBreedService {
     }
 
     @Override
-    public Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age) throws InvalidBreedException {
-        Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
-        if (breedOptional.isEmpty()) {
-            throw new InvalidBreedException(breedId);
-        }
-        return breedRepository.getHealthInfoForBreed(breedId, age);
-    }
-
-    @Override
     public Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems) throws InvalidBreedException {
         Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
         if (breedOptional.isEmpty()) {

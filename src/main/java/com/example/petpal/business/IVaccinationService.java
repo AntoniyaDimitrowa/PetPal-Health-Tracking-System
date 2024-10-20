@@ -8,9 +8,9 @@ import com.example.petpal.business.exception.InvalidVaccinationException;
 import java.util.ArrayList;
 
 public interface IVaccinationService {
-    ArrayList<VaccinationRecord> getVaccinationRecordsByPetId(long petId) throws InvalidPetException;
+    ArrayList<VaccinationRecord> getVaccinationRecordsByPetId(Long petId) throws InvalidPetException;
 
-    void createVaccinationRecord(long petId, VaccinationRecord vaccinationRecord) throws InvalidPetException, InvalidVaccinationException;
+    void createVaccinationRecord(Long petId, VaccinationRecord vaccinationRecord) throws InvalidPetException, InvalidVaccinationException;
 
     public ArrayList<Vaccination> getVaccinations();
 }

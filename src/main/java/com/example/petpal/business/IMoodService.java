@@ -11,9 +11,9 @@ import java.util.Optional;
 public interface IMoodService {
     ArrayList<Mood> getAllMoods();
 
-    Optional<Mood> getMoodById(long id);
+    Optional<Mood> getMoodById(Long id);
 
-    long createMood(Mood mood);
+    Long createMood(Mood mood);
 
-    boolean deleteMood(long id);
+    boolean deleteMood(Long id);
 }

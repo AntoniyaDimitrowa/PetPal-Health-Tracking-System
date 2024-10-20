@@ -25,7 +25,7 @@ public class VaccinationServiceImpl implements IVaccinationService {
     private final IVaccinationRepository vaccinationRepository;
 
     @Override
-    public ArrayList<VaccinationRecord> getVaccinationRecordsByPetId(long petId) throws InvalidPetException {
+    public ArrayList<VaccinationRecord> getVaccinationRecordsByPetId(Long petId) throws InvalidPetException {
         Optional<PetEntity> petOptional = petRepository.getPet(petId);
         if (petOptional.isEmpty()) {
             throw new InvalidPetException(petId);
@@ -33,7 +33,7 @@ public class VaccinationServiceImpl implements IVaccinationService {
         return vaccinationRepository.getVaccinationRecordsByPetId(petId);
     }
     @Override
-    public void createVaccinationRecord(long petId, VaccinationRecord vaccinationRecord) throws InvalidPetException, InvalidVaccinationException {
+    public void createVaccinationRecord(Long petId, VaccinationRecord vaccinationRecord) throws InvalidPetException, InvalidVaccinationException {
         Optional<PetEntity> petOptional = petRepository.getPet(petId);
         if (petOptional.isEmpty()) {
             throw new InvalidPetException(petId);

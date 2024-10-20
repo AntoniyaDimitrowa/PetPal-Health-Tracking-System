@@ -21,7 +21,5 @@ public interface IBreedService {
 
     boolean deleteBreed(Long id);
 
-    Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age) throws InvalidBreedException;
-
     Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems) throws InvalidBreedException;
 }

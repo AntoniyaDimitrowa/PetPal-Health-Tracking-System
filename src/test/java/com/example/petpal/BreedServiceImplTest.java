@@ -137,11 +137,5 @@ class BreedServiceImplTest {
         verify(breedRepository, times(1)).deleteBreed(1L);
     }
 
-    @Test
-    void getHealthInfoForBreed_shouldThrowExceptionIfBreedNotFound() {
-        when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidBreedException.class, () -> breedService.getHealthInfoForBreed(100L, 2));
-        verify(breedRepository, times(1)).getBreedById(100L);
-    }
 }

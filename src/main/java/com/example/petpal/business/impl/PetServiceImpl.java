@@ -29,12 +29,12 @@ public class PetServiceImpl implements IPetService {
     private final IVaccinationRepository vaccinationRepository;
 
     @Override
-    public Optional<Pet> getPet(long petId) {
+    public Optional<Pet> getPet(Long petId) {
         return petRepository.getPet(petId).map(PetConverter::convertFromPetEntityToPet);
     }
 
     @Override
-    public long createPet(Pet pet, long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException {
+    public Long createPet(Pet pet, Long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException {
         Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
         if (breedOptional.isEmpty()) {
             throw new InvalidBreedException(breedId);
@@ -42,7 +42,7 @@ public class PetServiceImpl implements IPetService {
 
         ArrayList<VaccinationRecord> vaccinations = new ArrayList<>();
 
-        for (long id : vaccinationsIds) {
+        for (Long id : vaccinationsIds) {
             Vaccination v = vaccinationRepository.getVaccinationById(id).get();
             vaccinations.add(new VaccinationRecord(1L, v, new Date()));
         }
@@ -52,12 +52,12 @@ public class PetServiceImpl implements IPetService {
 
         PetEntity newPet = PetConverter.convertFromPetToPetEntity(pet);
 
-        long savedPetId = petRepository.createPet(newPet);
+        Long savedPetId = petRepository.createPet(newPet);
         return savedPetId;
     }
 
     @Override
-    public void updatePet(Pet pet, long breedId) throws InvalidPetException, InvalidBreedException {
+    public void updatePet(Pet pet, Long breedId) throws InvalidPetException, InvalidBreedException {
         Optional<PetEntity> petOptional = petRepository.getPet(pet.getId());
         if (petOptional.isEmpty()) {
             throw new InvalidPetException(pet.getId());
@@ -73,7 +73,7 @@ public class PetServiceImpl implements IPetService {
     }
 
     @Override
-    public boolean deletePet(long petId) {
+    public boolean deletePet(Long petId) {
         return this.petRepository.deletePet(petId);
     }
 

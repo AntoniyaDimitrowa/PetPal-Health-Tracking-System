@@ -15,7 +15,7 @@ public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
 
     @Override
-    public Optional<User> getUserById(long userId) {
+    public Optional<User> getUserById(Long userId) {
         return userRepository.getUserById(userId);
     }
 
@@ -26,7 +26,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User updateUser(long userId, User updatedUser) throws InvalidUserException {
+    public User updateUser(Long userId, User updatedUser) throws InvalidUserException {
         Optional<User> userOptional = userRepository.getUserById(userId);
         if (userOptional.isEmpty()) {
             throw new InvalidUserException(userId);
@@ -35,7 +35,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public boolean deleteUser(long userId) {
+    public boolean deleteUser(Long userId) {
         return userRepository.deleteUser(userId);
     }
 }

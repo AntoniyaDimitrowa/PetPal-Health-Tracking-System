@@ -16,6 +16,5 @@ public interface IPetRepository {
     boolean deletePet(long petId);
     Long createPet(PetEntity pet);
 
-    void addHealthRecordToPet(long petId, HealthRecordEntity healthRecord);
-    ArrayList<HealthRecordEntity> getHealthRecordsByPetId(long petId);
+
 }

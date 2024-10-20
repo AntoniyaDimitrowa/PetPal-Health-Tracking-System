@@ -73,10 +73,4 @@ public class BreedRepositoryImpl implements IBreedRepository {
         }
         return null;
     }
-
-    @Override
-    public Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age) {
-        //TODO fix the getHealthInfoForBreed
-        return Optional.empty(); // Placeholder
-    }
 }

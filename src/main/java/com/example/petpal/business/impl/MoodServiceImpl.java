@@ -20,17 +20,17 @@ public class MoodServiceImpl implements IMoodService {
     }
 
     @Override
-    public Optional<Mood> getMoodById(long id) {
+    public Optional<Mood> getMoodById(Long id) {
         return moodRepository.getMoodById(id);
     }
 
     @Override
-    public long createMood(Mood mood) {
+    public Long createMood(Mood mood) {
         return moodRepository.createMood(mood);
     }
 
     @Override
-    public boolean deleteMood(long id) {
+    public boolean deleteMood(Long id) {
         return this.moodRepository.deleteMood(id);
     }
 }

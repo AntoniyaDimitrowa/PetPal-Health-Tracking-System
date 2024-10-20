@@ -13,8 +13,8 @@ import java.util.Date;
 import java.util.Optional;
 
 public interface IPetService {
-    Optional<Pet> getPet(long petId);
-    long createPet(Pet pet, long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException;
-    void updatePet(Pet pet, long breedId) throws InvalidPetException, InvalidBreedException;
-    boolean deletePet(long petId);
+    Optional<Pet> getPet(Long petId);
+    Long createPet(Pet pet, Long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException;
+    void updatePet(Pet pet, Long breedId) throws InvalidPetException, InvalidBreedException;
+    boolean deletePet(Long petId);
 }
