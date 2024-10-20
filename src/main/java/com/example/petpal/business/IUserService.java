@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface IUserService {
     Optional<User> getUserById(long userId);
-    User createUser(User user);
+    Long createUser(User user);
     User updateUser(long userId, User updatedUser) throws InvalidUserException;
     boolean deleteUser(long userId);
 }
