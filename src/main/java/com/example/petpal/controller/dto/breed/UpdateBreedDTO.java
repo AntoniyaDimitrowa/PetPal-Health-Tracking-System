@@ -11,10 +11,10 @@ import java.util.ArrayList;
 @Builder
 @AllArgsConstructor
 public class UpdateBreedDTO {
-    private long id;
+    private Long id;
     private String name;
     private String description;
-    private long normalMoodId;
+    private Long normalMoodId;
     private double minimumExercisePerDay;
     private ArrayList<String> commonHealthProblems;
 }

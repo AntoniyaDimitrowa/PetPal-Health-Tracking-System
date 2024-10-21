@@ -1,8 +1,6 @@
-package com.example.petpal.business.converters;
+package com.example.petpal.persistence.converters;
 
-import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Pet;
-import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.PetEntity;
 
 import java.util.ArrayList;
@@ -12,30 +10,36 @@ public class PetConverter {
     private PetConverter(){}
 
     public static PetEntity convertFromPetToPetEntity(Pet pet){
+        if (pet == null) return null;
         return PetEntity.builder()
                 .id(pet.getId())
                 .name(pet.getName())
-                .breed(BreedConverter.convertFromBreedToBreedEntity(pet.getBreed()))
+                .breed(pet.getBreed() != null ? BreedConverter.convertFromBreedToBreedEntity(pet.getBreed()) : null)
                 .gender(pet.getGender())
                 .birthdate(pet.getBirthdate())
                 .weight(pet.getWeight())
                 .image(pet.getImage())
-                .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsEntities(pet.getVaccinationRecords()))
-                .healthRecords(HealthConverter.convertFromHealthRecordsToHealthRecordEntities(pet.getHealthRecords()))
+                .vaccinationRecords(pet.getVaccinationRecords() != null ?
+                        VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsEntities(pet.getVaccinationRecords()) : new ArrayList<>())
+                .healthRecords(pet.getHealthRecords() != null ?
+                        HealthConverter.convertFromHealthRecordsToHealthRecordEntities(pet.getHealthRecords()) : new ArrayList<>())
                 .build();
     };
 
     public static Pet convertFromPetEntityToPet(PetEntity pet){
+        if (pet == null) return null;
         return Pet.builder()
                 .id(pet.getId())
                 .name(pet.getName())
-                .breed(BreedConverter.convertFromBreedEntityToBreed(pet.getBreed()))
+                .breed(pet.getBreed() != null ? BreedConverter.convertFromBreedEntityToBreed(pet.getBreed()) : null)
                 .gender(pet.getGender())
                 .birthdate(pet.getBirthdate())
                 .weight(pet.getWeight())
                 .image(pet.getImage())
-                .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordEntitiesToVaccinationRecords(pet.getVaccinationRecords()))
-                .healthRecords(HealthConverter.convertFromHealthRecordEntitiesToHealthRecords(pet.getHealthRecords()))
+                .vaccinationRecords(pet.getVaccinationRecords() != null ?
+                        VaccinationConverter.convertFromVaccinationRecordEntitiesToVaccinationRecords(pet.getVaccinationRecords()) : new ArrayList<>())
+                .healthRecords(pet.getHealthRecords() != null ?
+                        HealthConverter.convertFromHealthRecordEntitiesToHealthRecords(pet.getHealthRecords()) : new ArrayList<>())
                 .build();
     };
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 @Builder
 public class Breed {
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
     private String name;
     private String description;
     private Mood normalMood;

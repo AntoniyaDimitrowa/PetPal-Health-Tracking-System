@@ -1,35 +1,57 @@
 package com.example.petpal.persistence.entity;
 
-import com.example.petpal.business.domain.BreedHealthInfo;
-import com.example.petpal.business.domain.Pet;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "user")
 public class UserEntity {
-    protected long id;
 
-    protected String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    protected String email;
+    @NotNull
+    @NotBlank
+    private String name;
 
-    protected String password;
+    @NotNull
+    @NotBlank
+    @Email
+    private String email;
 
+    @NotNull
+    @NotBlank
+    private String password;
+
+    @NotNull
+    @Temporal(TemporalType.DATE)
     private Date memberSince;
 
-    protected String role;
+    @NotNull
+    @NotBlank
+    private String role;
 
     private String address;
 
     private String image;
 
-    private Optional<ArrayList<PetEntity>> pets;
+    // One user can have multiple pets
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ArrayList<PetEntity> pets;
 
-    private Optional<ArrayList<BreedHealthInfoEntity>> breedHealthInfos;
-
+    // One user can have multiple breed health info records
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ArrayList<BreedHealthInfoEntity> breedHealthInfos;
 }

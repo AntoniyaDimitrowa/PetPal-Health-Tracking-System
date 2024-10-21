@@ -36,8 +36,8 @@ public class UserController {
     @PostMapping
     public ResponseEntity<CreateEntityResponse> createUser(@RequestBody RegisterDTO userDTO) {
         User user = UserConverter.convertFromRegisterDTOToUser(userDTO);
-        User createdUser = userService.createUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(createdUser.getId()).build());
+        Long createdUserId = userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(createdUserId).build());
     }
 
     @PutMapping("{id}")

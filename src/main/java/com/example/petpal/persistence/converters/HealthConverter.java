@@ -1,11 +1,9 @@
-package com.example.petpal.business.converters;
+package com.example.petpal.persistence.converters;
 
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
-import com.example.petpal.business.domain.Pet;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 import com.example.petpal.persistence.entity.HealthRecordEntity;
-import com.example.petpal.persistence.entity.PetEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +19,17 @@ public class HealthConverter {
     }
 
     public static HealthRecord convertFromHealthRecordEntityToHealthRecord(HealthRecordEntity entity) {
-        return new HealthRecord(
-                entity.getId(),
-                entity.getDate(),
-                entity.getFoodIntake(),
-                entity.getWaterIntake(),
-                entity.getMood(),
-                entity.getBehavior(),
-                entity.getNotes()
-        );
+        if (entity == null) return null;
+        return HealthRecord.builder()
+                .id(entity.getId())
+                .date(entity.getDate())
+                .foodIntake(entity.getFoodIntake())
+                .waterIntake(entity.getWaterIntake())
+                .mood(entity.getMood() != null ? MoodConverter.convertFromMoodEntityToMood(entity.getMood()) : null)
+                .activityLevel(entity.getActivityLevel())
+                .socialInteraction(entity.getSocialInteraction())
+                .notes(entity.getNotes())
+                .build();
     }
 
     public static ArrayList<HealthRecordEntity> convertFromHealthRecordsToHealthRecordEntities(List<HealthRecord> records) {
@@ -41,20 +41,23 @@ public class HealthConverter {
     }
 
     public static HealthRecordEntity convertFromHealthRecordToHealthRecordEntity(HealthRecord record) {
+        if (record == null) return null;
         return HealthRecordEntity.builder()
                 .id(record.getId())
                 .date(record.getDate())
                 .foodIntake(record.getFoodIntake())
                 .waterIntake(record.getWaterIntake())
-                .mood(record.getMood())
-                .behavior(record.getBehavior())
+                .mood(record.getMood() != null ? MoodConverter.convertFromMoodToMoodEntity(record.getMood()) : null)
+                .activityLevel(record.getActivityLevel())
+                .socialInteraction(record.getSocialInteraction())
                 .notes(record.getNotes())
                 .build();
     }
 
     public static BreedHealthInfo convertFromBreedHealthInfoEntityToBreedHealthInfo(BreedHealthInfoEntity entity) {
+        if (entity == null) return null;
         return BreedHealthInfo.builder()
-                .breed(BreedConverter.convertFromBreedEntityToBreed(entity.getBreed()))
+                .breed(entity.getBreed() != null ? BreedConverter.convertFromBreedEntityToBreed(entity.getBreed()) : null)
                 .ageRangeEnd(entity.getAgeRangeEnd())
                 .ageRangeStart(entity.getAgeRangeStart())
                 .normalFoodIntake(entity.getNormalFoodIntake())
@@ -63,8 +66,9 @@ public class HealthConverter {
     }
 
     public static BreedHealthInfoEntity convertFromBreedHealthInfoToBreedHealthInfoEntity(BreedHealthInfo info) {
+        if (info == null) return null;
         return BreedHealthInfoEntity.builder()
-                .breed(BreedConverter.convertFromBreedToBreedEntity(info.getBreed()))
+                .breed(info.getBreed() != null ? BreedConverter.convertFromBreedToBreedEntity(info.getBreed()) : null)
                 .ageRangeEnd(info.getAgeRangeEnd())
                 .ageRangeStart(info.getAgeRangeStart())
                 .normalFoodIntake(info.getNormalFoodIntake())

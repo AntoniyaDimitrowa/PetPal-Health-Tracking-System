@@ -1,4 +1,4 @@
-package com.example.petpal.business.converters;
+package com.example.petpal.persistence.converters;
 
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
@@ -15,7 +15,7 @@ public class VaccinationConverter {
         ArrayList<VaccinationRecord> result = new ArrayList<>();
 
         for (VaccinationRecordEntity entity : entities) {
-            result.add(convertFromVaccinationRecordEntitytoVaccinationRecord(entity));
+            result.add(convertFromVaccinationRecordEntityToVaccinationRecord(entity));
         }
         return result;
     };
@@ -24,19 +24,20 @@ public class VaccinationConverter {
         ArrayList<Vaccination> result = new ArrayList<>();
 
         for (VaccinationEntity entity : entities) {
-            result.add(convertFromVaccinationEntitytoVaccination(entity));
+            result.add(convertFromVaccinationEntityToVaccination(entity));
         }
         return result;
     };
 
-    public static VaccinationRecord convertFromVaccinationRecordEntitytoVaccinationRecord(VaccinationRecordEntity entity){
-        return new VaccinationRecord(entity.getId(),
-                convertFromVaccinationEntitytoVaccination(entity.getVaccination()),
-                entity.getDate()
-        );
+    public static VaccinationRecord convertFromVaccinationRecordEntityToVaccinationRecord(VaccinationRecordEntity entity){
+        return VaccinationRecord.builder()
+                .id(entity.getId())
+                .vaccination(entity.getVaccination() != null ? convertFromVaccinationEntityToVaccination(entity.getVaccination()) : null)
+                .date(entity.getDate())
+                .build();
     };
 
-    public static Vaccination convertFromVaccinationEntitytoVaccination(VaccinationEntity entity){
+    public static Vaccination convertFromVaccinationEntityToVaccination(VaccinationEntity entity){
         return new Vaccination(entity.getId(),
                 entity.getName(),
                 entity.getType(),
@@ -54,9 +55,10 @@ public class VaccinationConverter {
     };
 
     public static VaccinationRecordEntity convertFromVaccinationRecordToVaccinationRecordEntity(VaccinationRecord record){
+        if (record == null) return null;
         return VaccinationRecordEntity.builder()
                 .id(record.getId())
-                .vaccination(convertFromVaccinationToVaccinationEntity(record.getVaccination()))
+                .vaccination(record.getVaccination() != null ? convertFromVaccinationToVaccinationEntity(record.getVaccination()) : null)
                 .date(record.getDate())
                 .build();
     };

@@ -9,8 +9,8 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class BreedHealthInfoDTO {
-    private long id;
-    private long breedId;
+    private Long id;
+    private Long breedId;
     private int ageRangeStart;
     private int ageRangeEnd;
     private double normalFoodIntake; // in grams

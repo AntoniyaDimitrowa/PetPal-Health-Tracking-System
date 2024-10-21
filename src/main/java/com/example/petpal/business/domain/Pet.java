@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class Pet {
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
     private String name;
     private Breed breed;
     private Gender gender;

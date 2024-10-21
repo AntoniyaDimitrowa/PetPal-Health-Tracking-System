@@ -1,11 +1,9 @@
 package com.example.petpal;
 
-import com.example.petpal.business.converters.UserConverter;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.business.impl.UserServiceImpl;
 import com.example.petpal.persistence.IUserRepository;
-import com.example.petpal.persistence.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,13 +23,12 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    private UserEntity userEntity;
     private User user;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        userEntity = UserEntity.builder()
+        user = User.builder()
                 .id(1L)
                 .name("John Doe")
                 .email("john.doe@example.com")
@@ -41,13 +38,13 @@ class UserServiceImplTest {
                 .address("1234 Main St, Hometown")
                 .pets(Optional.empty())
                 .breedHealthInfos(Optional.empty())
+                .image("image_url")
                 .build();
-        user = UserConverter.convertFromUserEntityToUser(userEntity);
     }
 
     @Test
     void getUserById_shouldReturnUserWhenExists() {
-        when(userRepository.getUserById(1L)).thenReturn(Optional.of(userEntity));
+        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
 
         Optional<User> result = userService.getUserById(1L);
 
@@ -68,13 +65,13 @@ class UserServiceImplTest {
 
     @Test
     void createUser_shouldReturnCreatedUser() {
-        when(userRepository.createUser(any(UserEntity.class))).thenReturn(userEntity);
+        when(userRepository.createUser(any(User.class))).thenReturn(1L);
+        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
 
-        User result = userService.createUser(user);
+        Long result = userService.createUser(user);
 
         assertNotNull(result);
-        assertEquals(user, result);
-        verify(userRepository, times(1)).createUser(any(UserEntity.class));
+        verify(userRepository, times(1)).createUser(any(User.class));
     }
 
     @Test
@@ -87,12 +84,33 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_shouldUpdateUserWhenExists() throws InvalidUserException {
-        when(userRepository.getUserById(1L)).thenReturn(Optional.of(userEntity));
-        when(userRepository.updateUser(eq(1L), any(UserEntity.class))).thenReturn(userEntity);
+        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.updateUser(eq(1L), any(User.class))).thenReturn(user);
 
         User result = userService.updateUser(1L, user);
 
         assertNotNull(result);
-        verify(userRepository, times(1)).updateUser(eq(1L), any(UserEntity.class));
+        assertEquals(user, result);
+        verify(userRepository, times(1)).updateUser(eq(1L), any(User.class));
+    }
+
+    @Test
+    void deleteUser_shouldReturnTrueWhenDeleted() {
+        when(userRepository.deleteUser(1L)).thenReturn(true);
+
+        boolean result = userService.deleteUser(1L);
+
+        assertTrue(result);
+        verify(userRepository, times(1)).deleteUser(1L);
+    }
+
+    @Test
+    void deleteUser_shouldReturnFalseWhenNotDeleted() {
+        when(userRepository.deleteUser(100L)).thenReturn(false);
+
+        boolean result = userService.deleteUser(100L);
+
+        assertFalse(result);
+        verify(userRepository, times(1)).deleteUser(100L);
     }
 }

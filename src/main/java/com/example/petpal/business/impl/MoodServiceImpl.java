@@ -1,10 +1,7 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IMoodService;
-import com.example.petpal.business.converters.BreedConverter;
-import com.example.petpal.business.converters.MoodConverter;
 import com.example.petpal.business.domain.Mood;
-import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IMoodRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,21 +16,21 @@ public class MoodServiceImpl implements IMoodService {
 
     @Override
     public ArrayList<Mood> getAllMoods() {
-        return MoodConverter.convertFromMoodEntitiesToMoods(moodRepository.getAllMoods());
+        return moodRepository.getAllMoods();
     }
 
     @Override
-    public Optional<Mood> getMoodById(long id) {
-        return moodRepository.getMoodById(id).map(MoodConverter::convertFromMoodEntityToMood);
+    public Optional<Mood> getMoodById(Long id) {
+        return moodRepository.getMoodById(id);
     }
 
     @Override
-    public long createMood(Mood mood) {
-        return moodRepository.createMood(MoodConverter.convertFromMoodToMoodEntity(mood));
+    public Long createMood(Mood mood) {
+        return moodRepository.createMood(mood);
     }
 
     @Override
-    public boolean deleteMood(long id) {
+    public boolean deleteMood(Long id) {
         return this.moodRepository.deleteMood(id);
     }
 }

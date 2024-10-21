@@ -8,9 +8,10 @@ import java.util.ArrayList;
 
 public class PetConverter {
 
-    private PetConverter(){}
+    private PetConverter() {}
 
-    public static PetDTO convertFromPetToPetDTO(Pet pet){
+    public static PetDTO convertFromPetToPetDTO(Pet pet) {
+        if (pet == null) return null;
         return PetDTO.builder()
                 .id(pet.getId())
                 .name(pet.getName())
@@ -22,9 +23,10 @@ public class PetConverter {
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordsToVaccinationRecordsDTOs(pet.getVaccinationRecords()))
                 .healthRecords(HealthConverter.convertFromHealthRecordsToHealthRecordDTOs(pet.getHealthRecords()))
                 .build();
-    };
+    }
 
-    public static Pet convertFromPetDTOToPet(PetDTO pet){
+    public static Pet convertFromPetDTOToPet(PetDTO pet) {
+        if (pet == null) return null;
         return Pet.builder()
                 .id(pet.getId())
                 .name(pet.getName())
@@ -36,31 +38,34 @@ public class PetConverter {
                 .vaccinationRecords(VaccinationConverter.convertFromVaccinationRecordDTOsToVaccinationRecords(pet.getVaccinationRecords()))
                 .healthRecords(HealthConverter.convertFromHealthRecordDTOsToHealthRecords(pet.getHealthRecords()))
                 .build();
-    };
+    }
 
-    public static Pet convertFromCreatePetDTOToPet(CreatePetDTO pet){
+    public static Pet convertFromCreatePetDTOToPet(CreatePetDTO petDTO) {
+        if (petDTO == null) return null;
         return Pet.builder()
-                .name(pet.getName())
-                .gender(pet.getGender())
-                .birthdate(pet.getBirthdate())
-                .weight(pet.getWeight())
-                .image(pet.getImage())
+                .name(petDTO.getName())
+                .gender(petDTO.getGender())
+                .birthdate(petDTO.getBirthdate())
+                .weight(petDTO.getWeight())
+                .image(petDTO.getImage())
                 .build();
-    };
+    }
 
-    public static ArrayList<PetDTO> convertFromPetsToPetDTOs(ArrayList<Pet> pets){
+    public static ArrayList<PetDTO> convertFromPetsToPetDTOs(ArrayList<Pet> pets) {
+        if (pets == null) return new ArrayList<>();
         ArrayList<PetDTO> dtos = new ArrayList<>();
         for (Pet pet : pets) {
             dtos.add(convertFromPetToPetDTO(pet));
         }
         return dtos;
-    };
+    }
 
-    public static ArrayList<Pet> convertFromPetDTOsToPets(ArrayList<PetDTO> dtos){
+    public static ArrayList<Pet> convertFromPetDTOsToPets(ArrayList<PetDTO> dtos) {
+        if (dtos == null) return new ArrayList<>();
         ArrayList<Pet> pets = new ArrayList<>();
         for (PetDTO dto : dtos) {
             pets.add(convertFromPetDTOToPet(dto));
         }
         return pets;
-    };
+    }
 }

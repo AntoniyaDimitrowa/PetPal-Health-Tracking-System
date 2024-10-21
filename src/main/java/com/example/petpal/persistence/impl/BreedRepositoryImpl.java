@@ -1,111 +1,75 @@
 package com.example.petpal.persistence.impl;
 
+import com.example.petpal.business.domain.Breed;
+import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.persistence.IBreedRepository;
+import com.example.petpal.persistence.IBreedRepositoryJPA;
+import com.example.petpal.persistence.converters.BreedConverter;
 import com.example.petpal.persistence.entity.BreedEntity;
-import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
-import com.example.petpal.persistence.entity.MoodEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class BreedRepositoryImpl implements IBreedRepository {
-    private final ArrayList<BreedEntity> breeds = new ArrayList<>();
-    private final ArrayList<BreedHealthInfoEntity> breedHealthInfos = new ArrayList<>();
-    private static long nextBreedId = 1L;
 
-    public BreedRepositoryImpl() {
-        MoodEntity energetic = new MoodEntity(1,"Energetic", "");
-        MoodEntity calm = new MoodEntity(2, "Calm", "");
-        MoodEntity protective = new MoodEntity(3, "Protective", "");
+    private final IBreedRepositoryJPA jpaRepo;
 
-        // Initialize some breed entities
-        BreedEntity labrador = BreedEntity.builder()
-                .id(1L)
-                .name("Labrador")
-                .description("Labradors are friendly, outgoing, and high-spirited companions.")
-                .normalMood(energetic)
-                .minimumExercisePerDay(1.5)  // 1.5 hours
-                .commonHealthProblems(new ArrayList<>(Arrays.asList("Hip dysplasia", "Obesity")))
-                .build();
-
-        BreedEntity goldenRetriever = BreedEntity.builder()
-                .id(2L)
-                .name("Golden Retriever")
-                .description("Golden Retrievers are intelligent, friendly, and devoted dogs.")
-                .normalMood(calm)
-                .minimumExercisePerDay(1.0)  // 1 hour
-                .commonHealthProblems(new ArrayList<>(Arrays.asList("Elbow dysplasia", "Heart problems")))
-                .build();
-
-        BreedEntity bulldog = BreedEntity.builder()
-                .id(3L)
-                .name("Bulldog")
-                .description("Bulldogs are calm, courageous, and friendly.")
-                .normalMood(protective)
-                .minimumExercisePerDay(0.5)  // 30 minutes
-                .commonHealthProblems(new ArrayList<>(Arrays.asList("Breathing problems", "Skin infections")))
-                .build();
-
-        breeds.addAll(Arrays.asList(labrador, goldenRetriever, bulldog));
-        // Adding health info
-        breedHealthInfos.add(new BreedHealthInfoEntity(labrador, 1, 10, 300, 500));
-        breedHealthInfos.add(new BreedHealthInfoEntity(goldenRetriever, 1, 10, 350, 600));
+    public BreedRepositoryImpl(IBreedRepositoryJPA jpaRepo) {
+        this.jpaRepo = jpaRepo;
     }
 
     @Override
-    public ArrayList<BreedEntity> getAllBreeds() {
-        return new ArrayList<>(breeds);
+    public ArrayList<Breed> getAllBreeds() {
+        List<BreedEntity> breeds = jpaRepo.findAll();
+        return breeds.stream()
+                .map(BreedConverter::convertFromBreedEntityToBreed)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
-    public Optional<BreedEntity> getBreedById(long id) {
-        return breeds.stream().filter(breed -> breed.getId() == id).findFirst();
+    public Optional<Breed> getBreedById(Long id) {
+        return jpaRepo.findById(id).map(BreedConverter::convertFromBreedEntityToBreed);
     }
 
     @Override
-    public long createBreed(BreedEntity breed) {
-        breed.setId(nextBreedId++);
-        breeds.add(breed);
-        return breed.getId();
+    public Long createBreed(Breed breed) {
+        BreedEntity entity = BreedConverter.convertFromBreedToBreedEntity(breed);
+        BreedEntity savedEntity = jpaRepo.save(entity);
+        return savedEntity.getId();
     }
 
     @Override
-    public BreedEntity updateBreed(long id, BreedEntity updatedBreed) {
-        Optional<BreedEntity> existingBreedOpt = getBreedById(id);
-        if (existingBreedOpt.isPresent()) {
-            BreedEntity existingBreed = existingBreedOpt.get();
-            breeds.remove(existingBreed);
-            updatedBreed.setId(id); // Keep the same ID
-            breeds.add(updatedBreed);
-            return updatedBreed;
+    public boolean deleteBreed(Long id) {
+        if (jpaRepo.existsById(id)) {
+            jpaRepo.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Breed updateBreed(Long id, Breed updatedBreed) {
+        if (jpaRepo.existsById(id)) {
+            BreedEntity entity = BreedConverter.convertFromBreedToBreedEntity(updatedBreed);
+            entity.setId(id);  // Ensure the ID remains the same
+            BreedEntity updatedEntity = jpaRepo.save(entity);
+            return BreedConverter.convertFromBreedEntityToBreed(updatedEntity);
         }
         return null;
     }
 
     @Override
-    public boolean deleteBreed(long id) {
-        return breeds.removeIf(breed -> breed.getId() == id);
-    }
-
-    @Override
-    public Optional<BreedHealthInfoEntity> getHealthInfoForBreed(long breedId, int age) {
-        return breedHealthInfos.stream()
-                .filter(info -> info.getBreed().getId() == breedId &&
-                        age >= info.getAgeRangeStart() && age <= info.getAgeRangeEnd())
-                .findFirst();
-    }
-
-    @Override
-    public BreedEntity updateHealthProblems(long breedId, List<String> healthProblems) {
-        Optional<BreedEntity> breedOpt = getBreedById(breedId);
+    public Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems) {
+        Optional<BreedEntity> breedOpt = jpaRepo.findById(breedId);
         if (breedOpt.isPresent()) {
             BreedEntity breed = breedOpt.get();
-            breed.setCommonHealthProblems(new ArrayList<>(healthProblems));
-            return breed;
+            breed.setCommonHealthProblems(healthProblems);
+            jpaRepo.save(breed);
+            return BreedConverter.convertFromBreedEntityToBreed(breed);
         }
         return null;
     }

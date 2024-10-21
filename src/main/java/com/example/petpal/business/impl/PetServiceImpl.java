@@ -1,25 +1,18 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IPetService;
-import com.example.petpal.business.converters.BreedConverter;
-import com.example.petpal.business.converters.VaccinationConverter;
-import com.example.petpal.business.converters.PetConverter;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
-import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IVaccinationRepository;
-import com.example.petpal.persistence.entity.BreedEntity;
-import com.example.petpal.persistence.entity.PetEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -32,53 +25,49 @@ public class PetServiceImpl implements IPetService {
     private final IVaccinationRepository vaccinationRepository;
 
     @Override
-    public Optional<Pet> getPet(long petId) {
-        return petRepository.getPet(petId).map(PetConverter::convertFromPetEntityToPet);
+    public Optional<Pet> getPet(Long petId) {
+        return petRepository.getPet(petId);
     }
 
     @Override
-    public long createPet(Pet pet, long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException {
-        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(breedId);
+    public Long createPet(Pet pet, Long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException {
+        Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
         if (breedOptional.isEmpty()) {
             throw new InvalidBreedException(breedId);
         }
 
         ArrayList<VaccinationRecord> vaccinations = new ArrayList<>();
-
-        for (long id : vaccinationsIds) {
-            Vaccination v = VaccinationConverter.convertFromVaccinationEntitytoVaccination(vaccinationRepository.getVaccinationById(id).get());
-            vaccinations.add(new VaccinationRecord(1, v, new Date()));
+        for (Long id : vaccinationsIds) {
+            Optional<Vaccination> vaccinationOptional = vaccinationRepository.getVaccinationById(id);
+            vaccinationOptional.ifPresent(v -> vaccinations.add(new VaccinationRecord(null, v, new Date()))); // Set ID to null for new records
         }
-        pet.setBreed(BreedConverter.convertFromBreedEntityToBreed(breedOptional.get()));
+
+        pet.setBreed(breedOptional.get());
         pet.setVaccinationRecords(vaccinations);
         pet.setHealthRecords(new ArrayList<>());
 
-        PetEntity newPet = PetConverter.convertFromPetToPetEntity(pet);
-
-        long savedPetId = petRepository.createPet(newPet);
-        return savedPetId;
+        return petRepository.createPet(pet);
     }
 
     @Override
-    public void updatePet(Pet pet, long breedId) throws InvalidPetException, InvalidBreedException {
-        Optional<PetEntity> petOptional = petRepository.getPet(pet.getId());
+    public void updatePet(Pet pet, Long breedId) throws InvalidPetException, InvalidBreedException {
+        Optional<Pet> petOptional = petRepository.getPet(pet.getId());
         if (petOptional.isEmpty()) {
             throw new InvalidPetException(pet.getId());
         }
-        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(breedId);
+
+        Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
         if (breedOptional.isEmpty()) {
             throw new InvalidBreedException(breedId);
         }
-        PetEntity petEntity = PetConverter.convertFromPetToPetEntity(pet);
-        petEntity.setBreed(breedOptional.get());
 
-        petRepository.updatePet(pet.getId(), petEntity);
+        pet.setBreed(breedOptional.get());
+
+        petRepository.updatePet(pet.getId(), pet);
     }
 
     @Override
-    public boolean deletePet(long petId) {
-        return this.petRepository.deletePet(petId);
+    public boolean deletePet(Long petId) {
+        return petRepository.deletePet(petId);
     }
-
-
 }

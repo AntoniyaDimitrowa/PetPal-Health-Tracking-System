@@ -1,16 +1,16 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IBreedService;
-import com.example.petpal.business.converters.BreedConverter;
-import com.example.petpal.business.converters.HealthConverter;
-import com.example.petpal.business.converters.MoodConverter;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.BreedHealthInfo;
+import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IMoodRepository;
-import com.example.petpal.persistence.entity.BreedEntity;
+import com.example.petpal.persistence.converters.BreedConverter;
+import com.example.petpal.persistence.converters.HealthConverter;
+import com.example.petpal.persistence.converters.MoodConverter;
 import com.example.petpal.persistence.entity.MoodEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,59 +26,49 @@ public class BreedServiceImpl implements IBreedService {
 
     @Override
     public ArrayList<Breed> getAllBreeds() {
-        return BreedConverter.convertFromBreedEntitiesToBreeds(breedRepository.getAllBreeds());
+        return new ArrayList<>(breedRepository.getAllBreeds());
     }
 
     @Override
-    public Optional<Breed> getBreedById(long id) {
-        return breedRepository.getBreedById(id).map(BreedConverter::convertFromBreedEntityToBreed);
+    public Optional<Breed> getBreedById(Long id) {
+        return breedRepository.getBreedById(id);
     }
 
     @Override
-    public long createBreed(Breed breed, long normalMoodId) throws InvalidMoodException {
-        Optional<MoodEntity> moodOptional = moodRepository.getMoodById(normalMoodId);
+    public Long createBreed(Breed breed, Long normalMoodId) throws InvalidMoodException {
+        Optional<Mood> moodOptional = moodRepository.getMoodById(normalMoodId);
         if (moodOptional.isEmpty()) {
-            throw new InvalidMoodException(breed.getNormalMood().getId());
+            throw new InvalidMoodException(normalMoodId);
         }
-        breed.setNormalMood(MoodConverter.convertFromMoodEntityToMood(moodOptional.get()));
-        return breedRepository.createBreed(BreedConverter.convertFromBreedToBreedEntity(breed));
+        breed.setNormalMood(moodOptional.get());
+        return breedRepository.createBreed(breed);
     }
 
     @Override
-    public Breed updateBreed(Breed updatedBreed, long normalMoodId) throws InvalidBreedException, InvalidMoodException {
-        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(updatedBreed.getId());
-        if (breedOptional.isEmpty()) {
+    public Breed updateBreed(Breed updatedBreed, Long normalMoodId) throws InvalidBreedException, InvalidMoodException {
+        Optional<Breed> existingBreedOpt = breedRepository.getBreedById(updatedBreed.getId());
+        if (existingBreedOpt.isEmpty()) {
             throw new InvalidBreedException(updatedBreed.getId());
         }
-        Optional<MoodEntity> moodOptional = moodRepository.getMoodById(normalMoodId);
+        Optional<Mood> moodOptional = moodRepository.getMoodById(normalMoodId);
         if (moodOptional.isEmpty()) {
-            throw new InvalidMoodException(updatedBreed.getNormalMood().getId());
+            throw new InvalidMoodException(normalMoodId);
         }
-        updatedBreed.setNormalMood(MoodConverter.convertFromMoodEntityToMood(moodOptional.get()));
-        return BreedConverter.convertFromBreedEntityToBreed(breedRepository.updateBreed(updatedBreed.getId(), BreedConverter.convertFromBreedToBreedEntity(updatedBreed)));
+        updatedBreed.setNormalMood(moodOptional.get());
+        return breedRepository.updateBreed(updatedBreed.getId(), updatedBreed);
     }
 
     @Override
-    public boolean deleteBreed(long id) {
+    public boolean deleteBreed(Long id) {
         return breedRepository.deleteBreed(id);
     }
 
     @Override
-    public Optional<BreedHealthInfo> getHealthInfoForBreed(long breedId, int age) throws InvalidBreedException {
-        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(breedId);
+    public Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems) throws InvalidBreedException {
+        Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
         if (breedOptional.isEmpty()) {
             throw new InvalidBreedException(breedId);
         }
-        return breedRepository.getHealthInfoForBreed(breedId, age).map(HealthConverter::convertFromBreedHealthInfoEntityToBreedHealthInfo);
-    }
-
-
-    @Override
-    public Breed updateHealthProblems(long breedId, ArrayList<String> healthProblems) throws InvalidBreedException {
-        Optional<BreedEntity> breedOptional = breedRepository.getBreedById(breedId);
-        if (breedOptional.isEmpty()) {
-            throw new InvalidBreedException(breedId);
-        }
-        return BreedConverter.convertFromBreedEntityToBreed(breedRepository.updateHealthProblems(breedId, healthProblems));
+        return breedRepository.updateHealthProblems(breedId, healthProblems);
     }
 }

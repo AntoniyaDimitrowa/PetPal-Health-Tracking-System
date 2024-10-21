@@ -1,78 +1,57 @@
 package com.example.petpal.persistence.impl;
 
-import com.example.petpal.persistence.IBreedRepository;
-import com.example.petpal.persistence.IPetRepository;
+import com.example.petpal.business.domain.User;
 import com.example.petpal.persistence.IUserRepository;
-import com.example.petpal.persistence.entity.PetEntity;
+import com.example.petpal.persistence.IUserRepositoryJPA;
+import com.example.petpal.persistence.converters.UserConverter;
 import com.example.petpal.persistence.entity.UserEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
-    private final ArrayList<UserEntity> users = new ArrayList<>();
-    private static long nextUserId = 1L;
 
-    public UserRepositoryImpl(IPetRepository petRepo) {
-        // Add some example users to the list
-        users.add(UserEntity.builder()
-                .id(nextUserId++)
-                .name("John Doe")
-                .email("john.doe@example.com")
-                .password("password123")
-                .role("USER")
-                .memberSince(new java.util.Date())
-                .address("1234 Main St, Hometown")
-                .pets(Optional.of(new ArrayList<PetEntity>() {
-                    {
-                        add(petRepo.getPet(1L).get());
-                    }
-                }))
-                .breedHealthInfos(Optional.empty())
-                .build());
+    private final IUserRepositoryJPA userRepositoryJPA;
 
-        users.add(UserEntity.builder()
-                .id(nextUserId++)
-                .name("Jane Smith")
-                .email("jane.smith@example.com")
-                .password("password456")
-                .role("ADMIN")
-                .memberSince(new java.util.Date())
-                .address("5678 Market St, Cityville")
-                .pets(Optional.empty())
-                .breedHealthInfos(Optional.empty())
-                .build());
+    @Autowired
+    public UserRepositoryImpl(IUserRepositoryJPA userRepositoryJPA) {
+        this.userRepositoryJPA = userRepositoryJPA;
     }
 
     @Override
-    public Optional<UserEntity> getUserById(long userId) {
-        return users.stream().filter(user -> user.getId() == userId).findFirst();
+    public Optional<User> getUserById(long userId) {
+        Optional<UserEntity> userEntityOpt = userRepositoryJPA.findById(userId);
+        return userEntityOpt.map(UserConverter::convertFromUserEntityToUser);
     }
 
     @Override
-    public UserEntity createUser(UserEntity user) {
-        user.setId(nextUserId++);
-        users.add(user);
-        return user;
+    public Long createUser(User user) {
+        UserEntity userEntity = UserConverter.convertFromUserToUserEntity(user);
+        UserEntity savedEntity = userRepositoryJPA.save(userEntity);
+        return savedEntity.getId();
     }
 
     @Override
-    public UserEntity updateUser(long userId, UserEntity updatedUser) {
-        Optional<UserEntity> existingUserOpt = getUserById(userId);
+    public User updateUser(long userId, User updatedUser) {
+        Optional<UserEntity> existingUserOpt = userRepositoryJPA.findById(userId);
         if (existingUserOpt.isPresent()) {
             UserEntity existingUser = existingUserOpt.get();
-            users.remove(existingUser);
-            updatedUser.setId(userId); // Keep the same ID
-            users.add(updatedUser);
-            return updatedUser;
+            UserEntity updatedUserEntity = UserConverter.convertFromUserToUserEntity(updatedUser);
+            updatedUserEntity.setId(existingUser.getId()); // Keep the same ID
+            UserEntity savedEntity = userRepositoryJPA.save(updatedUserEntity);
+            return UserConverter.convertFromUserEntityToUser(savedEntity);
         }
         return null;
     }
 
     @Override
     public boolean deleteUser(long userId) {
-        return users.removeIf(user -> user.getId() == userId);
+        if (userRepositoryJPA.existsById(userId)) {
+            userRepositoryJPA.deleteById(userId);
+            return true;
+        }
+        return false;
     }
 }

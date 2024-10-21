@@ -1,12 +1,9 @@
-package com.example.petpal.business.converters;
+package com.example.petpal.persistence.converters;
 
 import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.Mood;
 import com.example.petpal.persistence.entity.BreedEntity;
-import com.example.petpal.persistence.entity.MoodEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class BreedConverter {
     private BreedConverter(){}
@@ -16,7 +13,8 @@ public class BreedConverter {
                 .id(breed.getId())
                 .name(breed.getName())
                 .description(breed.getDescription())
-                .normalMood(MoodConverter.convertFromMoodToMoodEntity(breed.getNormalMood()))
+                .normalMood(breed.getNormalMood() != null ?
+                        MoodConverter.convertFromMoodToMoodEntity(breed.getNormalMood()) : null)
                 .minimumExercisePerDay(breed.getMinimumExercisePerDay())
                 .commonHealthProblems(breed.getCommonHealthProblems())
                 .build();
@@ -25,11 +23,13 @@ public class BreedConverter {
 
 
     public static Breed convertFromBreedEntityToBreed(BreedEntity entity){
+        if (entity == null) return null;
         return Breed.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .description(entity.getDescription())
-                .normalMood(MoodConverter.convertFromMoodEntityToMood(entity.getNormalMood()))
+                .normalMood(entity.getNormalMood() != null ?
+                        MoodConverter.convertFromMoodEntityToMood(entity.getNormalMood()) : null)
                 .minimumExercisePerDay(entity.getMinimumExercisePerDay())
                 .commonHealthProblems(entity.getCommonHealthProblems())
                 .build();

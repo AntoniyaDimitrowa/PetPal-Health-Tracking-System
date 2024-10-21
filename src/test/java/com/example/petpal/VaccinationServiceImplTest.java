@@ -1,6 +1,6 @@
 package com.example.petpal;
 
-import com.example.petpal.business.converters.VaccinationConverter;
+import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.VaccinationType;
@@ -9,9 +9,8 @@ import com.example.petpal.business.exception.InvalidVaccinationException;
 import com.example.petpal.business.impl.VaccinationServiceImpl;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IVaccinationRepository;
+import com.example.petpal.persistence.converters.PetConverter;
 import com.example.petpal.persistence.entity.PetEntity;
-import com.example.petpal.persistence.entity.VaccinationEntity;
-import com.example.petpal.persistence.entity.VaccinationRecordEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,13 +37,14 @@ class VaccinationServiceImplTest {
 
     private PetEntity petEntity;
     private VaccinationRecord vaccinationRecord;
-    private VaccinationRecordEntity vaccinationRecordEntity;
+    private Pet pet;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
         petEntity = PetEntity.builder().id(1L).build();
+        pet = PetConverter.convertFromPetEntityToPet(petEntity); // Convert to domain object for repository calls
 
         Vaccination vaccination = Vaccination.builder()
                 .id(1L)
@@ -58,8 +58,6 @@ class VaccinationServiceImplTest {
                 .vaccination(vaccination)
                 .date(new Date())
                 .build();
-
-        vaccinationRecordEntity = VaccinationConverter.convertFromVaccinationRecordToVaccinationRecordEntity(vaccinationRecord);
     }
 
     @Test
@@ -72,26 +70,23 @@ class VaccinationServiceImplTest {
 
     @Test
     void createVaccinationRecord_shouldThrowExceptionIfVaccinationNotFound() {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
-
-        when(vaccinationRepository.getVaccinationById(100L)).thenReturn(Optional.empty());
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
+        when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.empty());
 
         assertThrows(InvalidVaccinationException.class, () -> vaccinationService.createVaccinationRecord(1L, vaccinationRecord));
-        verify(vaccinationRepository, times(1)).getVaccinationById(1L);  // Ensure vaccination lookup
+        verify(vaccinationRepository, times(1)).getVaccinationById(1L);
     }
 
     @Test
     void createVaccinationRecord_shouldCreateRecordIfPetAndVaccinationExist() throws InvalidPetException, InvalidVaccinationException {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
-
-        when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(VaccinationEntity.builder().build()));
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
+        when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(Vaccination.builder().build()));
 
         vaccinationService.createVaccinationRecord(1L, vaccinationRecord);
 
-        verify(petRepository, times(1)).addVaccinationToPet(eq(1L), any(VaccinationRecordEntity.class));
-        verify(vaccinationRepository, times(1)).getVaccinationById(1L);  // Ensure vaccination lookup
+        verify(vaccinationRepository, times(1)).addVaccinationRecordToPet(eq(pet), any(VaccinationRecord.class));
+        verify(vaccinationRepository, times(1)).getVaccinationById(1L);
     }
-
 
     @Test
     void getVaccinationRecordsByPetId_shouldThrowExceptionIfPetNotFound() {
@@ -103,11 +98,11 @@ class VaccinationServiceImplTest {
 
     @Test
     void getVaccinationRecordsByPetId_shouldReturnRecordsIfPetExists() throws InvalidPetException {
-        ArrayList<VaccinationRecordEntity> recordEntities = new ArrayList<>();
-        recordEntities.add(vaccinationRecordEntity);
+        ArrayList<VaccinationRecord> vaccinationRecords = new ArrayList<>();
+        vaccinationRecords.add(vaccinationRecord);
 
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
-        when(petRepository.getVaccinationRecordsByPetId(1L)).thenReturn(recordEntities);
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
+        when(vaccinationRepository.getVaccinationRecordsByPetId(1L)).thenReturn(vaccinationRecords);
 
         var result = vaccinationService.getVaccinationRecordsByPetId(1L);
 
@@ -116,18 +111,18 @@ class VaccinationServiceImplTest {
         assertEquals("Rabies", result.get(0).getVaccination().getName());
         assertEquals(VaccinationType.ForPuppy, result.get(0).getVaccination().getType());
         assertEquals(12, result.get(0).getVaccination().getRange());
-        verify(petRepository, times(1)).getVaccinationRecordsByPetId(1L);
+        verify(vaccinationRepository, times(1)).getVaccinationRecordsByPetId(1L);
     }
 
     @Test
     void getVaccinationRecordsByPetId_shouldReturnEmptyIfNoRecords() throws InvalidPetException {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
-        when(petRepository.getVaccinationRecordsByPetId(1L)).thenReturn(new ArrayList<>());
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
+        when(vaccinationRepository.getVaccinationRecordsByPetId(1L)).thenReturn(new ArrayList<>());
 
         var result = vaccinationService.getVaccinationRecordsByPetId(1L);
 
         assertNotNull(result);
         assertEquals(0, result.size());
-        verify(petRepository, times(1)).getVaccinationRecordsByPetId(1L);
+        verify(vaccinationRepository, times(1)).getVaccinationRecordsByPetId(1L);
     }
 }

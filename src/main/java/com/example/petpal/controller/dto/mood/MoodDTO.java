@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class MoodDTO {
-    private long id;
+    private Long id;
     private String name;
     private String emoji;
 }

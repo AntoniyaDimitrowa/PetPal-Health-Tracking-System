@@ -12,7 +12,7 @@ import java.util.Date;
 public class CreatePetDTO {
 
     private String name;
-    private long breedId;
+    private Long breedId;
     private Gender gender;
     private Date birthdate;
     private double weight;
