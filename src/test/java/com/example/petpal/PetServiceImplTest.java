@@ -46,8 +46,7 @@ class PetServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        MoodEntity energetic = new MoodEntity(1L,"Energetic", "");
-
+        MoodEntity energetic = new MoodEntity(1L, "Energetic", "");
         BreedEntity breedEntity = BreedEntity.builder()
                 .id(1L)
                 .name("Labrador")
@@ -64,7 +63,7 @@ class PetServiceImplTest {
 
     @Test
     void getPet_shouldReturnPetWhenPetExists() {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
 
         Optional<Pet> result = petService.getPet(1L);
 
@@ -87,51 +86,34 @@ class PetServiceImplTest {
     void updatePet_shouldThrowInvalidPetExceptionWhenPetDoesNotExist() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
 
-        Pet newPet = new Pet(100L, "Buddy", new Breed(1L, "Labrador", "Friendly dog", Mood.builder().build(), 1.5, new ArrayList<>()), Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
-        assertThrows(InvalidPetException.class, () -> {
-            petService.updatePet(newPet, breed.getId());
-        });
+        Pet newPet = new Pet(100L, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
+        assertThrows(InvalidPetException.class, () -> petService.updatePet(newPet, breed.getId()));
 
         verify(petRepository, times(1)).getPet(100L);
     }
 
     @Test
     void updatePet_shouldThrowInvalidBreedExceptionWhenBreedDoesNotExist() {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidBreedException.class, () -> {
-            petService.updatePet(pet, 100L);
-        });
+        assertThrows(InvalidBreedException.class, () -> petService.updatePet(pet, 100L));
 
         verify(breedRepository, times(1)).getBreedById(100L);
     }
 
     @Test
     void updatePet_shouldUpdatePetWhenPetAndBreedExist() throws InvalidPetException, InvalidBreedException {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
-
-        // Use a valid Mood and Breed when mocking
-        Mood mood = new Mood(1L, "Energetic", ""); // Create a Mood object
-        Breed mockBreed = Breed.builder()
-                .id(1L)
-                .name("Labrador")
-                .description("Friendly dog")
-                .normalMood(mood) // Set the mood here
-                .minimumExercisePerDay(1.5)
-                .commonHealthProblems(new ArrayList<>())
-                .build();
-
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(mockBreed)); // Mock breed exists
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed)); // Mock breed exists
 
         Pet newPet = pet;
         newPet.setName("Buddy Updated");
         petService.updatePet(newPet, breed.getId());
 
-        verify(petRepository, times(1)).updatePet(eq(1L), any(PetEntity.class));
+        verify(petRepository, times(1)).updatePet(eq(1L), any(Pet.class));
         verify(breedRepository, times(1)).getBreedById(1L); // Verify breed lookup
     }
-
 
     @Test
     void deletePet_shouldCallRepositoryDelete() {
@@ -142,28 +124,14 @@ class PetServiceImplTest {
 
     @Test
     void createPet_shouldReturnCreatedPet() throws InvalidBreedException {
-        MoodEntity moodEntity = new MoodEntity(1L, "Energetic", "");
-        Mood mood = new Mood(1L, "Energetic", "");
-
-        BreedEntity breedEntity = BreedEntity.builder()
-                .id(1L)
-                .name("Labrador")
-                .normalMood(moodEntity)
-                .description("Labrador description")
-                .minimumExercisePerDay(1.5)
-                .commonHealthProblems(new ArrayList<>())
-                .build();
-
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
+        when(petRepository.createPet(any(Pet.class))).thenReturn(50L);
 
-        when(petRepository.createPet(any(PetEntity.class))).thenReturn(50L);
+        Pet newPet = new Pet(null, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
 
-        Pet newPet = new Pet(50L, "Buddy", new Breed(1L, "Labrador", "Friendly dog", mood, 1.5, new ArrayList<>()), Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
+        long result = petService.createPet(newPet, breed.getId(), new ArrayList<>());
 
-        long result = petService.createPet(newPet, breedEntity.getId(), new ArrayList<>());
-
-        verify(petRepository, times(1)).createPet(any(PetEntity.class));
-
+        verify(petRepository, times(1)).createPet(any(Pet.class));
         assertEquals(50L, result);
     }
 }

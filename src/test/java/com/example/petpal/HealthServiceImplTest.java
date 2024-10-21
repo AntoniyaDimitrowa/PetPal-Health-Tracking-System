@@ -3,6 +3,7 @@ package com.example.petpal;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
+import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.impl.HealthServiceImpl;
@@ -34,13 +35,12 @@ class HealthServiceImplTest {
     @InjectMocks
     private HealthServiceImpl healthService;
 
-    private PetEntity petEntity;
+    private Pet pet;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        petEntity = PetEntity.builder().build();
-        petEntity.setId(1L);
+        pet = Pet.builder().id(1L).build();
     }
 
     @Test
@@ -53,7 +53,7 @@ class HealthServiceImplTest {
 
     @Test
     void createHealthRecord_shouldCreateRecordIfPetExists() throws InvalidPetException {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(healthRepository.createHealthRecordToPet(eq(1L), any())).thenReturn(1L); // Mock the return value
 
         Long id = healthService.createHealthRecord(1L, HealthRecord.builder().build());
@@ -72,7 +72,7 @@ class HealthServiceImplTest {
 
     @Test
     void getHealthRecordsByPetId_shouldReturnRecordsIfPetExists() throws InvalidPetException {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(healthRepository.getHealthRecordsByPetId(1L)).thenReturn(new ArrayList<>());
 
         var result = healthService.getHealthRecordsByPetId(1L);
@@ -83,7 +83,7 @@ class HealthServiceImplTest {
 
     @Test
     void getHealthRecordsByPetId_shouldReturnEmptyIfNoRecords() throws InvalidPetException {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(healthRepository.getHealthRecordsByPetId(1L)).thenReturn(new ArrayList<>());
 
         var result = healthService.getHealthRecordsByPetId(1L);

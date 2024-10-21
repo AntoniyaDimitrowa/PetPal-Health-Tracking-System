@@ -70,7 +70,7 @@ class VaccinationServiceImplTest {
 
     @Test
     void createVaccinationRecord_shouldThrowExceptionIfVaccinationNotFound() {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.empty());
 
         assertThrows(InvalidVaccinationException.class, () -> vaccinationService.createVaccinationRecord(1L, vaccinationRecord));
@@ -79,7 +79,7 @@ class VaccinationServiceImplTest {
 
     @Test
     void createVaccinationRecord_shouldCreateRecordIfPetAndVaccinationExist() throws InvalidPetException, InvalidVaccinationException {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(Vaccination.builder().build()));
 
         vaccinationService.createVaccinationRecord(1L, vaccinationRecord);
@@ -101,7 +101,7 @@ class VaccinationServiceImplTest {
         ArrayList<VaccinationRecord> vaccinationRecords = new ArrayList<>();
         vaccinationRecords.add(vaccinationRecord);
 
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(vaccinationRepository.getVaccinationRecordsByPetId(1L)).thenReturn(vaccinationRecords);
 
         var result = vaccinationService.getVaccinationRecordsByPetId(1L);
@@ -116,7 +116,7 @@ class VaccinationServiceImplTest {
 
     @Test
     void getVaccinationRecordsByPetId_shouldReturnEmptyIfNoRecords() throws InvalidPetException {
-        when(petRepository.getPet(1L)).thenReturn(Optional.of(petEntity));
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(vaccinationRepository.getVaccinationRecordsByPetId(1L)).thenReturn(new ArrayList<>());
 
         var result = vaccinationService.getVaccinationRecordsByPetId(1L);
