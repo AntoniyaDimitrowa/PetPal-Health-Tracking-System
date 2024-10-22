@@ -1,8 +1,7 @@
 package com.example.petpal;
 
-import com.example.petpal.business.domain.Mood;
-import com.example.petpal.persistence.converters.BreedConverter;
 import com.example.petpal.business.domain.Breed;
+import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.business.impl.BreedServiceImpl;
@@ -10,6 +9,7 @@ import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IMoodRepository;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.MoodEntity;
+import com.example.petpal.persistence.converters.BreedConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -91,6 +91,30 @@ class BreedServiceImplTest {
     }
 
     @Test
+    void createBreed_shouldThrowInvalidMoodExceptionWhenMoodNotFound() {
+        when(moodRepository.getMoodById(100L)).thenReturn(Optional.empty());
+
+        assertThrows(InvalidMoodException.class, () -> {
+            breedService.createBreed(breed, 100L);
+        });
+
+        verify(moodRepository, times(1)).getMoodById(100L);
+    }
+
+    @Test
+    void createBreed_shouldCreateBreedWhenMoodExists() throws InvalidMoodException {
+        when(moodRepository.getMoodById(1L)).thenReturn(Optional.of(Mood.builder().id(1L).build()));
+        when(breedRepository.createBreed(breed)).thenReturn(1L);
+
+        Long result = breedService.createBreed(breed, 1L);
+
+        assertNotNull(result);
+        assertEquals(1L, result);
+        verify(breedRepository, times(1)).createBreed(breed);
+        verify(moodRepository, times(1)).getMoodById(1L);
+    }
+
+    @Test
     void updateBreed_shouldThrowExceptionWhenBreedNotFound() {
         when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
 
@@ -101,7 +125,6 @@ class BreedServiceImplTest {
 
         verify(breedRepository, times(1)).getBreedById(100L);
     }
-
 
     @Test
     void updateBreed_shouldThrowInvalidMoodExceptionWhenMoodNotFound() {
@@ -137,5 +160,26 @@ class BreedServiceImplTest {
         verify(breedRepository, times(1)).deleteBreed(1L);
     }
 
+    @Test
+    void updateHealthProblems_shouldThrowInvalidBreedExceptionWhenBreedNotFound() {
+        when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
 
+        assertThrows(InvalidBreedException.class, () -> breedService.updateHealthProblems(100L, new ArrayList<>()));
+
+        verify(breedRepository, times(1)).getBreedById(100L);
+    }
+
+    @Test
+    void updateHealthProblems_shouldUpdateHealthProblemsWhenBreedExists() throws InvalidBreedException {
+        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
+        ArrayList<String> healthProblems = new ArrayList<>();
+        healthProblems.add("Hip Dysplasia");
+        when(breedRepository.updateHealthProblems(1L, healthProblems)).thenReturn(breed);
+
+        Breed result = breedService.updateHealthProblems(1L, healthProblems);
+
+        assertNotNull(result);
+        assertEquals(breed, result);
+        verify(breedRepository, times(1)).updateHealthProblems(1L, healthProblems);
+    }
 }

@@ -4,6 +4,7 @@ import com.example.petpal.business.IHealthService;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.exception.InvalidPetException;
+import com.example.petpal.business.exception.InvalidBreedException; // Import the exception
 import com.example.petpal.controller.converters.HealthConverter;
 import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
@@ -49,8 +50,12 @@ public class HealthController {
 
     @PostMapping("/breeds/{breedId}/health")
     public ResponseEntity<Void> createHealthInfoForBreed(@PathVariable Long breedId, @RequestBody BreedHealthInfoDTO breedHealthInfoDTO) {
-        BreedHealthInfo breedHealthInfo = HealthConverter.convertFromBreedHealthInfoDTOToBreedHealthInfo(breedHealthInfoDTO);
-        healthService.createHealthInfoForBreed(breedId, breedHealthInfo.getAgeRangeStart(), breedHealthInfo.getAgeRangeEnd(), breedHealthInfo);
-        return ResponseEntity.status(201).build();
+        try {
+            BreedHealthInfo breedHealthInfo = HealthConverter.convertFromBreedHealthInfoDTOToBreedHealthInfo(breedHealthInfoDTO);
+            healthService.createHealthInfoForBreed(breedId, breedHealthInfo.getAgeRangeStart(), breedHealthInfo.getAgeRangeEnd(), breedHealthInfo);
+            return ResponseEntity.status(201).build();
+        } catch (InvalidBreedException e) {
+            return ResponseEntity.badRequest().build();  // Return a 400 Bad Request if the breed is invalid
+        }
     }
 }

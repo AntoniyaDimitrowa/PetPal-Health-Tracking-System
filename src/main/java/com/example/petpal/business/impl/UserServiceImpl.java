@@ -27,10 +27,9 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User updateUser(Long userId, User updatedUser) throws InvalidUserException {
-        Optional<User> userOptional = userRepository.getUserById(userId);
-        if (userOptional.isEmpty()) {
-            throw new InvalidUserException(userId);
-        }
+        User existingUser = userRepository.getUserById(userId)
+                .orElseThrow(() -> new InvalidUserException(userId));
+
         return userRepository.updateUser(userId, updatedUser);
     }
 

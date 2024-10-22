@@ -7,6 +7,7 @@ import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
+import com.example.petpal.business.exception.InvalidVaccinationException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 public interface IPetService {
     Optional<Pet> getPet(Long petId);
-    Long createPet(Pet pet, Long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException;
+    Long createPet(Pet pet, Long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException, InvalidVaccinationException;
     void updatePet(Pet pet, Long breedId) throws InvalidPetException, InvalidBreedException;
     boolean deletePet(Long petId);
 }

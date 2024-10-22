@@ -1,7 +1,10 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IHealthService;
+import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Pet;
+import com.example.petpal.business.exception.InvalidBreedException;
+import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IHealthRepository;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 public class HealthServiceImpl implements IHealthService {
     private final IPetRepository petRepository;
     private final IHealthRepository healthRepository;
+    private final IBreedRepository breedRepository;
 
     @Override
     public ArrayList<HealthRecord> getHealthRecordsByPetId(Long petId) throws InvalidPetException {
@@ -41,7 +45,10 @@ public class HealthServiceImpl implements IHealthService {
     }
 
     @Override
-    public Long createHealthInfoForBreed(Long breedId, int ageRangeStart, int ageRangeEnd, BreedHealthInfo info) {
+    public Long createHealthInfoForBreed(Long breedId, int ageRangeStart, int ageRangeEnd, BreedHealthInfo info) throws InvalidBreedException {
+        Breed breed = breedRepository.getBreedById(breedId)
+                .orElseThrow(() -> new InvalidBreedException(breedId));
+
         return healthRepository.createHealthInfoForBreed(breedId, ageRangeStart, ageRangeEnd, info);
     }
 

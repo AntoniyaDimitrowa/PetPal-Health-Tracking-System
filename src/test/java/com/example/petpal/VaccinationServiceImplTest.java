@@ -125,4 +125,19 @@ class VaccinationServiceImplTest {
         assertEquals(0, result.size());
         verify(vaccinationRepository, times(1)).getVaccinationRecordsByPetId(1L);
     }
+
+    @Test
+    void getVaccinations_shouldReturnAllVaccinations() {
+        ArrayList<Vaccination> vaccinations = new ArrayList<>();
+        vaccinations.add(Vaccination.builder().id(1L).name("Rabies").build());
+
+        when(vaccinationRepository.getAllVaccinations()).thenReturn(vaccinations);
+
+        var result = vaccinationService.getVaccinations();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Rabies", result.get(0).getName());
+        verify(vaccinationRepository, times(1)).getAllVaccinations();
+    }
 }

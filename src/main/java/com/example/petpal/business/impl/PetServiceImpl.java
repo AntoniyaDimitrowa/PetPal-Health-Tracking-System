@@ -7,6 +7,7 @@ import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
+import com.example.petpal.business.exception.InvalidVaccinationException;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IVaccinationRepository;
@@ -30,19 +31,18 @@ public class PetServiceImpl implements IPetService {
     }
 
     @Override
-    public Long createPet(Pet pet, Long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException {
-        Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
-        if (breedOptional.isEmpty()) {
-            throw new InvalidBreedException(breedId);
-        }
+    public Long createPet(Pet pet, Long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException, InvalidVaccinationException {
+        Breed breed = breedRepository.getBreedById(breedId)
+                .orElseThrow(() -> new InvalidBreedException(breedId));
 
         ArrayList<VaccinationRecord> vaccinations = new ArrayList<>();
         for (Long id : vaccinationsIds) {
-            Optional<Vaccination> vaccinationOptional = vaccinationRepository.getVaccinationById(id);
-            vaccinationOptional.ifPresent(v -> vaccinations.add(new VaccinationRecord(null, v, new Date()))); // Set ID to null for new records
+            Vaccination vaccination = vaccinationRepository.getVaccinationById(id)
+                    .orElseThrow(() -> new InvalidVaccinationException(id)); 
+            vaccinations.add(new VaccinationRecord(null, vaccination, new Date()));
         }
 
-        pet.setBreed(breedOptional.get());
+        pet.setBreed(breed);
         pet.setVaccinationRecords(vaccinations);
         pet.setHealthRecords(new ArrayList<>());
 
@@ -51,19 +51,15 @@ public class PetServiceImpl implements IPetService {
 
     @Override
     public void updatePet(Pet pet, Long breedId) throws InvalidPetException, InvalidBreedException {
-        Optional<Pet> petOptional = petRepository.getPet(pet.getId());
-        if (petOptional.isEmpty()) {
-            throw new InvalidPetException(pet.getId());
-        }
+        Pet existingPet = petRepository.getPet(pet.getId())
+                .orElseThrow(() -> new InvalidPetException(pet.getId()));
 
-        Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
-        if (breedOptional.isEmpty()) {
-            throw new InvalidBreedException(breedId);
-        }
+        Breed breed = breedRepository.getBreedById(breedId)
+                .orElseThrow(() -> new InvalidBreedException(breedId));
 
-        pet.setBreed(breedOptional.get());
+        pet.setBreed(breed);
 
-        petRepository.updatePet(pet.getId(), pet);
+        petRepository.updatePet(existingPet.getId(), pet);
     }
 
     @Override

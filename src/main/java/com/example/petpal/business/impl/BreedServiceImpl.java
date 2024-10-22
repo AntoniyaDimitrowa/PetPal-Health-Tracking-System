@@ -36,26 +36,23 @@ public class BreedServiceImpl implements IBreedService {
 
     @Override
     public Long createBreed(Breed breed, Long normalMoodId) throws InvalidMoodException {
-        Optional<Mood> moodOptional = moodRepository.getMoodById(normalMoodId);
-        if (moodOptional.isEmpty()) {
-            throw new InvalidMoodException(normalMoodId);
-        }
-        breed.setNormalMood(moodOptional.get());
+        Mood mood = moodRepository.getMoodById(normalMoodId)
+                .orElseThrow(() -> new InvalidMoodException(normalMoodId));
+
+        breed.setNormalMood(mood);
         return breedRepository.createBreed(breed);
     }
 
     @Override
     public Breed updateBreed(Breed updatedBreed, Long normalMoodId) throws InvalidBreedException, InvalidMoodException {
-        Optional<Breed> existingBreedOpt = breedRepository.getBreedById(updatedBreed.getId());
-        if (existingBreedOpt.isEmpty()) {
-            throw new InvalidBreedException(updatedBreed.getId());
-        }
-        Optional<Mood> moodOptional = moodRepository.getMoodById(normalMoodId);
-        if (moodOptional.isEmpty()) {
-            throw new InvalidMoodException(normalMoodId);
-        }
-        updatedBreed.setNormalMood(moodOptional.get());
-        return breedRepository.updateBreed(updatedBreed.getId(), updatedBreed);
+        Breed existingBreed = breedRepository.getBreedById(updatedBreed.getId())
+                .orElseThrow(() -> new InvalidBreedException(updatedBreed.getId()));
+
+        Mood mood = moodRepository.getMoodById(normalMoodId)
+                .orElseThrow(() -> new InvalidMoodException(normalMoodId));
+
+        updatedBreed.setNormalMood(mood);
+        return breedRepository.updateBreed(existingBreed.getId(), updatedBreed);
     }
 
     @Override
@@ -65,10 +62,9 @@ public class BreedServiceImpl implements IBreedService {
 
     @Override
     public Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems) throws InvalidBreedException {
-        Optional<Breed> breedOptional = breedRepository.getBreedById(breedId);
-        if (breedOptional.isEmpty()) {
-            throw new InvalidBreedException(breedId);
-        }
+        Breed breed = breedRepository.getBreedById(breedId)
+                .orElseThrow(() -> new InvalidBreedException(breedId));
+
         return breedRepository.updateHealthProblems(breedId, healthProblems);
     }
 }

@@ -4,6 +4,7 @@ import com.example.petpal.business.IPetService;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
+import com.example.petpal.business.exception.InvalidVaccinationException; // Import the exception
 import com.example.petpal.controller.converters.BreedConverter;
 import com.example.petpal.controller.converters.PetConverter;
 import com.example.petpal.controller.converters.VaccinationConverter;
@@ -28,7 +29,6 @@ public class PetController {
         this.petService = petService;
     }
 
-
     @GetMapping("{id}")
     public ResponseEntity<PetDTO> getPet(@PathVariable(value = "id") final long id) {
         Optional<Pet> petOptional = petService.getPet(id);
@@ -51,8 +51,9 @@ public class PetController {
             return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newPetId).build());
         } catch (InvalidBreedException e) {
             return ResponseEntity.notFound().build();
+        } catch (InvalidVaccinationException e) {
+            return ResponseEntity.badRequest().build();
         }
-
     }
 
     @PutMapping("{id}")
@@ -60,7 +61,8 @@ public class PetController {
         try {
             petService.updatePet(
                     PetConverter.convertFromCreatePetDTOToPet(dto),
-                    dto.getBreedId());
+                    dto.getBreedId()
+            );
             return ResponseEntity.noContent().build();
         } catch (InvalidPetException e) {
             return ResponseEntity.notFound().build();
