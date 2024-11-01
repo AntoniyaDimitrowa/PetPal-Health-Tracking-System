@@ -26,7 +26,8 @@ public class HealthRepositoryImpl implements IHealthRepository {
 
     @Override
     public Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age) {
-        Optional<BreedHealthInfoEntity> healthInfoEntity = breedHealthInfoRepository.findByBreedIdAndAgeRangeStartLessThanEqualAndAgeRangeEndGreaterThanEqual(breedId, age);
+        //TODO fix this method
+        Optional<BreedHealthInfoEntity> healthInfoEntity = breedHealthInfoRepository.findByBreedIdAndAgeRangeStartLessThanEqualAndAgeRangeEndGreaterThanEqual(breedId, age, 1);
 
         return healthInfoEntity.map(HealthConverter::convertFromBreedHealthInfoEntityToBreedHealthInfo);
     }

@@ -1,4 +1,4 @@
-package nl.fontys.s3.todolistbackend.configuration;
+package com.example.petpal.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -9,14 +9,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
 
-    @Value("${corsheader}")
+    @Value("${cors.allowed-origin}")
     private String corsHeader;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
 
-        String[] corsHeaders = new String[1];
+        String[] corsHeaders = new String[2];
         corsHeaders[0] = corsHeader;
+        corsHeaders[1] = "http://localhost:5174";
 
         registry.addMapping("/**") // Allow CORS for all endpoints
                 .allowedOrigins(corsHeaders) // Set allowed origins

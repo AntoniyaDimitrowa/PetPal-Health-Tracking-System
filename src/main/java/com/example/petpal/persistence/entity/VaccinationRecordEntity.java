@@ -20,15 +20,16 @@ public class VaccinationRecordEntity {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "vaccination_id")
+    @JoinColumn(name = "vaccination_id", nullable = false)
     private VaccinationEntity vaccination;
 
     @NotNull
     @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
     private Date date;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "pet_id")
+    @JoinColumn(name = "pet_id", nullable = false)
     private PetEntity pet;
 }

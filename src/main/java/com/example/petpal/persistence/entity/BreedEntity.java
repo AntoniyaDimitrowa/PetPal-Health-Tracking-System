@@ -21,23 +21,24 @@ public class BreedEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @NotBlank
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @NotNull
     @NotBlank
+    @Column(nullable = false, length = 10000)
     private String description;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "normal_mood_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "normal_mood_id", nullable = false)
     private MoodEntity normalMood;
 
-    @NotNull
+    @Column(nullable = false)
     private double minimumExercisePerDay; // in hours
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "breed_health_problems", joinColumns = @JoinColumn(name = "breed_id"))
+    @Column(name = "health_problem")
     private ArrayList<String> commonHealthProblems;
 
 }

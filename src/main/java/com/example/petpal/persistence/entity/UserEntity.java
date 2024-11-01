@@ -22,36 +22,35 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @NotBlank
+    @Column(nullable = false)
     private String name;
 
-    @NotNull
     @NotBlank
     @Email
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @NotNull
     @NotBlank
+    @Column(nullable = false)
     private String password;
 
     @NotNull
     @Temporal(TemporalType.DATE)
     private Date memberSince;
 
-    @NotNull
     @NotBlank
+    @Column(nullable = false)
     private String role;
 
+    @Column(nullable = false)
     private String address;
 
     private String image;
 
-    // One user can have multiple pets
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private ArrayList<PetEntity> pets;
 
-    // One user can have multiple breed health info records
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private ArrayList<BreedHealthInfoEntity> breedHealthInfos;
 }

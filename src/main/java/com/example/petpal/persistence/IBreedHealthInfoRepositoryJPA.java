@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public interface IBreedHealthInfoRepositoryJPA extends JpaRepository<BreedHealthInfoEntity, Long> {
-    Optional<BreedHealthInfoEntity> findByBreedIdAndAgeRangeStartLessThanEqualAndAgeRangeEndGreaterThanEqual(Long breedId, int age);
+    Optional<BreedHealthInfoEntity> findByBreedIdAndAgeRangeStartLessThanEqualAndAgeRangeEndGreaterThanEqual(Long breedId, int age, int checkAge);
 
     ArrayList<BreedHealthInfoEntity> findAllByBreedId(Long breedId);
 }

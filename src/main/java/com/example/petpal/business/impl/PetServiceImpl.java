@@ -38,7 +38,7 @@ public class PetServiceImpl implements IPetService {
         ArrayList<VaccinationRecord> vaccinations = new ArrayList<>();
         for (Long id : vaccinationsIds) {
             Vaccination vaccination = vaccinationRepository.getVaccinationById(id)
-                    .orElseThrow(() -> new InvalidVaccinationException(id)); 
+                    .orElseThrow(() -> new InvalidVaccinationException(id));
             vaccinations.add(new VaccinationRecord(null, vaccination, new Date()));
         }
 
