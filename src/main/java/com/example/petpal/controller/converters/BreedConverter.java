@@ -6,6 +6,7 @@ import com.example.petpal.controller.dto.breed.CreateBreedDTO;
 import com.example.petpal.controller.dto.breed.UpdateBreedDTO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BreedConverter {
     private BreedConverter() {}
@@ -34,7 +35,7 @@ public class BreedConverter {
                 .build();
     }
 
-    public static ArrayList<BreedDTO> convertFromBreedsToBreedDTOs(ArrayList<Breed> breeds) {
+    public static List<BreedDTO> convertFromBreedsToBreedDTOs(List<Breed> breeds) {
         if (breeds == null) return new ArrayList<>();
         ArrayList<BreedDTO> dtos = new ArrayList<>();
         for (Breed b : breeds) {

@@ -4,6 +4,7 @@ import com.example.petpal.business.domain.Mood;
 import com.example.petpal.persistence.entity.MoodEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MoodConverter {
     private MoodConverter(){}
@@ -25,15 +26,15 @@ public class MoodConverter {
                 .build();
     };
 
-    public static ArrayList<MoodEntity> convertFromMoodsToMoodEntities(ArrayList<Mood> moods){
-        ArrayList<MoodEntity> entities = new ArrayList<>();
+    public static List<MoodEntity> convertFromMoodsToMoodEntities(List<Mood> moods){
+        List<MoodEntity> entities = new ArrayList<>();
         for (Mood m : moods) {
             entities.add(convertFromMoodToMoodEntity(m));
         }
         return entities;
     };
-    public static ArrayList<Mood> convertFromMoodEntitiesToMoods(ArrayList<MoodEntity> entities){
-        ArrayList<Mood> moods = new ArrayList<>();
+    public static List<Mood> convertFromMoodEntitiesToMoods(List<MoodEntity> entities){
+        List<Mood> moods = new ArrayList<>();
         for (MoodEntity entity : entities) {
             moods.add(convertFromMoodEntityToMood(entity));
         }

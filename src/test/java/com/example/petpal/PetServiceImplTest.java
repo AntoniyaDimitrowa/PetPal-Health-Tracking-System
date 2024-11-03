@@ -19,10 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -144,7 +141,7 @@ class PetServiceImplTest {
 
         Pet newPet = new Pet(null, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
 
-        ArrayList<Long> vaccinationIds = new ArrayList<>();
+        List<Long> vaccinationIds = new ArrayList<>();
         vaccinationIds.add(100L);
 
         assertThrows(InvalidVaccinationException.class, () -> petService.createPet(newPet, breed.getId(), vaccinationIds));
@@ -160,7 +157,7 @@ class PetServiceImplTest {
 
         Pet newPet = new Pet(null, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
 
-        ArrayList<Long> vaccinationIds = new ArrayList<>();
+        List<Long> vaccinationIds = new ArrayList<>();
         vaccinationIds.add(1L);
 
         long result = petService.createPet(newPet, breed.getId(), vaccinationIds);

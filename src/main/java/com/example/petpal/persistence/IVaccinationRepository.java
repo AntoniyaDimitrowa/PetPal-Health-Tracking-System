@@ -6,15 +6,16 @@ import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.persistence.entity.VaccinationRecordEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
 public interface IVaccinationRepository {
     Optional<Vaccination> getVaccinationById(long id);
 
-    public ArrayList<Vaccination> getAllVaccinations();
+    List<Vaccination> getAllVaccinations();
 
     Long addVaccinationRecordToPet(Pet pet, VaccinationRecord vaccinationRecord);
 
-    ArrayList<VaccinationRecord> getVaccinationRecordsByPetId(long petId);
+    List<VaccinationRecord> getVaccinationRecordsByPetId(long petId);
 }

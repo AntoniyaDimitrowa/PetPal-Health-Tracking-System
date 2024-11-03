@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +38,7 @@ class MoodServiceImplTest {
 
     @Test
     void getAllMoods_shouldReturnAllMoods() {
-        ArrayList<Mood> moodList = new ArrayList<>();
+        List<Mood> moodList = new ArrayList<>();
         moodList.add(mood);
         when(moodRepository.getAllMoods()).thenReturn(moodList);
 

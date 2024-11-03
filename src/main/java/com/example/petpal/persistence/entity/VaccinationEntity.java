@@ -29,6 +29,6 @@ public class VaccinationEntity {
 
     @NotNull
     @Min(1)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "period_vac")
     private int range;
 }

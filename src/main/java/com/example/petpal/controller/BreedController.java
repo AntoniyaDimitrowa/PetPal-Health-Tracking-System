@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -37,8 +38,8 @@ public class BreedController {
     }
 
     @GetMapping()
-    public ResponseEntity<ArrayList<BreedDTO>> getAllBreeds() {
-        ArrayList<BreedDTO> breedDTOs = BreedConverter.convertFromBreedsToBreedDTOs(breedService.getAllBreeds());
+    public ResponseEntity<List<BreedDTO>> getAllBreeds() {
+        List<BreedDTO> breedDTOs = BreedConverter.convertFromBreedsToBreedDTOs(breedService.getAllBreeds());
         return ResponseEntity.ok(breedDTOs);
     }
 

@@ -6,11 +6,12 @@ import com.example.petpal.controller.dto.vaccination.VaccinationDTO;
 import com.example.petpal.controller.dto.vaccination.VaccinationRecordDTO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class VaccinationConverter {
     private VaccinationConverter(){}
 
-    public static ArrayList<VaccinationRecord> convertFromVaccinationRecordDTOsToVaccinationRecords(ArrayList<VaccinationRecordDTO> dtos){
+    public static List<VaccinationRecord> convertFromVaccinationRecordDTOsToVaccinationRecords(List<VaccinationRecordDTO> dtos){
         ArrayList<VaccinationRecord> result = new ArrayList<>();
 
         for (VaccinationRecordDTO dto : dtos) {
@@ -36,7 +37,7 @@ public class VaccinationConverter {
                 .build();
     };
 
-    public static ArrayList<VaccinationRecordDTO> convertFromVaccinationRecordsToVaccinationRecordsDTOs(ArrayList<VaccinationRecord> records){
+    public static List<VaccinationRecordDTO> convertFromVaccinationRecordsToVaccinationRecordsDTOs(List<VaccinationRecord> records){
         ArrayList<VaccinationRecordDTO> result = new ArrayList<>();
 
         for (VaccinationRecord vr : records) {
@@ -45,7 +46,7 @@ public class VaccinationConverter {
         return result;
     };
 
-    public static ArrayList<VaccinationDTO> convertFromVaccinationsToVaccinationsDTOs(ArrayList<Vaccination> vaccinations){
+    public static List<VaccinationDTO> convertFromVaccinationsToVaccinationsDTOs(List<Vaccination> vaccinations){
         ArrayList<VaccinationDTO> result = new ArrayList<>();
 
         for (Vaccination v : vaccinations) {

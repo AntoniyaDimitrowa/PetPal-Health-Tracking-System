@@ -8,10 +8,11 @@ import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public interface IBreedService {
-    ArrayList<Breed> getAllBreeds();
+    List<Breed> getAllBreeds();
 
     Optional<Breed> getBreedById(Long id);
 
@@ -21,5 +22,5 @@ public interface IBreedService {
 
     boolean deleteBreed(Long id);
 
-    Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems) throws InvalidBreedException;
+    Breed updateHealthProblems(Long breedId, List<String> healthProblems) throws InvalidBreedException;
 }

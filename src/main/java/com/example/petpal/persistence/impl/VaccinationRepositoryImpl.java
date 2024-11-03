@@ -38,7 +38,7 @@ public class VaccinationRepositoryImpl implements IVaccinationRepository {
     }
 
     @Override
-    public ArrayList<Vaccination> getAllVaccinations() {
+    public List<Vaccination> getAllVaccinations() {
         List<VaccinationEntity> vaccinationEntities = vaccinationRepositoryJPA.findAll();
         return vaccinationEntities.stream()
                 .map(VaccinationConverter::convertFromVaccinationEntityToVaccination)  // Convert to domain objects
@@ -55,7 +55,7 @@ public class VaccinationRepositoryImpl implements IVaccinationRepository {
     }
 
     @Override
-    public ArrayList<VaccinationRecord> getVaccinationRecordsByPetId(long petId) {
+    public List<VaccinationRecord> getVaccinationRecordsByPetId(long petId) {
         List<VaccinationRecordEntity> recordEntities = vaccinationRecordRepositoryJPA.findByPetId(petId);
 
         return recordEntities.stream()

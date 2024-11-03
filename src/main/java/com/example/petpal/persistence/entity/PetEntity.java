@@ -55,9 +55,9 @@ public class PetEntity {
     @Column(nullable = false)
     private String image;
 
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private ArrayList<VaccinationRecordEntity> vaccinationRecords;
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<VaccinationRecordEntity> vaccinationRecords;
 
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private ArrayList<HealthRecordEntity> healthRecords;
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<HealthRecordEntity> healthRecords;
 }

@@ -5,6 +5,7 @@ import com.example.petpal.controller.dto.pet.CreatePetDTO;
 import com.example.petpal.controller.dto.pet.PetDTO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PetConverter {
 
@@ -51,7 +52,7 @@ public class PetConverter {
                 .build();
     }
 
-    public static ArrayList<PetDTO> convertFromPetsToPetDTOs(ArrayList<Pet> pets) {
+    public static List<PetDTO> convertFromPetsToPetDTOs(List<Pet> pets) {
         if (pets == null) return new ArrayList<>();
         ArrayList<PetDTO> dtos = new ArrayList<>();
         for (Pet pet : pets) {
@@ -60,7 +61,7 @@ public class PetConverter {
         return dtos;
     }
 
-    public static ArrayList<Pet> convertFromPetDTOsToPets(ArrayList<PetDTO> dtos) {
+    public static List<Pet> convertFromPetDTOsToPets(List<PetDTO> dtos) {
         if (dtos == null) return new ArrayList<>();
         ArrayList<Pet> pets = new ArrayList<>();
         for (PetDTO dto : dtos) {

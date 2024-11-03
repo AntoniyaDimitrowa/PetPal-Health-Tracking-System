@@ -11,11 +11,12 @@ import com.example.petpal.business.exception.InvalidVaccinationException;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public interface IPetService {
     Optional<Pet> getPet(Long petId);
-    Long createPet(Pet pet, Long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException, InvalidVaccinationException;
+    Long createPet(Pet pet, Long breedId, List<Long> vaccinationsIds) throws InvalidBreedException, InvalidVaccinationException;
     void updatePet(Pet pet, Long breedId) throws InvalidPetException, InvalidBreedException;
     boolean deletePet(Long petId);
 }

@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -27,6 +28,6 @@ public class User {
 
     private String address;
 
-    private Optional<ArrayList<Pet>> pets;
-    private Optional<ArrayList<BreedHealthInfo>> breedHealthInfos;
+    private Optional<List<Pet>> pets;
+    private Optional<List<BreedHealthInfo>> breedHealthInfos;
 }

@@ -4,7 +4,8 @@ import com.example.petpal.persistence.entity.HealthRecordEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface IHealthRecordRepositoryJPA extends JpaRepository<HealthRecordEntity, Long> {
-    ArrayList<HealthRecordEntity> findByPetId(Long petId);
+    List<HealthRecordEntity> findByPetId(Long petId);
 }

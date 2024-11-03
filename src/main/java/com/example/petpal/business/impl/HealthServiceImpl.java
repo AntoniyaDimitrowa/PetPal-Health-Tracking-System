@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -23,7 +24,7 @@ public class HealthServiceImpl implements IHealthService {
     private final IBreedRepository breedRepository;
 
     @Override
-    public ArrayList<HealthRecord> getHealthRecordsByPetId(Long petId) throws InvalidPetException {
+    public List<HealthRecord> getHealthRecordsByPetId(Long petId) throws InvalidPetException {
         Pet pet = petRepository.getPet(petId)
                 .orElseThrow(() -> new InvalidPetException(petId));
 
@@ -53,7 +54,7 @@ public class HealthServiceImpl implements IHealthService {
     }
 
     @Override
-    public ArrayList<BreedHealthInfo> getHealthInfoByBreedId(Long breedId) {
+    public List<BreedHealthInfo> getHealthInfoByBreedId(Long breedId) {
         return healthRepository.getHealthInfoByBreedId(breedId);
     }
 }

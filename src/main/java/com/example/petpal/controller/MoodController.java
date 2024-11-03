@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -33,8 +34,8 @@ public class MoodController {
     }
 
     @GetMapping()
-    public ResponseEntity<ArrayList<MoodDTO>> getAllMoods() {
-        ArrayList<MoodDTO> moodDTOs = MoodConverter.convertFromMoodsToMoodDTOs(moodService.getAllMoods());
+    public ResponseEntity<List<MoodDTO>> getAllMoods() {
+        List<MoodDTO> moodDTOs = MoodConverter.convertFromMoodsToMoodDTOs(moodService.getAllMoods());
         return ResponseEntity.ok(moodDTOs);
     }
 

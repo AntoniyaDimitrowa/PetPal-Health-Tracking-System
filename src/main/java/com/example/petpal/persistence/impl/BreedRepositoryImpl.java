@@ -23,7 +23,7 @@ public class BreedRepositoryImpl implements IBreedRepository {
     }
 
     @Override
-    public ArrayList<Breed> getAllBreeds() {
+    public List<Breed> getAllBreeds() {
         List<BreedEntity> breeds = jpaRepo.findAll();
         return breeds.stream()
                 .map(BreedConverter::convertFromBreedEntityToBreed)
@@ -63,7 +63,7 @@ public class BreedRepositoryImpl implements IBreedRepository {
     }
 
     @Override
-    public Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems) {
+    public Breed updateHealthProblems(Long breedId, List<String> healthProblems) {
         Optional<BreedEntity> breedOpt = jpaRepo.findById(breedId);
         if (breedOpt.isPresent()) {
             BreedEntity breed = breedOpt.get();

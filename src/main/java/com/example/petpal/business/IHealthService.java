@@ -7,9 +7,10 @@ import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface IHealthService {
-    ArrayList<HealthRecord> getHealthRecordsByPetId(Long petId) throws InvalidPetException;
+    List<HealthRecord> getHealthRecordsByPetId(Long petId) throws InvalidPetException;
 
     Long createHealthRecord(Long petId, HealthRecord healthRecord) throws InvalidPetException;
 
@@ -17,6 +18,6 @@ public interface IHealthService {
 
     Long createHealthInfoForBreed(Long breedId, int ageRangeStart, int ageRangeEnd, BreedHealthInfo info) throws InvalidBreedException;
 
-    ArrayList<BreedHealthInfo> getHealthInfoByBreedId(Long breedId);
+    List<BreedHealthInfo> getHealthInfoByBreedId(Long breedId);
 
 }

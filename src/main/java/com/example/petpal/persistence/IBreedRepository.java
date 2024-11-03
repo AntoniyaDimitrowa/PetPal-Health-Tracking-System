@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IBreedRepository {
-    ArrayList<Breed> getAllBreeds();
+    List<Breed> getAllBreeds();
     Optional<Breed> getBreedById(Long id);
 
     Long createBreed(Breed breed);
@@ -19,5 +19,5 @@ public interface IBreedRepository {
 
     Breed updateBreed(Long id, Breed updatedBreed);
 
-    Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems);
+    Breed updateHealthProblems(Long breedId, List<String> healthProblems);
 }

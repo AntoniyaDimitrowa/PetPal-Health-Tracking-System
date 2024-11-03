@@ -4,6 +4,7 @@ import com.example.petpal.business.domain.Pet;
 import com.example.petpal.persistence.entity.PetEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PetConverter {
 
@@ -43,16 +44,16 @@ public class PetConverter {
                 .build();
     };
 
-    public static ArrayList<PetEntity> convertFromPetsToPetEntities(ArrayList<Pet> pets){
-        ArrayList<PetEntity> entities = new ArrayList<>();
+    public static List<PetEntity> convertFromPetsToPetEntities(List<Pet> pets){
+        List<PetEntity> entities = new ArrayList<>();
         for (Pet p : pets) {
             entities.add(convertFromPetToPetEntity(p));
         }
         return entities;
     };
 
-    public static ArrayList<Pet> convertFromPetEntitiesToPets(ArrayList<PetEntity> entities){
-        ArrayList<Pet> pets = new ArrayList<>();
+    public static List<Pet> convertFromPetEntitiesToPets(List<PetEntity> entities){
+        List<Pet> pets = new ArrayList<>();
         for (PetEntity entity : entities) {
             pets.add(convertFromPetEntityToPet(entity));
         }

@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -98,7 +99,7 @@ class VaccinationServiceImplTest {
 
     @Test
     void getVaccinationRecordsByPetId_shouldReturnRecordsIfPetExists() throws InvalidPetException {
-        ArrayList<VaccinationRecord> vaccinationRecords = new ArrayList<>();
+        List<VaccinationRecord> vaccinationRecords = new ArrayList<>();
         vaccinationRecords.add(vaccinationRecord);
 
         when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
@@ -128,7 +129,7 @@ class VaccinationServiceImplTest {
 
     @Test
     void getVaccinations_shouldReturnAllVaccinations() {
-        ArrayList<Vaccination> vaccinations = new ArrayList<>();
+        List<Vaccination> vaccinations = new ArrayList<>();
         vaccinations.add(Vaccination.builder().id(1L).name("Rabies").build());
 
         when(vaccinationRepository.getAllVaccinations()).thenReturn(vaccinations);

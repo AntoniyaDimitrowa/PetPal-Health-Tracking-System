@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class VaccinationServiceImpl implements IVaccinationService {
     private final IVaccinationRepository vaccinationRepository;
 
     @Override
-    public ArrayList<VaccinationRecord> getVaccinationRecordsByPetId(Long petId) throws InvalidPetException {
+    public List<VaccinationRecord> getVaccinationRecordsByPetId(Long petId) throws InvalidPetException {
         Pet pet = petRepository.getPet(petId)
                 .orElseThrow(() -> new InvalidPetException(petId));
 
@@ -38,7 +39,7 @@ public class VaccinationServiceImpl implements IVaccinationService {
         vaccinationRepository.addVaccinationRecordToPet(pet, vaccinationRecord);
     }
 
-    public ArrayList<Vaccination> getVaccinations() {
+    public List<Vaccination> getVaccinations() {
         return vaccinationRepository.getAllVaccinations();
     }
 }

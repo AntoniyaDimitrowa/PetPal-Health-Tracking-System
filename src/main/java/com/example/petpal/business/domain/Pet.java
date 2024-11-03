@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,6 +19,6 @@ public class Pet {
     private Date birthdate;
     private double weight;
     private String image;
-    private ArrayList<VaccinationRecord> vaccinationRecords;
-    private ArrayList<HealthRecord> healthRecords;
+    private List<VaccinationRecord> vaccinationRecords;
+    private List<HealthRecord> healthRecords;
 }

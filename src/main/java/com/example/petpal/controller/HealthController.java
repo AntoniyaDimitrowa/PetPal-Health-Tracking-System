@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/health")
@@ -22,9 +23,9 @@ public class HealthController {
     private final IHealthService healthService;
 
     @GetMapping("/pets/{petId}/records")
-    public ResponseEntity<ArrayList<HealthRecordDTO>> getHealthRecordsByPetId(@PathVariable Long petId) {
+    public ResponseEntity<List<HealthRecordDTO>> getHealthRecordsByPetId(@PathVariable Long petId) {
         try {
-            ArrayList<HealthRecord> healthRecords = healthService.getHealthRecordsByPetId(petId);
+            List<HealthRecord> healthRecords = healthService.getHealthRecordsByPetId(petId);
             return ResponseEntity.ok(HealthConverter.convertFromHealthRecordsToHealthRecordDTOs(healthRecords));
         } catch (InvalidPetException e) {
             return ResponseEntity.notFound().build();
@@ -43,8 +44,8 @@ public class HealthController {
     }
 
     @GetMapping("/breeds/{breedId}/health")
-    public ResponseEntity<ArrayList<BreedHealthInfoDTO>> getHealthInfoForBreed(@PathVariable Long breedId) {
-        ArrayList<BreedHealthInfo> healthInfos = healthService.getHealthInfoByBreedId(breedId);
+    public ResponseEntity<List<BreedHealthInfoDTO>> getHealthInfoForBreed(@PathVariable Long breedId) {
+        List<BreedHealthInfo> healthInfos = healthService.getHealthInfoByBreedId(breedId);
         return ResponseEntity.ok(HealthConverter.convertFromBreedHealthInfosToDTOs(healthInfos));
     }
 

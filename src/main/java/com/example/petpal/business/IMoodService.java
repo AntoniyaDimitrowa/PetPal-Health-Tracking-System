@@ -6,10 +6,11 @@ import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public interface IMoodService {
-    ArrayList<Mood> getAllMoods();
+    List<Mood> getAllMoods();
 
     Optional<Mood> getMoodById(Long id);
 

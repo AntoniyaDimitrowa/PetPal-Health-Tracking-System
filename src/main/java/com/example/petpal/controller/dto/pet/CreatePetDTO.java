@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,5 +19,5 @@ public class CreatePetDTO {
     private double weight;
     private String image;
 
-    private ArrayList<Long> vaccinationRecordsIds;
+    private List<Long> vaccinationRecordsIds;
 }

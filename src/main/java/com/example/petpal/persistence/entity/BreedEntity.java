@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -39,6 +40,6 @@ public class BreedEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "breed_health_problems", joinColumns = @JoinColumn(name = "breed_id"))
     @Column(name = "health_problem")
-    private ArrayList<String> commonHealthProblems;
+    private List<String> commonHealthProblems;
 
 }

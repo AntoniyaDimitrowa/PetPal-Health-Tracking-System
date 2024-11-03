@@ -34,7 +34,7 @@ public class HealthRepositoryImpl implements IHealthRepository {
 
 
     @Override
-    public ArrayList<BreedHealthInfo> getHealthInfoByBreedId(long breedId) {
+    public List<BreedHealthInfo> getHealthInfoByBreedId(long breedId) {
         List<BreedHealthInfoEntity> healthInfoEntities = breedHealthInfoRepository.findAllByBreedId(breedId);
 
         return HealthConverter.convertFromEntitiesToBreedHealthInfos(new ArrayList<>(healthInfoEntities));
@@ -54,7 +54,7 @@ public class HealthRepositoryImpl implements IHealthRepository {
 
 
     @Override
-    public ArrayList<HealthRecord> getHealthRecordsByPetId(long petId) {
+    public List<HealthRecord> getHealthRecordsByPetId(long petId) {
         List<HealthRecordEntity> healthRecordEntities = healthRecordRepository.findByPetId(petId);
 
         return HealthConverter.convertFromHealthRecordEntitiesToHealthRecords(healthRecordEntities);

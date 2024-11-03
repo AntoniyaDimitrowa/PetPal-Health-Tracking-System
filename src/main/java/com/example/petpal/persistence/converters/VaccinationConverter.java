@@ -7,12 +7,13 @@ import com.example.petpal.persistence.entity.VaccinationEntity;
 import com.example.petpal.persistence.entity.VaccinationRecordEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class VaccinationConverter {
     private VaccinationConverter(){}
 
-    public static ArrayList<VaccinationRecord> convertFromVaccinationRecordEntitiesToVaccinationRecords(ArrayList<VaccinationRecordEntity> entities){
-        ArrayList<VaccinationRecord> result = new ArrayList<>();
+    public static List<VaccinationRecord> convertFromVaccinationRecordEntitiesToVaccinationRecords(List<VaccinationRecordEntity> entities){
+        List<VaccinationRecord> result = new ArrayList<>();
 
         for (VaccinationRecordEntity entity : entities) {
             result.add(convertFromVaccinationRecordEntityToVaccinationRecord(entity));
@@ -20,8 +21,8 @@ public class VaccinationConverter {
         return result;
     };
 
-    public static ArrayList<Vaccination> convertFromVaccinationEntitiesToVaccination(ArrayList<VaccinationEntity> entities){
-        ArrayList<Vaccination> result = new ArrayList<>();
+    public static List<Vaccination> convertFromVaccinationEntitiesToVaccination(List<VaccinationEntity> entities){
+        List<Vaccination> result = new ArrayList<>();
 
         for (VaccinationEntity entity : entities) {
             result.add(convertFromVaccinationEntityToVaccination(entity));
@@ -45,8 +46,8 @@ public class VaccinationConverter {
         );
     };
 
-    public static ArrayList<VaccinationRecordEntity> convertFromVaccinationRecordsToVaccinationRecordsEntities(ArrayList<VaccinationRecord> records){
-        ArrayList<VaccinationRecordEntity> result = new ArrayList<>();
+    public static List<VaccinationRecordEntity> convertFromVaccinationRecordsToVaccinationRecordsEntities(List<VaccinationRecord> records){
+        List<VaccinationRecordEntity> result = new ArrayList<>();
 
         for (VaccinationRecord vr : records) {
             result.add(convertFromVaccinationRecordToVaccinationRecordEntity(vr));

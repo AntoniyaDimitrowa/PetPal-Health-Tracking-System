@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,7 +26,7 @@ public class BreedServiceImpl implements IBreedService {
     private final IMoodRepository moodRepository;
 
     @Override
-    public ArrayList<Breed> getAllBreeds() {
+    public List<Breed> getAllBreeds() {
         return new ArrayList<>(breedRepository.getAllBreeds());
     }
 
@@ -61,7 +62,7 @@ public class BreedServiceImpl implements IBreedService {
     }
 
     @Override
-    public Breed updateHealthProblems(Long breedId, ArrayList<String> healthProblems) throws InvalidBreedException {
+    public Breed updateHealthProblems(Long breedId, List<String> healthProblems) throws InvalidBreedException {
         Breed breed = breedRepository.getBreedById(breedId)
                 .orElseThrow(() -> new InvalidBreedException(breedId));
 

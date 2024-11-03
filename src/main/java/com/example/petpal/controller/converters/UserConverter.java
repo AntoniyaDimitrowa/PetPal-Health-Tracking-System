@@ -7,6 +7,7 @@ import com.example.petpal.controller.dto.user.UserDTO;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public class UserConverter {
@@ -65,7 +66,7 @@ public class UserConverter {
                 .build();
     }
 
-    public static ArrayList<UserDTO> convertFromUsersToUserDTOs(ArrayList<User> users) {
+    public static List<UserDTO> convertFromUsersToUserDTOs(List<User> users) {
         if (users == null) return new ArrayList<>();
         ArrayList<UserDTO> dtos = new ArrayList<>();
         for (User user : users) {

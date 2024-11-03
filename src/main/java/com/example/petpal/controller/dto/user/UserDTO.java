@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -19,7 +20,7 @@ public class UserDTO {
     private Date memberSince;
     private String role;
     private String address;
-    private Optional<ArrayList<PetDTO>> pets;
-    private Optional<ArrayList<BreedHealthInfoDTO>> breedHealthInfos;
+    private Optional<List<PetDTO>> pets;
+    private Optional<List<BreedHealthInfoDTO>> breedHealthInfos;
     private String image;
 }

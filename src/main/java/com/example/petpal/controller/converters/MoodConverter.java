@@ -4,6 +4,7 @@ import com.example.petpal.business.domain.Mood;
 import com.example.petpal.controller.dto.mood.MoodDTO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MoodConverter {
     private MoodConverter() {}
@@ -26,7 +27,7 @@ public class MoodConverter {
                 .build();
     }
 
-    public static ArrayList<MoodDTO> convertFromMoodsToMoodDTOs(ArrayList<Mood> moods) {
+    public static List<MoodDTO> convertFromMoodsToMoodDTOs(List<Mood> moods) {
         if (moods == null) return new ArrayList<>();
         ArrayList<MoodDTO> dtos = new ArrayList<>();
         for (Mood m : moods) {
@@ -35,7 +36,7 @@ public class MoodConverter {
         return dtos;
     }
 
-    public static ArrayList<Mood> convertFromMoodDTOsToMoods(ArrayList<MoodDTO> dtos) {
+    public static List<Mood> convertFromMoodDTOsToMoods(List<MoodDTO> dtos) {
         if (dtos == null) return new ArrayList<>();
         ArrayList<Mood> moods = new ArrayList<>();
         for (MoodDTO dto : dtos) {

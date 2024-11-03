@@ -10,7 +10,7 @@ import java.util.List;
 
 public class HealthConverter {
 
-    public static ArrayList<HealthRecord> convertFromHealthRecordDTOsToHealthRecords(List<HealthRecordDTO> dtos) {
+    public static List<HealthRecord> convertFromHealthRecordDTOsToHealthRecords(List<HealthRecordDTO> dtos) {
         ArrayList<HealthRecord> result = new ArrayList<>();
         for (HealthRecordDTO dto : dtos) {
             result.add(convertFromHealthRecordDTOToHealthRecord(dto));
@@ -31,7 +31,7 @@ public class HealthConverter {
                 .build();
     }
 
-    public static ArrayList<HealthRecordDTO> convertFromHealthRecordsToHealthRecordDTOs(List<HealthRecord> records) {
+    public static List<HealthRecordDTO> convertFromHealthRecordsToHealthRecordDTOs(List<HealthRecord> records) {
         ArrayList<HealthRecordDTO> result = new ArrayList<>();
         for (HealthRecord record : records) {
             result.add(convertFromHealthRecordToHealthRecordDTO(record));
@@ -72,7 +72,7 @@ public class HealthConverter {
                 .build();
     }
 
-    public static ArrayList<BreedHealthInfoDTO> convertFromBreedHealthInfosToDTOs(ArrayList<BreedHealthInfo> infos) {
+    public static List<BreedHealthInfoDTO> convertFromBreedHealthInfosToDTOs(List<BreedHealthInfo> infos) {
         ArrayList<BreedHealthInfoDTO> entities = new ArrayList<>();
         for (BreedHealthInfo info : infos) {
             entities.add(convertFromBreedHealthInfoToBreedHealthInfoDTO(info));
@@ -80,7 +80,7 @@ public class HealthConverter {
         return entities;
     }
 
-    public static ArrayList<BreedHealthInfo> convertFromDTOsToBreedHealthInfos(ArrayList<BreedHealthInfoDTO> dtos) {
+    public static List<BreedHealthInfo> convertFromDTOsToBreedHealthInfos(List<BreedHealthInfoDTO> dtos) {
         ArrayList<BreedHealthInfo> infos = new ArrayList<>();
         for (BreedHealthInfoDTO dto : dtos) {
             infos.add(convertFromBreedHealthInfoDTOToBreedHealthInfo(dto));

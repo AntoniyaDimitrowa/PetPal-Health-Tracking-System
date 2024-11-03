@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,7 +25,7 @@ public class PetDTO {
     private double weight;
     private String image;
 
-    private ArrayList<VaccinationRecordDTO> vaccinationRecords;
-    private ArrayList<HealthRecordDTO> healthRecords;
+    private List<VaccinationRecordDTO> vaccinationRecords;
+    private List<HealthRecordDTO> healthRecords;
 
 }

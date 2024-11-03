@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -15,5 +16,5 @@ public class CreateBreedDTO {
     private String description;
     private Long normalMoodId;
     private double minimumExercisePerDay; //in hours
-    private ArrayList<String> commonHealthProblems;
+    private List<String> commonHealthProblems;
 }

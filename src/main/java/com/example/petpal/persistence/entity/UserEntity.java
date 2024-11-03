@@ -49,8 +49,8 @@ public class UserEntity {
     private String image;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private ArrayList<PetEntity> pets;
+    private List<PetEntity> pets;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private ArrayList<BreedHealthInfoEntity> breedHealthInfos;
+    private List<BreedHealthInfoEntity> breedHealthInfos;
 }

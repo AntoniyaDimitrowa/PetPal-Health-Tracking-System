@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,11 +32,11 @@ public class PetServiceImpl implements IPetService {
     }
 
     @Override
-    public Long createPet(Pet pet, Long breedId, ArrayList<Long> vaccinationsIds) throws InvalidBreedException, InvalidVaccinationException {
+    public Long createPet(Pet pet, Long breedId, List<Long> vaccinationsIds) throws InvalidBreedException, InvalidVaccinationException {
         Breed breed = breedRepository.getBreedById(breedId)
                 .orElseThrow(() -> new InvalidBreedException(breedId));
 
-        ArrayList<VaccinationRecord> vaccinations = new ArrayList<>();
+        List<VaccinationRecord> vaccinations = new ArrayList<>();
         for (Long id : vaccinationsIds) {
             Vaccination vaccination = vaccinationRepository.getVaccinationById(id)
                     .orElseThrow(() -> new InvalidVaccinationException(id));

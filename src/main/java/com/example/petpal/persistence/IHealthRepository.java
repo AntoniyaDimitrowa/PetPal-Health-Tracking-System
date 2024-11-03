@@ -5,15 +5,16 @@ import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.persistence.entity.HealthRecordEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public interface IHealthRepository {
     Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age);
-    ArrayList<BreedHealthInfo> getHealthInfoByBreedId(long breedId);
+    List<BreedHealthInfo> getHealthInfoByBreedId(long breedId);
 
     Long createHealthInfoForBreed(Long breedId, int ageRangeStart, int ageRangeEnd, BreedHealthInfo info);
 
-    ArrayList<HealthRecord> getHealthRecordsByPetId(long petId);
+    List<HealthRecord> getHealthRecordsByPetId(long petId);
 
     Long createHealthRecordToPet(long petId, HealthRecord healthRecord);
 

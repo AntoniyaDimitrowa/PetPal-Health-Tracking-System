@@ -4,6 +4,7 @@ import com.example.petpal.controller.dto.mood.MoodDTO;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,5 +15,5 @@ public class BreedDTO {
     private String description;
     private MoodDTO normalMood;
     private double minimumExercisePerDay; //in hours
-    private ArrayList<String> commonHealthProblems;
+    private List<String> commonHealthProblems;
 }

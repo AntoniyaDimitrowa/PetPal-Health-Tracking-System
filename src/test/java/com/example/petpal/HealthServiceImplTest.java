@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -155,7 +156,7 @@ class HealthServiceImplTest {
     @Test
     void getHealthInfoByBreedId_shouldReturnInfo() {
         Long breedId = 1L;
-        ArrayList<BreedHealthInfo> healthInfoList = new ArrayList<>();
+        List<BreedHealthInfo> healthInfoList = new ArrayList<>();
 
         when(healthRepository.getHealthInfoByBreedId(breedId)).thenReturn(healthInfoList);
 

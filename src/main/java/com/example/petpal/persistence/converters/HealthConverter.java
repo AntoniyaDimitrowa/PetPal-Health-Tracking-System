@@ -10,8 +10,8 @@ import java.util.List;
 
 public class HealthConverter {
 
-    public static ArrayList<HealthRecord> convertFromHealthRecordEntitiesToHealthRecords(List<HealthRecordEntity> entities) {
-        ArrayList<HealthRecord> result = new ArrayList<>();
+    public static List<HealthRecord> convertFromHealthRecordEntitiesToHealthRecords(List<HealthRecordEntity> entities) {
+        List<HealthRecord> result = new ArrayList<>();
         for (HealthRecordEntity entity : entities) {
             result.add(convertFromHealthRecordEntityToHealthRecord(entity));
         }
@@ -32,8 +32,8 @@ public class HealthConverter {
                 .build();
     }
 
-    public static ArrayList<HealthRecordEntity> convertFromHealthRecordsToHealthRecordEntities(List<HealthRecord> records) {
-        ArrayList<HealthRecordEntity> result = new ArrayList<>();
+    public static List<HealthRecordEntity> convertFromHealthRecordsToHealthRecordEntities(List<HealthRecord> records) {
+        List<HealthRecordEntity> result = new ArrayList<>();
         for (HealthRecord record : records) {
             result.add(convertFromHealthRecordToHealthRecordEntity(record));
         }
@@ -76,16 +76,16 @@ public class HealthConverter {
                 .build();
     }
 
-    public static ArrayList<BreedHealthInfoEntity> convertFromBreedHealthInfosToEntities(ArrayList<BreedHealthInfo> infos){
-        ArrayList<BreedHealthInfoEntity> entities = new ArrayList<>();
+    public static List<BreedHealthInfoEntity> convertFromBreedHealthInfosToEntities(List<BreedHealthInfo> infos){
+        List<BreedHealthInfoEntity> entities = new ArrayList<>();
         for (BreedHealthInfo info : infos) {
             entities.add(convertFromBreedHealthInfoToBreedHealthInfoEntity(info));
         }
         return entities;
     };
 
-    public static ArrayList<BreedHealthInfo> convertFromEntitiesToBreedHealthInfos(ArrayList<BreedHealthInfoEntity> entities){
-        ArrayList<BreedHealthInfo> infos = new ArrayList<>();
+    public static List<BreedHealthInfo> convertFromEntitiesToBreedHealthInfos(List<BreedHealthInfoEntity> entities){
+        List<BreedHealthInfo> infos = new ArrayList<>();
         for (BreedHealthInfoEntity entity : entities) {
             infos.add(convertFromBreedHealthInfoEntityToBreedHealthInfo(entity));
         }

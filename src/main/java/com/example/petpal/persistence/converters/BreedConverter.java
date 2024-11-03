@@ -4,6 +4,7 @@ import com.example.petpal.business.domain.Breed;
 import com.example.petpal.persistence.entity.BreedEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BreedConverter {
     private BreedConverter(){}
@@ -37,15 +38,15 @@ public class BreedConverter {
 
 
 
-    public static ArrayList<BreedEntity> convertFromBreedsToBreedEntities(ArrayList<Breed> breeds){
-        ArrayList<BreedEntity> entities = new ArrayList<>();
+    public static List<BreedEntity> convertFromBreedsToBreedEntities(List<Breed> breeds){
+        List<BreedEntity> entities = new ArrayList<>();
         for (Breed b : breeds) {
             entities.add(convertFromBreedToBreedEntity(b));
         }
         return entities;
     };
-    public static ArrayList<Breed> convertFromBreedEntitiesToBreeds(ArrayList<BreedEntity> entities){
-        ArrayList<Breed> breeds = new ArrayList<>();
+    public static List<Breed> convertFromBreedEntitiesToBreeds(List<BreedEntity> entities){
+        List<Breed> breeds = new ArrayList<>();
         for (BreedEntity entity : entities) {
             breeds.add(convertFromBreedEntityToBreed(entity));
         }

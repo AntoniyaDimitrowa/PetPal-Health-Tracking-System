@@ -3,6 +3,7 @@ package com.example.petpal.business.domain;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,6 +15,6 @@ public class Breed {
     private String description;
     private Mood normalMood;
     private double minimumExercisePerDay; //in hours
-    private ArrayList<String> commonHealthProblems;
+    private List<String> commonHealthProblems;
 
 }

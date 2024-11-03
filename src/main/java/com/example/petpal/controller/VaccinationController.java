@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/vaccinations")
@@ -20,8 +21,8 @@ import java.util.ArrayList;
 public class VaccinationController {
     private IVaccinationService vaccinationService;
     @GetMapping()
-    public ResponseEntity<ArrayList<VaccinationDTO>> getAllVaccinations() {
-        ArrayList<VaccinationDTO> vaccinationDTOs = VaccinationConverter.convertFromVaccinationsToVaccinationsDTOs(vaccinationService.getVaccinations());
+    public ResponseEntity<List<VaccinationDTO>> getAllVaccinations() {
+        List<VaccinationDTO> vaccinationDTOs = VaccinationConverter.convertFromVaccinationsToVaccinationsDTOs(vaccinationService.getVaccinations());
         return ResponseEntity.ok(vaccinationDTOs);
     }
 }

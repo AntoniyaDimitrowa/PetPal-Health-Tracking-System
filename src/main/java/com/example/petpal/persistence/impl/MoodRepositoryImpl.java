@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,8 +29,8 @@ public class MoodRepositoryImpl implements IMoodRepository {
     }
 
     @Override
-    public ArrayList<Mood> getAllMoods() {
-        ArrayList<MoodEntity> moodEntities = new ArrayList<>(moodRepositoryJPA.findAll());
+    public List<Mood> getAllMoods() {
+        List<MoodEntity> moodEntities = new ArrayList<>(moodRepositoryJPA.findAll());
         return MoodConverter.convertFromMoodEntitiesToMoods(moodEntities);
     }
 

@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,12 +59,11 @@ class BreedServiceImplTest {
 
     @Test
     void getAllBreeds_shouldReturnAllBreeds() {
-        ArrayList<Breed> breeds = new ArrayList<>();
+        List<Breed> breeds = new ArrayList<>();
         breeds.add(breed);
         when(breedRepository.getAllBreeds()).thenReturn(breeds);
 
-        ArrayList<Breed> result = breedService.getAllBreeds();
-
+        List<Breed> result = breedService.getAllBreeds();
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(breedRepository, times(1)).getAllBreeds();
@@ -172,7 +172,7 @@ class BreedServiceImplTest {
     @Test
     void updateHealthProblems_shouldUpdateHealthProblemsWhenBreedExists() throws InvalidBreedException {
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
-        ArrayList<String> healthProblems = new ArrayList<>();
+        List<String> healthProblems = new ArrayList<>();
         healthProblems.add("Hip Dysplasia");
         when(breedRepository.updateHealthProblems(1L, healthProblems)).thenReturn(breed);
 
