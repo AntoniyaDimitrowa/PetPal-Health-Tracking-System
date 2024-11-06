@@ -4,10 +4,12 @@ import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HealthConverter {
 
     public static List<HealthRecord> convertFromHealthRecordDTOsToHealthRecords(List<HealthRecordDTO> dtos) {
@@ -33,22 +35,22 @@ public class HealthConverter {
 
     public static List<HealthRecordDTO> convertFromHealthRecordsToHealthRecordDTOs(List<HealthRecord> records) {
         ArrayList<HealthRecordDTO> result = new ArrayList<>();
-        for (HealthRecord record : records) {
-            result.add(convertFromHealthRecordToHealthRecordDTO(record));
+        for (HealthRecord healthRecord : records) {
+            result.add(convertFromHealthRecordToHealthRecordDTO(healthRecord));
         }
         return result;
     }
 
-    public static HealthRecordDTO convertFromHealthRecordToHealthRecordDTO(HealthRecord record) {
-        if (record == null) return null;
+    public static HealthRecordDTO convertFromHealthRecordToHealthRecordDTO(HealthRecord healthRecord) {
+        if (healthRecord == null) return null;
         return HealthRecordDTO.builder()
-                .date(record.getDate())
-                .foodIntake(record.getFoodIntake())
-                .waterIntake(record.getWaterIntake())
-                .mood(MoodConverter.convertFromMoodToMoodDTO(record.getMood()))
-                .activityLevel(record.getActivityLevel())
-                .socialInteraction(record.getSocialInteraction())
-                .notes(record.getNotes())
+                .date(healthRecord.getDate())
+                .foodIntake(healthRecord.getFoodIntake())
+                .waterIntake(healthRecord.getWaterIntake())
+                .mood(MoodConverter.convertFromMoodToMoodDTO(healthRecord.getMood()))
+                .activityLevel(healthRecord.getActivityLevel())
+                .socialInteraction(healthRecord.getSocialInteraction())
+                .notes(healthRecord.getNotes())
                 .build();
     }
 

@@ -1,16 +1,10 @@
 package com.example.petpal.business;
 
-import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.VaccinationRecord;
-import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.domain.Pet;
-import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.exception.InvalidVaccinationException;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 

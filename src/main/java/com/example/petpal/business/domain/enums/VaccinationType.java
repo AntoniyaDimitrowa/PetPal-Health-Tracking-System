@@ -1,6 +1,6 @@
 package com.example.petpal.business.domain.enums;
 
 public enum VaccinationType {
-    ForPuppy,
-    ForAdult
+    FOR_PUPPY,
+    FOR_ADULT
 }

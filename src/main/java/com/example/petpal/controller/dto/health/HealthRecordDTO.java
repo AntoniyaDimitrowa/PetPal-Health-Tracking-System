@@ -1,8 +1,6 @@
 package com.example.petpal.controller.dto.health;
 
 import com.example.petpal.controller.dto.mood.MoodDTO;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

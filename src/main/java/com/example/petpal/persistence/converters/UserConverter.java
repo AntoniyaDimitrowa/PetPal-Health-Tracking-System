@@ -2,13 +2,14 @@ package com.example.petpal.persistence.converters;
 
 import com.example.petpal.business.domain.User;
 import com.example.petpal.persistence.entity.UserEntity;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Optional;
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserConverter {
 
-    // Convert from User to UserEntity
     public static UserEntity convertFromUserToUserEntity(User user) {
         return UserEntity.builder()
                 .id(user.getId())
@@ -19,9 +20,8 @@ public class UserConverter {
                 .role(user.getRole())
                 .address(user.getAddress())
                 .image(user.getImage())
-                .pets(user.getPets() != null ? PetConverter.convertFromPetsToPetEntities(user.getPets().get()) : new ArrayList<>())
-                .breedHealthInfos(user.getBreedHealthInfos() != null ?
-                        HealthConverter.convertFromBreedHealthInfosToEntities(user.getBreedHealthInfos().get()) : new ArrayList<>())
+                .pets(user.getPets().map(PetConverter::convertFromPetsToPetEntities).orElse(new ArrayList<>()))
+                .breedHealthInfos(user.getBreedHealthInfos().map(HealthConverter::convertFromBreedHealthInfosToEntities).orElse(new ArrayList<>()))
                 .build();
     }
 

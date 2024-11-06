@@ -3,7 +3,6 @@ package com.example.petpal.controller.dto.pet;
 import com.example.petpal.business.domain.enums.Gender;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

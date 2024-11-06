@@ -5,7 +5,6 @@ import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.exception.InvalidVaccinationException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IVaccinationService {

@@ -9,6 +9,7 @@ stages:
   - build
   - test
   - deploy
+  - sonarqube-check
 
 build:
   stage: build
@@ -24,6 +25,11 @@ test:
   stage: test
   script:
     - ./gradlew test
+
+sonarqube-check:
+  stage: sonarqube-check
+  script:
+    - ./gradlew sonar test jacocoTestReport
 
 deploy:
   stage: deploy

@@ -5,12 +5,14 @@ import com.example.petpal.business.domain.VaccinationRecord;
 
 import com.example.petpal.persistence.entity.VaccinationEntity;
 import com.example.petpal.persistence.entity.VaccinationRecordEntity;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class VaccinationConverter {
-    private VaccinationConverter(){}
 
     public static List<VaccinationRecord> convertFromVaccinationRecordEntitiesToVaccinationRecords(List<VaccinationRecordEntity> entities){
         List<VaccinationRecord> result = new ArrayList<>();
@@ -19,7 +21,7 @@ public class VaccinationConverter {
             result.add(convertFromVaccinationRecordEntityToVaccinationRecord(entity));
         }
         return result;
-    };
+    }
 
     public static List<Vaccination> convertFromVaccinationEntitiesToVaccination(List<VaccinationEntity> entities){
         List<Vaccination> result = new ArrayList<>();
@@ -28,7 +30,7 @@ public class VaccinationConverter {
             result.add(convertFromVaccinationEntityToVaccination(entity));
         }
         return result;
-    };
+    }
 
     public static VaccinationRecord convertFromVaccinationRecordEntityToVaccinationRecord(VaccinationRecordEntity entity){
         return VaccinationRecord.builder()
@@ -36,7 +38,7 @@ public class VaccinationConverter {
                 .vaccination(entity.getVaccination() != null ? convertFromVaccinationEntityToVaccination(entity.getVaccination()) : null)
                 .date(entity.getDate())
                 .build();
-    };
+    }
 
     public static Vaccination convertFromVaccinationEntityToVaccination(VaccinationEntity entity){
         return new Vaccination(entity.getId(),
@@ -44,8 +46,7 @@ public class VaccinationConverter {
                 entity.getType(),
                 entity.getRange()
         );
-    };
-
+    }
     public static List<VaccinationRecordEntity> convertFromVaccinationRecordsToVaccinationRecordsEntities(List<VaccinationRecord> records){
         List<VaccinationRecordEntity> result = new ArrayList<>();
 
@@ -53,16 +54,16 @@ public class VaccinationConverter {
             result.add(convertFromVaccinationRecordToVaccinationRecordEntity(vr));
         }
         return result;
-    };
+    }
 
-    public static VaccinationRecordEntity convertFromVaccinationRecordToVaccinationRecordEntity(VaccinationRecord record){
-        if (record == null) return null;
+    public static VaccinationRecordEntity convertFromVaccinationRecordToVaccinationRecordEntity(VaccinationRecord vaccinationRecord){
+        if (vaccinationRecord == null) return null;
         return VaccinationRecordEntity.builder()
-                .id(record.getId())
-                .vaccination(record.getVaccination() != null ? convertFromVaccinationToVaccinationEntity(record.getVaccination()) : null)
-                .date(record.getDate())
+                .id(vaccinationRecord.getId())
+                .vaccination(vaccinationRecord.getVaccination() != null ? convertFromVaccinationToVaccinationEntity(vaccinationRecord.getVaccination()) : null)
+                .date(vaccinationRecord.getDate())
                 .build();
-    };
+    }
 
     public static VaccinationEntity convertFromVaccinationToVaccinationEntity(Vaccination vaccination){
         return VaccinationEntity.builder()
@@ -71,5 +72,5 @@ public class VaccinationConverter {
                 .type(vaccination.getType())
                 .range(vaccination.getRange())
                 .build();
-    };
+    }
 }

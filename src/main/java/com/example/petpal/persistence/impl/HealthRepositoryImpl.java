@@ -8,7 +8,6 @@ import com.example.petpal.persistence.IHealthRepository;
 import com.example.petpal.persistence.converters.HealthConverter;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 import com.example.petpal.persistence.entity.HealthRecordEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -18,12 +17,15 @@ import java.util.Optional;
 @Repository
 public class HealthRepositoryImpl implements IHealthRepository {
 
-    @Autowired
-    private IBreedHealthInfoRepositoryJPA breedHealthInfoRepository;
 
-    @Autowired
-    private IHealthRecordRepositoryJPA healthRecordRepository;
+    private final IBreedHealthInfoRepositoryJPA breedHealthInfoRepository;
 
+    private final IHealthRecordRepositoryJPA healthRecordRepository;
+
+    public HealthRepositoryImpl(IBreedHealthInfoRepositoryJPA breedHealthInfoRepository, IHealthRecordRepositoryJPA healthRecordRepository) {
+        this.breedHealthInfoRepository = breedHealthInfoRepository;
+        this.healthRecordRepository = healthRecordRepository;
+    }
     @Override
     public Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age) {
         //TODO fix this method

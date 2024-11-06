@@ -2,12 +2,14 @@ package com.example.petpal.persistence.converters;
 
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.persistence.entity.BreedEntity;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BreedConverter {
-    private BreedConverter(){}
 
     public static BreedEntity convertFromBreedToBreedEntity(Breed breed){
         return BreedEntity.builder()
@@ -19,7 +21,7 @@ public class BreedConverter {
                 .minimumExercisePerDay(breed.getMinimumExercisePerDay())
                 .commonHealthProblems(breed.getCommonHealthProblems())
                 .build();
-    };
+    }
 
 
 
@@ -34,7 +36,7 @@ public class BreedConverter {
                 .minimumExercisePerDay(entity.getMinimumExercisePerDay())
                 .commonHealthProblems(entity.getCommonHealthProblems())
                 .build();
-    };
+    }
 
 
 
@@ -44,14 +46,14 @@ public class BreedConverter {
             entities.add(convertFromBreedToBreedEntity(b));
         }
         return entities;
-    };
+    }
     public static List<Breed> convertFromBreedEntitiesToBreeds(List<BreedEntity> entities){
         List<Breed> breeds = new ArrayList<>();
         for (BreedEntity entity : entities) {
             breeds.add(convertFromBreedEntityToBreed(entity));
         }
         return breeds;
-    };
+    }
 
 
 }

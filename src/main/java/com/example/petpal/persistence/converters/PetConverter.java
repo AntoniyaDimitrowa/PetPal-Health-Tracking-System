@@ -2,14 +2,13 @@ package com.example.petpal.persistence.converters;
 
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.persistence.entity.PetEntity;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PetConverter {
-
-    private PetConverter(){}
-
     public static PetEntity convertFromPetToPetEntity(Pet pet){
         if (pet == null) return null;
         return PetEntity.builder()
@@ -25,7 +24,7 @@ public class PetConverter {
                 .healthRecords(pet.getHealthRecords() != null ?
                         HealthConverter.convertFromHealthRecordsToHealthRecordEntities(pet.getHealthRecords()) : new ArrayList<>())
                 .build();
-    };
+    }
 
     public static Pet convertFromPetEntityToPet(PetEntity pet){
         if (pet == null) return null;
@@ -42,7 +41,7 @@ public class PetConverter {
                 .healthRecords(pet.getHealthRecords() != null ?
                         HealthConverter.convertFromHealthRecordEntitiesToHealthRecords(pet.getHealthRecords()) : new ArrayList<>())
                 .build();
-    };
+    }
 
     public static List<PetEntity> convertFromPetsToPetEntities(List<Pet> pets){
         List<PetEntity> entities = new ArrayList<>();
@@ -50,7 +49,7 @@ public class PetConverter {
             entities.add(convertFromPetToPetEntity(p));
         }
         return entities;
-    };
+    }
 
     public static List<Pet> convertFromPetEntitiesToPets(List<PetEntity> entities){
         List<Pet> pets = new ArrayList<>();
@@ -58,5 +57,5 @@ public class PetConverter {
             pets.add(convertFromPetEntityToPet(entity));
         }
         return pets;
-    };
+    }
 }

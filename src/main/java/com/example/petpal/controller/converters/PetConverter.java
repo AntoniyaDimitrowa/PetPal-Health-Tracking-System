@@ -3,13 +3,14 @@ package com.example.petpal.controller.converters;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.controller.dto.pet.CreatePetDTO;
 import com.example.petpal.controller.dto.pet.PetDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PetConverter {
-
-    private PetConverter() {}
 
     public static PetDTO convertFromPetToPetDTO(Pet pet) {
         if (pet == null) return null;

@@ -4,12 +4,14 @@ import com.example.petpal.business.domain.Breed;
 import com.example.petpal.controller.dto.breed.BreedDTO;
 import com.example.petpal.controller.dto.breed.CreateBreedDTO;
 import com.example.petpal.controller.dto.breed.UpdateBreedDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BreedConverter {
-    private BreedConverter() {}
 
     public static BreedDTO convertFromBreedToBreedDTO(Breed breed) {
         if (breed == null) return null;
@@ -55,7 +57,6 @@ public class BreedConverter {
 
     public static Breed convertFromUpdateBreedDTOToBreed(UpdateBreedDTO dto) {
         return Breed.builder()
-                .id(dto.getId())
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .minimumExercisePerDay(dto.getMinimumExercisePerDay())

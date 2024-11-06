@@ -1,6 +1,5 @@
 package com.example.petpal.controller.dto.vaccination;
 
-import com.example.petpal.controller.dto.vaccination.VaccinationDTO;
 import lombok.*;
 
 import java.util.Date;

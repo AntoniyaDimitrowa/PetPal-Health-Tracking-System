@@ -1,8 +1,7 @@
-package com.example.petpal;
+package com.example.petpal.business.impl;
 
 import com.example.petpal.business.domain.User;
 import com.example.petpal.business.exception.InvalidUserException;
-import com.example.petpal.business.impl.UserServiceImpl;
 import com.example.petpal.persistence.IUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,23 +22,22 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    private User user;
+    private static final User user = User.builder()
+            .id(1L)
+            .name("John Doe")
+            .email("john.doe@example.com")
+            .password("password123")
+            .role("USER")
+            .memberSince(new java.util.Date())
+            .address("1234 Main St, Hometown")
+            .pets(Optional.empty())
+            .breedHealthInfos(Optional.empty())
+            .image("image_url")
+            .build();
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        user = User.builder()
-                .id(1L)
-                .name("John Doe")
-                .email("john.doe@example.com")
-                .password("password123")
-                .role("USER")
-                .memberSince(new java.util.Date())
-                .address("1234 Main St, Hometown")
-                .pets(Optional.empty())
-                .breedHealthInfos(Optional.empty())
-                .image("image_url")
-                .build();
+        MockitoAnnotations.openMocks(this);  // Initialize mocks before each test
     }
 
     @Test
@@ -64,13 +62,14 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createUser_shouldReturnCreatedUser() {
+    void createUser_shouldReturnUserIdWhenCreated() {
         when(userRepository.createUser(any(User.class))).thenReturn(1L);
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
 
         Long result = userService.createUser(user);
 
         assertNotNull(result);
+        assertEquals(1L, result);  // Check if the returned userId is correct
         verify(userRepository, times(1)).createUser(any(User.class));
     }
 
@@ -84,13 +83,15 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_shouldUpdateUserWhenExists() throws InvalidUserException {
+        User updatedUser = User.builder().id(1L).name("John Updated").email("updated@example.com").build();
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
-        when(userRepository.updateUser(eq(1L), any(User.class))).thenReturn(user);
+        when(userRepository.updateUser(eq(1L), any(User.class))).thenReturn(updatedUser);
 
-        User result = userService.updateUser(1L, user);
+        User result = userService.updateUser(1L, updatedUser);
 
         assertNotNull(result);
-        assertEquals(user, result);
+        assertEquals("John Updated", result.getName());  // Check if name was updated
+        assertEquals("updated@example.com", result.getEmail());  // Check if email was updated
         verify(userRepository, times(1)).updateUser(eq(1L), any(User.class));
     }
 

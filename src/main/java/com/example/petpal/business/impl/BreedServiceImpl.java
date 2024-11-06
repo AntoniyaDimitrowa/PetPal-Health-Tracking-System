@@ -2,16 +2,11 @@ package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IBreedService;
 import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IMoodRepository;
-import com.example.petpal.persistence.converters.BreedConverter;
-import com.example.petpal.persistence.converters.HealthConverter;
-import com.example.petpal.persistence.converters.MoodConverter;
-import com.example.petpal.persistence.entity.MoodEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +40,8 @@ public class BreedServiceImpl implements IBreedService {
     }
 
     @Override
-    public Breed updateBreed(Breed updatedBreed, Long normalMoodId) throws InvalidBreedException, InvalidMoodException {
-        Breed existingBreed = breedRepository.getBreedById(updatedBreed.getId())
+    public Breed updateBreed(Long id, Breed updatedBreed, Long normalMoodId) throws InvalidBreedException, InvalidMoodException {
+        Breed existingBreed = breedRepository.getBreedById(id)
                 .orElseThrow(() -> new InvalidBreedException(updatedBreed.getId()));
 
         Mood mood = moodRepository.getMoodById(normalMoodId)
@@ -63,8 +58,9 @@ public class BreedServiceImpl implements IBreedService {
 
     @Override
     public Breed updateHealthProblems(Long breedId, List<String> healthProblems) throws InvalidBreedException {
-        Breed breed = breedRepository.getBreedById(breedId)
-                .orElseThrow(() -> new InvalidBreedException(breedId));
+        if(breedRepository.getBreedById(breedId).isEmpty()) {
+            throw new InvalidBreedException(breedId);
+        }
 
         return breedRepository.updateHealthProblems(breedId, healthProblems);
     }

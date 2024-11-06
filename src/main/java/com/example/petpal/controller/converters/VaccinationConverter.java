@@ -4,12 +4,15 @@ import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.controller.dto.vaccination.VaccinationDTO;
 import com.example.petpal.controller.dto.vaccination.VaccinationRecordDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+
 public class VaccinationConverter {
-    private VaccinationConverter(){}
 
     public static List<VaccinationRecord> convertFromVaccinationRecordDTOsToVaccinationRecords(List<VaccinationRecordDTO> dtos){
         ArrayList<VaccinationRecord> result = new ArrayList<>();
@@ -18,7 +21,7 @@ public class VaccinationConverter {
             result.add(convertFromVaccinationRecordDTOtoVaccinationRecord(dto));
         }
         return result;
-    };
+    }
 
     public static VaccinationRecord convertFromVaccinationRecordDTOtoVaccinationRecord(VaccinationRecordDTO dto){
         if (dto == null) return null;
@@ -26,7 +29,7 @@ public class VaccinationConverter {
                 .vaccination(convertFromVaccinationDTOtoVaccination(dto.getVaccination()))
                 .date(dto.getDate())
                 .build();
-    };
+    }
 
     public static Vaccination convertFromVaccinationDTOtoVaccination(VaccinationDTO dto){
         if (dto == null) return null;
@@ -35,7 +38,7 @@ public class VaccinationConverter {
                 .type(dto.getType())
                 .range(dto.getRange())
                 .build();
-    };
+    }
 
     public static List<VaccinationRecordDTO> convertFromVaccinationRecordsToVaccinationRecordsDTOs(List<VaccinationRecord> records){
         ArrayList<VaccinationRecordDTO> result = new ArrayList<>();
@@ -44,7 +47,7 @@ public class VaccinationConverter {
             result.add(convertFromVaccinationRecordToVaccinationRecordDTO(vr));
         }
         return result;
-    };
+    }
 
     public static List<VaccinationDTO> convertFromVaccinationsToVaccinationsDTOs(List<Vaccination> vaccinations){
         ArrayList<VaccinationDTO> result = new ArrayList<>();
@@ -53,15 +56,15 @@ public class VaccinationConverter {
             result.add(convertFromVaccinationToVaccinationDTO(v));
         }
         return result;
-    };
+    }
 
-    public static VaccinationRecordDTO convertFromVaccinationRecordToVaccinationRecordDTO(VaccinationRecord record){
-        if (record == null) return null;
+    public static VaccinationRecordDTO convertFromVaccinationRecordToVaccinationRecordDTO(VaccinationRecord vaccinationRecord){
+        if (vaccinationRecord == null) return null;
         return VaccinationRecordDTO.builder()
-                .vaccination(convertFromVaccinationToVaccinationDTO(record.getVaccination()))
-                .date(record.getDate())
+                .vaccination(convertFromVaccinationToVaccinationDTO(vaccinationRecord.getVaccination()))
+                .date(vaccinationRecord.getDate())
                 .build();
-    };
+    }
 
     public static VaccinationDTO convertFromVaccinationToVaccinationDTO(Vaccination vaccination){
         if (vaccination == null) return null;
@@ -71,5 +74,5 @@ public class VaccinationConverter {
                 .type(vaccination.getType())
                 .range(vaccination.getRange())
                 .build();
-    };
+    }
 }

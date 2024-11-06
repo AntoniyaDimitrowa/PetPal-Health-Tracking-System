@@ -4,19 +4,16 @@ import com.example.petpal.business.IBreedService;
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
-import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.controller.converters.*;
 import com.example.petpal.controller.dto.*;
 import com.example.petpal.controller.dto.breed.BreedDTO;
 import com.example.petpal.controller.dto.breed.CreateBreedDTO;
 import com.example.petpal.controller.dto.breed.UpdateBreedDTO;
-import com.example.petpal.controller.dto.pet.CreatePetDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,14 +53,12 @@ public class BreedController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<BreedDTO> updateBreed(@RequestBody UpdateBreedDTO dto) {
+    public ResponseEntity<BreedDTO> updateBreed(@RequestBody UpdateBreedDTO dto, @PathVariable Long id) {
         try {
-            breedService.updateBreed(BreedConverter.convertFromUpdateBreedDTOToBreed(dto), dto.getNormalMoodId());
+            breedService.updateBreed(id, BreedConverter.convertFromUpdateBreedDTOToBreed(dto), dto.getNormalMoodId());
 
             return ResponseEntity.noContent().build();
-        } catch (InvalidMoodException e) {
-            return ResponseEntity.notFound().build();
-        } catch (InvalidBreedException e) {
+        } catch (InvalidMoodException | InvalidBreedException e) {
             return ResponseEntity.notFound().build();
         }
     }

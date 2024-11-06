@@ -2,11 +2,9 @@ package com.example.petpal.business;
 
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
-import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IHealthService {
