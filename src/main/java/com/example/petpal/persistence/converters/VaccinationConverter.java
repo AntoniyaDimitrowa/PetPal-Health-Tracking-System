@@ -15,6 +15,8 @@ import java.util.List;
 public class VaccinationConverter {
 
     public static List<VaccinationRecord> convertFromVaccinationRecordEntitiesToVaccinationRecords(List<VaccinationRecordEntity> entities){
+        if(entities == null) return new ArrayList<>();
+
         List<VaccinationRecord> result = new ArrayList<>();
 
         for (VaccinationRecordEntity entity : entities) {
@@ -24,6 +26,7 @@ public class VaccinationConverter {
     }
 
     public static List<Vaccination> convertFromVaccinationEntitiesToVaccination(List<VaccinationEntity> entities){
+        if(entities == null) return new ArrayList<>();
         List<Vaccination> result = new ArrayList<>();
 
         for (VaccinationEntity entity : entities) {
@@ -33,6 +36,8 @@ public class VaccinationConverter {
     }
 
     public static VaccinationRecord convertFromVaccinationRecordEntityToVaccinationRecord(VaccinationRecordEntity entity){
+        if(entity == null) return null;
+
         return VaccinationRecord.builder()
                 .id(entity.getId())
                 .vaccination(entity.getVaccination() != null ? convertFromVaccinationEntityToVaccination(entity.getVaccination()) : null)
@@ -41,6 +46,8 @@ public class VaccinationConverter {
     }
 
     public static Vaccination convertFromVaccinationEntityToVaccination(VaccinationEntity entity){
+        if(entity == null) return null;
+
         return new Vaccination(entity.getId(),
                 entity.getName(),
                 entity.getType(),
@@ -48,6 +55,8 @@ public class VaccinationConverter {
         );
     }
     public static List<VaccinationRecordEntity> convertFromVaccinationRecordsToVaccinationRecordsEntities(List<VaccinationRecord> records){
+        if(records == null) return new ArrayList<>();
+
         List<VaccinationRecordEntity> result = new ArrayList<>();
 
         for (VaccinationRecord vr : records) {
@@ -66,6 +75,8 @@ public class VaccinationConverter {
     }
 
     public static VaccinationEntity convertFromVaccinationToVaccinationEntity(Vaccination vaccination){
+        if(vaccination == null) return null;
+
         return VaccinationEntity.builder()
                 .id(vaccination.getId())
                 .name(vaccination.getName())

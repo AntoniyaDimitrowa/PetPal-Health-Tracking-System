@@ -13,6 +13,7 @@ public class CreatePetDTO {
 
     private String name;
     private Long breedId;
+    private Long userId;
     private Gender gender;
     private Date birthdate;
     private double weight;

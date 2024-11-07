@@ -44,6 +44,8 @@ public class PetConverter {
     }
 
     public static List<PetEntity> convertFromPetsToPetEntities(List<Pet> pets){
+        if(pets == null) return new ArrayList<>();
+
         List<PetEntity> entities = new ArrayList<>();
         for (Pet p : pets) {
             entities.add(convertFromPetToPetEntity(p));
@@ -52,6 +54,7 @@ public class PetConverter {
     }
 
     public static List<Pet> convertFromPetEntitiesToPets(List<PetEntity> entities){
+        if(entities == null) return new ArrayList<>();
         List<Pet> pets = new ArrayList<>();
         for (PetEntity entity : entities) {
             pets.add(convertFromPetEntityToPet(entity));

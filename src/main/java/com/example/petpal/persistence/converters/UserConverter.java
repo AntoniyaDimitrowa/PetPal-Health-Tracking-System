@@ -11,6 +11,8 @@ import java.util.Optional;
 public class UserConverter {
 
     public static UserEntity convertFromUserToUserEntity(User user) {
+        if(user == null) return null;
+
         return UserEntity.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -27,6 +29,7 @@ public class UserConverter {
 
     // Convert from UserEntity to User
     public static User convertFromUserEntityToUser(UserEntity userEntity) {
+        if(userEntity == null) return null;
         return User.builder()
                 .id(userEntity.getId())
                 .name(userEntity.getName())

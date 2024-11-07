@@ -12,6 +12,8 @@ import java.util.List;
 public class BreedConverter {
 
     public static BreedEntity convertFromBreedToBreedEntity(Breed breed){
+        if(breed == null) return null;
+
         return BreedEntity.builder()
                 .id(breed.getId())
                 .name(breed.getName())
@@ -41,6 +43,7 @@ public class BreedConverter {
 
 
     public static List<BreedEntity> convertFromBreedsToBreedEntities(List<Breed> breeds){
+        if(breeds == null) return new ArrayList<>();
         List<BreedEntity> entities = new ArrayList<>();
         for (Breed b : breeds) {
             entities.add(convertFromBreedToBreedEntity(b));
@@ -48,6 +51,7 @@ public class BreedConverter {
         return entities;
     }
     public static List<Breed> convertFromBreedEntitiesToBreeds(List<BreedEntity> entities){
+        if(entities == null) return new ArrayList<>();
         List<Breed> breeds = new ArrayList<>();
         for (BreedEntity entity : entities) {
             breeds.add(convertFromBreedEntityToBreed(entity));

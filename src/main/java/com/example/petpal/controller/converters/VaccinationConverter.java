@@ -15,6 +15,7 @@ import java.util.List;
 public class VaccinationConverter {
 
     public static List<VaccinationRecord> convertFromVaccinationRecordDTOsToVaccinationRecords(List<VaccinationRecordDTO> dtos){
+        if(dtos == null) return new ArrayList<>();
         ArrayList<VaccinationRecord> result = new ArrayList<>();
 
         for (VaccinationRecordDTO dto : dtos) {
@@ -34,6 +35,7 @@ public class VaccinationConverter {
     public static Vaccination convertFromVaccinationDTOtoVaccination(VaccinationDTO dto){
         if (dto == null) return null;
         return Vaccination.builder()
+                .id(dto.getId())
                 .name(dto.getName())
                 .type(dto.getType())
                 .range(dto.getRange())
@@ -41,6 +43,7 @@ public class VaccinationConverter {
     }
 
     public static List<VaccinationRecordDTO> convertFromVaccinationRecordsToVaccinationRecordsDTOs(List<VaccinationRecord> records){
+        if(records == null) return new ArrayList<>();
         ArrayList<VaccinationRecordDTO> result = new ArrayList<>();
 
         for (VaccinationRecord vr : records) {
@@ -50,6 +53,7 @@ public class VaccinationConverter {
     }
 
     public static List<VaccinationDTO> convertFromVaccinationsToVaccinationsDTOs(List<Vaccination> vaccinations){
+        if(vaccinations == null) return new ArrayList<>();
         ArrayList<VaccinationDTO> result = new ArrayList<>();
 
         for (Vaccination v : vaccinations) {
