@@ -4,10 +4,13 @@ import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 import com.example.petpal.persistence.entity.HealthRecordEntity;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HealthConverter {
 
     public static List<HealthRecord> convertFromHealthRecordEntitiesToHealthRecords(List<HealthRecordEntity> entities) {
@@ -34,23 +37,23 @@ public class HealthConverter {
 
     public static List<HealthRecordEntity> convertFromHealthRecordsToHealthRecordEntities(List<HealthRecord> records) {
         List<HealthRecordEntity> result = new ArrayList<>();
-        for (HealthRecord record : records) {
-            result.add(convertFromHealthRecordToHealthRecordEntity(record));
+        for (HealthRecord healthRecord : records) {
+            result.add(convertFromHealthRecordToHealthRecordEntity(healthRecord));
         }
         return result;
     }
 
-    public static HealthRecordEntity convertFromHealthRecordToHealthRecordEntity(HealthRecord record) {
-        if (record == null) return null;
+    public static HealthRecordEntity convertFromHealthRecordToHealthRecordEntity(HealthRecord healthRecord) {
+        if (healthRecord == null) return null;
         return HealthRecordEntity.builder()
-                .id(record.getId())
-                .date(record.getDate())
-                .foodIntake(record.getFoodIntake())
-                .waterIntake(record.getWaterIntake())
-                .mood(record.getMood() != null ? MoodConverter.convertFromMoodToMoodEntity(record.getMood()) : null)
-                .activityLevel(record.getActivityLevel())
-                .socialInteraction(record.getSocialInteraction())
-                .notes(record.getNotes())
+                .id(healthRecord.getId())
+                .date(healthRecord.getDate())
+                .foodIntake(healthRecord.getFoodIntake())
+                .waterIntake(healthRecord.getWaterIntake())
+                .mood(healthRecord.getMood() != null ? MoodConverter.convertFromMoodToMoodEntity(healthRecord.getMood()) : null)
+                .activityLevel(healthRecord.getActivityLevel())
+                .socialInteraction(healthRecord.getSocialInteraction())
+                .notes(healthRecord.getNotes())
                 .build();
     }
 
@@ -82,7 +85,7 @@ public class HealthConverter {
             entities.add(convertFromBreedHealthInfoToBreedHealthInfoEntity(info));
         }
         return entities;
-    };
+    }
 
     public static List<BreedHealthInfo> convertFromEntitiesToBreedHealthInfos(List<BreedHealthInfoEntity> entities){
         List<BreedHealthInfo> infos = new ArrayList<>();
@@ -90,5 +93,5 @@ public class HealthConverter {
             infos.add(convertFromBreedHealthInfoEntityToBreedHealthInfo(entity));
         }
         return infos;
-    };
+    }
 }

@@ -1,15 +1,13 @@
-package com.example.petpal;
+package com.example.petpal.business.impl;
 
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.Vaccination;
-import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.domain.enums.VaccinationType;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.exception.InvalidVaccinationException;
-import com.example.petpal.business.impl.PetServiceImpl;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IVaccinationRepository;
@@ -38,15 +36,17 @@ class PetServiceImplTest {
     @InjectMocks
     private PetServiceImpl petService;
 
-    private Pet pet;
-    private Breed breed;
+    // Static data setup (not required for each test)
+    private static final Breed breed = new Breed(1L, "Labrador", "Labradors are friendly and outgoing.", null, 1.5, new ArrayList<>(Arrays.asList("Hip dysplasia")));
+
+    private static final Pet newPet = new Pet(null, "Buddy", breed, Gender.MALE, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
+    private static final Pet pet = new Pet(1L, "Buddy", breed, Gender.MALE, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
+    private static final Pet invalidPet = new Pet(100L, "Buddy", breed, Gender.MALE, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
+    private static final Vaccination vaccination = new Vaccination(1L, "Rabies", VaccinationType.FOR_PUPPY, 6);
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
-        breed = new Breed(1L, "Labrador", "Labradors are friendly and outgoing.", null, 1.5, new ArrayList<>(Arrays.asList("Hip dysplasia")));
-        pet = new Pet(1L, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
     }
 
     @Test
@@ -57,7 +57,7 @@ class PetServiceImplTest {
 
         assertTrue(result.isPresent());
         assertEquals(pet, result.get());
-        verify(petRepository, times(1)).getPet(1L);
+        verify(petRepository).getPet(1L);
     }
 
     @Test
@@ -67,17 +67,16 @@ class PetServiceImplTest {
         Optional<Pet> result = petService.getPet(100L);
 
         assertFalse(result.isPresent());
-        verify(petRepository, times(1)).getPet(100L);
+        verify(petRepository).getPet(100L);
     }
 
     @Test
     void updatePet_shouldThrowInvalidPetExceptionWhenPetDoesNotExist() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
 
-        Pet newPet = new Pet(100L, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
-        assertThrows(InvalidPetException.class, () -> petService.updatePet(newPet, breed.getId()));
+        assertThrows(InvalidPetException.class, () -> petService.updatePet(invalidPet, breed.getId()));
 
-        verify(petRepository, times(1)).getPet(100L);
+        verify(petRepository).getPet(100L);
     }
 
     @Test
@@ -87,7 +86,7 @@ class PetServiceImplTest {
 
         assertThrows(InvalidBreedException.class, () -> petService.updatePet(pet, 100L));
 
-        verify(breedRepository, times(1)).getBreedById(100L);
+        verify(breedRepository).getBreedById(100L);
     }
 
     @Test
@@ -95,20 +94,24 @@ class PetServiceImplTest {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
 
-        Pet updatedPet = pet;
-        updatedPet.setName("Buddy Updated");
+        pet.setName("Buddy Updated");
+        petService.updatePet(pet, breed.getId());
 
-        petService.updatePet(updatedPet, breed.getId());
+        verify(petRepository).updatePet(eq(1L), any(Pet.class));
+        verify(breedRepository).getBreedById(1L);
 
-        verify(petRepository, times(1)).updatePet(eq(1L), any(Pet.class));
-        verify(breedRepository, times(1)).getBreedById(1L);
+        assertEquals("Buddy Updated", pet.getName()); // Verify the name was updated
+        assertEquals(breed, pet.getBreed()); // Verify that the breed is correctly set
     }
 
     @Test
     void deletePet_shouldCallRepositoryDelete() {
-        petService.deletePet(1L);
+        when(petRepository.deletePet(1L)).thenReturn(true);
 
-        verify(petRepository, times(1)).deletePet(1L);
+        boolean result = petService.deletePet(1L);
+
+        verify(petRepository).deletePet(1L);
+        assertTrue(result);
     }
 
     @Test
@@ -116,22 +119,18 @@ class PetServiceImplTest {
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
         when(petRepository.createPet(any(Pet.class))).thenReturn(50L);
 
-        Pet newPet = new Pet(null, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
-
         long result = petService.createPet(newPet, breed.getId(), new ArrayList<>());
 
-        verify(petRepository, times(1)).createPet(any(Pet.class));
-        assertEquals(50L, result);
+        verify(petRepository).createPet(any(Pet.class));  // Verifies that petRepository.createPet() was called
+        assertEquals(50L, result); // Ensures the returned ID matches the mocked result
     }
 
     @Test
     void createPet_shouldThrowInvalidBreedExceptionWhenBreedNotFound() {
         when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
 
-        Pet newPet = new Pet(null, "Buddy", null, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
-
         assertThrows(InvalidBreedException.class, () -> petService.createPet(newPet, 100L, new ArrayList<>()));
-        verify(breedRepository, times(1)).getBreedById(100L);
+        verify(breedRepository).getBreedById(100L);
     }
 
     @Test
@@ -139,23 +138,18 @@ class PetServiceImplTest {
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
         when(vaccinationRepository.getVaccinationById(100L)).thenReturn(Optional.empty());
 
-        Pet newPet = new Pet(null, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
-
         List<Long> vaccinationIds = new ArrayList<>();
         vaccinationIds.add(100L);
 
         assertThrows(InvalidVaccinationException.class, () -> petService.createPet(newPet, breed.getId(), vaccinationIds));
-        verify(vaccinationRepository, times(1)).getVaccinationById(100L);
+        verify(vaccinationRepository).getVaccinationById(100L);
     }
 
     @Test
     void createPet_shouldAddVaccinationsWhenValid() throws InvalidBreedException, InvalidVaccinationException {
-        Vaccination vaccination = new Vaccination(1L, "Rabies", VaccinationType.ForPuppy, 6);
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
         when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(vaccination));
         when(petRepository.createPet(any(Pet.class))).thenReturn(50L);
-
-        Pet newPet = new Pet(null, "Buddy", breed, Gender.Male, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
 
         List<Long> vaccinationIds = new ArrayList<>();
         vaccinationIds.add(1L);
@@ -165,6 +159,6 @@ class PetServiceImplTest {
         assertEquals(50L, result);
         assertEquals(1, newPet.getVaccinationRecords().size());
         assertEquals("Rabies", newPet.getVaccinationRecords().get(0).getVaccination().getName());
-        verify(petRepository, times(1)).createPet(any(Pet.class));
+        verify(petRepository).createPet(any(Pet.class));
     }
 }

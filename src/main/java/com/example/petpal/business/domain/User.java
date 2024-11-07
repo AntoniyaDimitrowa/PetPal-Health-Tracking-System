@@ -2,7 +2,6 @@ package com.example.petpal.business.domain;
 
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;

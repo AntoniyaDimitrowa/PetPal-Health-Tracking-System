@@ -3,7 +3,6 @@ package com.example.petpal.controller.dto.breed;
 import com.example.petpal.controller.dto.mood.MoodDTO;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

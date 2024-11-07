@@ -2,12 +2,14 @@ package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.controller.dto.mood.MoodDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoodConverter {
-    private MoodConverter() {}
 
     public static MoodDTO convertFromMoodToMoodDTO(Mood mood) {
         if (mood == null) return null;

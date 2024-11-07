@@ -5,18 +5,14 @@ import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.exception.InvalidVaccinationException; // Import the exception
-import com.example.petpal.controller.converters.BreedConverter;
 import com.example.petpal.controller.converters.PetConverter;
-import com.example.petpal.controller.converters.VaccinationConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
-import com.example.petpal.controller.dto.breed.BreedDTO;
 import com.example.petpal.controller.dto.pet.CreatePetDTO;
 import com.example.petpal.controller.dto.pet.PetDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -64,9 +60,7 @@ public class PetController {
                     dto.getBreedId()
             );
             return ResponseEntity.noContent().build();
-        } catch (InvalidPetException e) {
-            return ResponseEntity.notFound().build();
-        } catch (InvalidBreedException e) {
+        } catch (InvalidPetException | InvalidBreedException e) {
             return ResponseEntity.notFound().build();
         }
     }

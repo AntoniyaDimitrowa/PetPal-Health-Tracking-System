@@ -4,11 +4,15 @@ import com.example.petpal.business.domain.User;
 import com.example.petpal.controller.dto.RegisterDTO;
 import com.example.petpal.controller.dto.user.UpdateUserDTO;
 import com.example.petpal.controller.dto.user.UserDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 
 public class UserConverter {
 

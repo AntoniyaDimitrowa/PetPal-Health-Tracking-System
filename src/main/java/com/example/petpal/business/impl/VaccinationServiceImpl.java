@@ -11,7 +11,6 @@ import com.example.petpal.persistence.IVaccinationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,8 +22,9 @@ public class VaccinationServiceImpl implements IVaccinationService {
 
     @Override
     public List<VaccinationRecord> getVaccinationRecordsByPetId(Long petId) throws InvalidPetException {
-        Pet pet = petRepository.getPet(petId)
-                .orElseThrow(() -> new InvalidPetException(petId));
+        if(petRepository.getPet(petId).isEmpty()) {
+            throw new InvalidPetException(petId);
+        }
 
         return vaccinationRepository.getVaccinationRecordsByPetId(petId);
     }
@@ -33,8 +33,9 @@ public class VaccinationServiceImpl implements IVaccinationService {
         Pet pet = petRepository.getPet(petId)
                 .orElseThrow(() -> new InvalidPetException(petId));
 
-        Vaccination vaccination = vaccinationRepository.getVaccinationById(vaccinationRecord.getVaccination().getId())
-                .orElseThrow(() -> new InvalidVaccinationException(vaccinationRecord.getVaccination().getId()));
+        if(vaccinationRepository.getVaccinationById(vaccinationRecord.getVaccination().getId()).isEmpty()) {
+            throw new InvalidVaccinationException(vaccinationRecord.getVaccination().getId());
+        }
 
         vaccinationRepository.addVaccinationRecordToPet(pet, vaccinationRecord);
     }

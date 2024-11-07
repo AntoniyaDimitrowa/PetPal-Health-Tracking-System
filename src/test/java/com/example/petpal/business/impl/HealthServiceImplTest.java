@@ -1,4 +1,4 @@
-package com.example.petpal;
+package com.example.petpal.business.impl;
 
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.BreedHealthInfo;
@@ -6,7 +6,6 @@ import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
-import com.example.petpal.business.impl.HealthServiceImpl;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IHealthRepository;
 import com.example.petpal.persistence.IPetRepository;
@@ -37,41 +36,44 @@ class HealthServiceImplTest {
     @InjectMocks
     private HealthServiceImpl healthService;
 
-    private Pet pet;
-    private Breed breed;
+    private static final Pet pet = Pet.builder().id(1L).build();
+    private static final Breed breed = Breed.builder().id(1L).name("Labrador").build();
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        pet = Pet.builder().id(1L).build();
-        breed = Breed.builder().id(1L).name("Labrador").build();
     }
 
+    // Tests for createHealthRecord
     @Test
     void createHealthRecord_shouldThrowExceptionIfPetNotFound() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
 
         assertThrows(InvalidPetException.class, () -> healthService.createHealthRecord(100L, HealthRecord.builder().build()));
-        verify(petRepository, times(1)).getPet(100L);
+
+        verify(petRepository).getPet(100L);
+        verifyNoInteractions(healthRepository);
     }
 
     @Test
     void createHealthRecord_shouldCreateRecordIfPetExists() throws InvalidPetException {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
-        when(healthRepository.createHealthRecordToPet(eq(1L), any())).thenReturn(1L);
+        when(healthRepository.createHealthRecordToPet(eq(1L), any(HealthRecord.class))).thenReturn(1L);
 
         Long id = healthService.createHealthRecord(1L, HealthRecord.builder().build());
 
         assertNotNull(id);
-        verify(healthRepository, times(1)).createHealthRecordToPet(eq(1L), any());
+        verify(healthRepository).createHealthRecordToPet(eq(1L), any(HealthRecord.class));
     }
 
+    // Tests for getHealthRecordsByPetId
     @Test
     void getHealthRecordsByPetId_shouldThrowExceptionIfPetNotFound() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
 
         assertThrows(InvalidPetException.class, () -> healthService.getHealthRecordsByPetId(100L));
-        verify(petRepository, times(1)).getPet(100L);
+
+        verify(petRepository).getPet(100L);
     }
 
     @Test
@@ -82,7 +84,7 @@ class HealthServiceImplTest {
         var result = healthService.getHealthRecordsByPetId(1L);
 
         assertNotNull(result);
-        verify(healthRepository, times(1)).getHealthRecordsByPetId(1L);
+        verify(healthRepository).getHealthRecordsByPetId(1L);
     }
 
     @Test
@@ -93,10 +95,11 @@ class HealthServiceImplTest {
         var result = healthService.getHealthRecordsByPetId(1L);
 
         assertNotNull(result);
-        assertEquals(0, result.size());
-        verify(healthRepository, times(1)).getHealthRecordsByPetId(1L);
+        assertTrue(result.isEmpty());
+        verify(healthRepository).getHealthRecordsByPetId(1L);
     }
 
+    // Tests for getHealthInfoForBreed
     @Test
     void getHealthInfoForBreed_shouldReturnInfoIfExists() {
         Long breedId = 1L;
@@ -108,7 +111,7 @@ class HealthServiceImplTest {
         var result = healthService.getHealthInfoForBreed(breedId, age);
 
         assertNotNull(result);
-        verify(healthRepository, times(1)).getHealthInfoForBreed(breedId, age);
+        verify(healthRepository).getHealthInfoForBreed(breedId, age);
     }
 
     @Test
@@ -121,9 +124,10 @@ class HealthServiceImplTest {
         var result = healthService.getHealthInfoForBreed(breedId, age);
 
         assertNull(result);
-        verify(healthRepository, times(1)).getHealthInfoForBreed(breedId, age);
+        verify(healthRepository).getHealthInfoForBreed(breedId, age);
     }
 
+    // Tests for createHealthInfoForBreed
     @Test
     void createHealthInfoForBreed_shouldThrowExceptionIfBreedNotFound() {
         Long breedId = 100L;
@@ -134,7 +138,8 @@ class HealthServiceImplTest {
         when(breedRepository.getBreedById(breedId)).thenReturn(Optional.empty());
 
         assertThrows(InvalidBreedException.class, () -> healthService.createHealthInfoForBreed(breedId, ageRangeStart, ageRangeEnd, breedHealthInfo));
-        verify(breedRepository, times(1)).getBreedById(breedId);
+
+        verify(breedRepository).getBreedById(breedId);
     }
 
     @Test
@@ -150,9 +155,10 @@ class HealthServiceImplTest {
         Long id = healthService.createHealthInfoForBreed(breedId, ageRangeStart, ageRangeEnd, breedHealthInfo);
 
         assertNotNull(id);
-        verify(healthRepository, times(1)).createHealthInfoForBreed(breedId, ageRangeStart, ageRangeEnd, breedHealthInfo);
+        verify(healthRepository).createHealthInfoForBreed(breedId, ageRangeStart, ageRangeEnd, breedHealthInfo);
     }
 
+    // Tests for getHealthInfoByBreedId
     @Test
     void getHealthInfoByBreedId_shouldReturnInfo() {
         Long breedId = 1L;
@@ -164,7 +170,7 @@ class HealthServiceImplTest {
 
         assertNotNull(result);
         assertEquals(healthInfoList.size(), result.size());
-        verify(healthRepository, times(1)).getHealthInfoByBreedId(breedId);
+        verify(healthRepository).getHealthInfoByBreedId(breedId);
     }
 
     @Test
@@ -176,7 +182,7 @@ class HealthServiceImplTest {
         var result = healthService.getHealthInfoByBreedId(breedId);
 
         assertNotNull(result);
-        assertEquals(0, result.size());
-        verify(healthRepository, times(1)).getHealthInfoByBreedId(breedId);
+        assertTrue(result.isEmpty());
+        verify(healthRepository).getHealthInfoByBreedId(breedId);
     }
 }

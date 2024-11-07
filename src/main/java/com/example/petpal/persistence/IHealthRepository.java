@@ -2,9 +2,7 @@ package com.example.petpal.persistence;
 
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
-import com.example.petpal.persistence.entity.HealthRecordEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

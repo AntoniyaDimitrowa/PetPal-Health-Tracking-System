@@ -1,6 +1,5 @@
 package com.example.petpal.controller.dto.health;
 
-import com.example.petpal.business.domain.Breed;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

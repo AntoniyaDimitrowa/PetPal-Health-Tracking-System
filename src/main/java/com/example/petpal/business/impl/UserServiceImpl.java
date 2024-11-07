@@ -21,14 +21,14 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public Long createUser(User user) {
-        Long userId = userRepository.createUser(user);
-        return userId;
+        return userRepository.createUser(user);
     }
 
     @Override
     public User updateUser(Long userId, User updatedUser) throws InvalidUserException {
-        User existingUser = userRepository.getUserById(userId)
-                .orElseThrow(() -> new InvalidUserException(userId));
+        if(userRepository.getUserById(userId).isEmpty()) {
+            throw new InvalidUserException(userId);
+        }
 
         return userRepository.updateUser(userId, updatedUser);
     }

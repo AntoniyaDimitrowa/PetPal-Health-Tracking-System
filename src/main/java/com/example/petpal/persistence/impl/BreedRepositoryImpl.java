@@ -1,7 +1,6 @@
 package com.example.petpal.persistence.impl;
 
 import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IBreedRepositoryJPA;
 import com.example.petpal.persistence.converters.BreedConverter;
@@ -55,7 +54,7 @@ public class BreedRepositoryImpl implements IBreedRepository {
     public Breed updateBreed(Long id, Breed updatedBreed) {
         if (jpaRepo.existsById(id)) {
             BreedEntity entity = BreedConverter.convertFromBreedToBreedEntity(updatedBreed);
-            entity.setId(id);  // Ensure the ID remains the same
+            entity.setId(id);
             BreedEntity updatedEntity = jpaRepo.save(entity);
             return BreedConverter.convertFromBreedEntityToBreed(updatedEntity);
         }

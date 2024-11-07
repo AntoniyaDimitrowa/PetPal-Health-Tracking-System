@@ -1,15 +1,11 @@
-package com.example.petpal;
+package com.example.petpal.business.impl;
 
 import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
-import com.example.petpal.business.impl.BreedServiceImpl;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IMoodRepository;
-import com.example.petpal.persistence.entity.BreedEntity;
-import com.example.petpal.persistence.entity.MoodEntity;
-import com.example.petpal.persistence.converters.BreedConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,39 +30,28 @@ class BreedServiceImplTest {
     @InjectMocks
     private BreedServiceImpl breedService;
 
-    private MoodEntity moodEntity;
-    private BreedEntity breedEntity;
-    private Breed breed;
+    private static final Mood mood = Mood.builder().id(1L).name("Happy").emoji("😊").build();
+
+    private static final Breed breed = Breed.builder().id(1L).name("Labrador").description("Friendly, outgoing.")
+            .normalMood(mood).minimumExercisePerDay(1.5).build();
+
+    private static final Breed invalidBreed = Breed.builder().id(100L).name("Labrador").description("Friendly, outgoing.")
+            .normalMood(mood).minimumExercisePerDay(1.5).build();
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        moodEntity = MoodEntity.builder()
-                .id(1L)
-                .name("Happy")
-                .emoji("")
-                .build();
-
-        breedEntity = BreedEntity.builder()
-                .id(1L)
-                .name("Labrador")
-                .description("Friendly, outgoing.")
-                .normalMood(moodEntity)
-                .minimumExercisePerDay(1.5)
-                .build();
-        breed = BreedConverter.convertFromBreedEntityToBreed(breedEntity);
     }
 
     @Test
     void getAllBreeds_shouldReturnAllBreeds() {
-        List<Breed> breeds = new ArrayList<>();
-        breeds.add(breed);
+        List<Breed> breeds = List.of(breed);
         when(breedRepository.getAllBreeds()).thenReturn(breeds);
 
         List<Breed> result = breedService.getAllBreeds();
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(breedRepository, times(1)).getAllBreeds();
+
+        assertEquals(breeds, result);
+        verify(breedRepository).getAllBreeds();
     }
 
     @Test
@@ -77,7 +62,7 @@ class BreedServiceImplTest {
 
         assertTrue(result.isPresent());
         assertEquals(breed, result.get());
-        verify(breedRepository, times(1)).getBreedById(1L);
+        verify(breedRepository).getBreedById(1L);
     }
 
     @Test
@@ -86,68 +71,49 @@ class BreedServiceImplTest {
 
         Optional<Breed> result = breedService.getBreedById(100L);
 
-        assertFalse(result.isPresent());
-        verify(breedRepository, times(1)).getBreedById(100L);
+        assertTrue(result.isEmpty());
+        verify(breedRepository).getBreedById(100L);
     }
 
     @Test
     void createBreed_shouldThrowInvalidMoodExceptionWhenMoodNotFound() {
         when(moodRepository.getMoodById(100L)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidMoodException.class, () -> {
-            breedService.createBreed(breed, 100L);
-        });
-
-        verify(moodRepository, times(1)).getMoodById(100L);
+        assertThrows(InvalidMoodException.class, () -> breedService.createBreed(breed, 100L));
+        verify(moodRepository).getMoodById(100L);
     }
 
     @Test
     void createBreed_shouldCreateBreedWhenMoodExists() throws InvalidMoodException {
-        when(moodRepository.getMoodById(1L)).thenReturn(Optional.of(Mood.builder().id(1L).build()));
+        when(moodRepository.getMoodById(1L)).thenReturn(Optional.of(mood));
         when(breedRepository.createBreed(breed)).thenReturn(1L);
 
         Long result = breedService.createBreed(breed, 1L);
 
-        assertNotNull(result);
         assertEquals(1L, result);
-        verify(breedRepository, times(1)).createBreed(breed);
-        verify(moodRepository, times(1)).getMoodById(1L);
+        verify(breedRepository).createBreed(breed);
+        verify(moodRepository).getMoodById(1L);
     }
 
     @Test
     void updateBreed_shouldThrowExceptionWhenBreedNotFound() {
         when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
 
-        Breed breedWithNonExistingId = Breed.builder().id(100L).build();
-        assertThrows(InvalidBreedException.class, () -> {
-            breedService.updateBreed(breedWithNonExistingId, 100L);
-        });
-
-        verify(breedRepository, times(1)).getBreedById(100L);
-    }
-
-    @Test
-    void updateBreed_shouldThrowInvalidMoodExceptionWhenMoodNotFound() {
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
-        when(moodRepository.getMoodById(100L)).thenReturn(Optional.empty());
-
-        assertThrows(InvalidMoodException.class, () -> breedService.updateBreed(breed, 100L));
-
-        verify(breedRepository, times(1)).getBreedById(1L);
-        verify(moodRepository, times(1)).getMoodById(100L);
+        assertThrows(InvalidBreedException.class, () -> breedService.updateBreed(100L, invalidBreed, 1L));
+        verify(breedRepository).getBreedById(100L);
     }
 
     @Test
     void updateBreed_shouldUpdateBreedWhenExistsAndMoodIsValid() throws InvalidBreedException, InvalidMoodException {
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
-        when(moodRepository.getMoodById(1L)).thenReturn(Optional.of(Mood.builder().build()));
+        when(moodRepository.getMoodById(1L)).thenReturn(Optional.of(mood));
         when(breedRepository.updateBreed(eq(1L), any(Breed.class))).thenReturn(breed);
 
-        Breed result = breedService.updateBreed(breed, 1L);
+        Breed result = breedService.updateBreed(1L, breed, 1L);
 
-        assertNotNull(result);
-        verify(breedRepository, times(1)).updateBreed(eq(1L), any(Breed.class));
-        verify(moodRepository, times(1)).getMoodById(1L);
+        assertEquals(breed, result);
+        verify(breedRepository).updateBreed(eq(1L), any(Breed.class));
+        verify(moodRepository).getMoodById(1L);
     }
 
     @Test
@@ -157,7 +123,7 @@ class BreedServiceImplTest {
         boolean result = breedService.deleteBreed(1L);
 
         assertTrue(result);
-        verify(breedRepository, times(1)).deleteBreed(1L);
+        verify(breedRepository).deleteBreed(1L);
     }
 
     @Test
@@ -165,21 +131,18 @@ class BreedServiceImplTest {
         when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
 
         assertThrows(InvalidBreedException.class, () -> breedService.updateHealthProblems(100L, new ArrayList<>()));
-
-        verify(breedRepository, times(1)).getBreedById(100L);
+        verify(breedRepository).getBreedById(100L);
     }
 
     @Test
     void updateHealthProblems_shouldUpdateHealthProblemsWhenBreedExists() throws InvalidBreedException {
+        List<String> healthProblems = List.of("Hip Dysplasia");
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
-        List<String> healthProblems = new ArrayList<>();
-        healthProblems.add("Hip Dysplasia");
         when(breedRepository.updateHealthProblems(1L, healthProblems)).thenReturn(breed);
 
         Breed result = breedService.updateHealthProblems(1L, healthProblems);
 
-        assertNotNull(result);
         assertEquals(breed, result);
-        verify(breedRepository, times(1)).updateHealthProblems(1L, healthProblems);
+        verify(breedRepository).updateHealthProblems(1L, healthProblems);
     }
 }
