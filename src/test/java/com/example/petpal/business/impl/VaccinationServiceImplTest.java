@@ -79,7 +79,7 @@ class VaccinationServiceImplTest {
 
         vaccinationService.createVaccinationRecord(1L, vaccinationRecord);
 
-        verify(vaccinationRepository, times(1)).addVaccinationRecordToPet(eq(pet), any(VaccinationRecord.class));
+        verify(vaccinationRepository, times(1)).addVaccinationRecordToPet(eq(pet.getId()), any(VaccinationRecord.class));
         verify(vaccinationRepository, times(1)).getVaccinationById(1L);
     }
 

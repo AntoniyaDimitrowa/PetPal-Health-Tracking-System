@@ -13,7 +13,7 @@ public interface IVaccinationRepository {
 
     List<Vaccination> getAllVaccinations();
 
-    Long addVaccinationRecordToPet(Pet pet, VaccinationRecord vaccinationRecord);
+    Long addVaccinationRecordToPet(Long petId, VaccinationRecord vaccinationRecord);
 
     List<VaccinationRecord> getVaccinationRecordsByPetId(long petId);
 }

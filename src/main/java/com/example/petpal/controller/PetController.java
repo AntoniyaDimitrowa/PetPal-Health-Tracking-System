@@ -4,6 +4,7 @@ import com.example.petpal.business.IPetService;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidPetException;
+import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.business.exception.InvalidVaccinationException; // Import the exception
 import com.example.petpal.controller.converters.PetConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
@@ -42,12 +43,13 @@ public class PetController {
             long newPetId = petService.createPet(
                     PetConverter.convertFromCreatePetDTOToPet(dto),
                     dto.getBreedId(),
-                    dto.getVaccinationRecordsIds()
+                    dto.getVaccinationRecordsIds(),
+                    dto.getUserId()
             );
             return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newPetId).build());
-        } catch (InvalidBreedException e) {
+        } catch (InvalidUserException e) {
             return ResponseEntity.notFound().build();
-        } catch (InvalidVaccinationException e) {
+        } catch (InvalidBreedException | InvalidVaccinationException e) {
             return ResponseEntity.badRequest().build();
         }
     }
