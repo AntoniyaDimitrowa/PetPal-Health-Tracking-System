@@ -1,13 +1,10 @@
 package com.example.petpal.persistence.impl;
 
-import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
-import com.example.petpal.persistence.IVaccinationRepository;
-import com.example.petpal.persistence.IVaccinationRepositoryJPA;
-import com.example.petpal.persistence.IVaccinationRecordRepositoryJPA;
-import com.example.petpal.persistence.converters.PetConverter;
+import com.example.petpal.persistence.*;
 import com.example.petpal.persistence.converters.VaccinationConverter;
+import com.example.petpal.persistence.entity.PetEntity;
 import com.example.petpal.persistence.entity.VaccinationEntity;
 import com.example.petpal.persistence.entity.VaccinationRecordEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +20,14 @@ public class VaccinationRepositoryImpl implements IVaccinationRepository {
 
     private final IVaccinationRepositoryJPA vaccinationRepositoryJPA;
     private final IVaccinationRecordRepositoryJPA vaccinationRecordRepositoryJPA;
+    private final IPetRepositoryJPA petRepositoryJPA;
 
     @Autowired
     public VaccinationRepositoryImpl(IVaccinationRepositoryJPA vaccinationRepositoryJPA,
-                                     IVaccinationRecordRepositoryJPA vaccinationRecordRepositoryJPA) {
+                                     IVaccinationRecordRepositoryJPA vaccinationRecordRepositoryJPA, IPetRepositoryJPA petRepository) {
         this.vaccinationRepositoryJPA = vaccinationRepositoryJPA;
         this.vaccinationRecordRepositoryJPA = vaccinationRecordRepositoryJPA;
+        this.petRepositoryJPA = petRepository;
     }
 
     @Override
@@ -46,13 +45,18 @@ public class VaccinationRepositoryImpl implements IVaccinationRepository {
     }
 
     @Override
-    public Long addVaccinationRecordToPet(Pet pet, VaccinationRecord vaccinationRecord) {
+    public Long addVaccinationRecordToPet(Long petId, VaccinationRecord vaccinationRecord) {
+        PetEntity pet = petRepositoryJPA.findById(petId)
+                .orElseThrow(() -> new RuntimeException("Pet not found"));
+
         VaccinationRecordEntity recordEntity = VaccinationConverter.convertFromVaccinationRecordToVaccinationRecordEntity(vaccinationRecord);
-        recordEntity.setPet(PetConverter.convertFromPetToPetEntity(pet));
+        recordEntity.setPet(pet);
 
         VaccinationRecordEntity savedRecord = vaccinationRecordRepositoryJPA.save(recordEntity);  // Save the record
         return savedRecord.getId();
     }
+
+
 
     @Override
     public List<VaccinationRecord> getVaccinationRecordsByPetId(long petId) {
