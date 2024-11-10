@@ -2,10 +2,7 @@ package com.example.petpal.controller;
 
 import com.example.petpal.business.IPetService;
 import com.example.petpal.business.domain.Pet;
-import com.example.petpal.business.exception.InvalidBreedException;
-import com.example.petpal.business.exception.InvalidPetException;
-import com.example.petpal.business.exception.InvalidUserException;
-import com.example.petpal.business.exception.InvalidVaccinationException; // Import the exception
+import com.example.petpal.business.exception.*;
 import com.example.petpal.controller.converters.PetConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.pet.CreatePetDTO;
@@ -49,7 +46,7 @@ public class PetController {
             return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newPetId).build());
         } catch (InvalidUserException e) {
             return ResponseEntity.notFound().build();
-        } catch (InvalidBreedException | InvalidVaccinationException e) {
+        } catch (InvalidBreedException | InvalidVaccinationException | CreationFailException e) {
             return ResponseEntity.badRequest().build();
         }
     }

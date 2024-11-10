@@ -2,10 +2,7 @@ package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IPetService;
 import com.example.petpal.business.domain.*;
-import com.example.petpal.business.exception.InvalidBreedException;
-import com.example.petpal.business.exception.InvalidPetException;
-import com.example.petpal.business.exception.InvalidUserException;
-import com.example.petpal.business.exception.InvalidVaccinationException;
+import com.example.petpal.business.exception.*;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IUserRepository;
@@ -16,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +32,7 @@ public class PetServiceImpl implements IPetService {
 
     @Transactional
     @Override
-    public Long createPet(Pet pet, Long breedId, List<Long> vaccinationRecordsIds, Long userId) throws InvalidVaccinationException, InvalidBreedException, InvalidUserException {
+    public Long createPet(Pet pet, Long breedId, List<Long> vaccinationRecordsIds, Long userId) throws InvalidVaccinationException, InvalidBreedException, InvalidUserException, CreationFailException {
         try {
             User user = userRepository.getUserById(userId)
                     .orElseThrow(() -> new InvalidUserException(userId));
@@ -64,11 +60,9 @@ public class PetServiceImpl implements IPetService {
 
             return petId;
         } catch (InvalidUserException | InvalidBreedException | InvalidVaccinationException e) {
-            System.err.println("Specific error creating pet: " + e.getMessage());
             throw e;
         } catch (Exception e) {
-            System.err.println("Error creating pet: " + e.getMessage());
-            throw new RuntimeException("Failed to create pet and associated vaccination records.", e);
+            throw new CreationFailException("Failed to create pet and associated vaccination records." + e.getMessage());
         }
     }
 

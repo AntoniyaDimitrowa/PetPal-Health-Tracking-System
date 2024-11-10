@@ -37,7 +37,7 @@ public class VaccinationServiceImpl implements IVaccinationService {
             throw new InvalidVaccinationException(vaccinationRecord.getVaccination().getId());
         }
 
-        vaccinationRepository.addVaccinationRecordToPet(petId, vaccinationRecord);
+        vaccinationRepository.addVaccinationRecordToPet(pet.getId(), vaccinationRecord);
     }
 
     public List<Vaccination> getVaccinations() {

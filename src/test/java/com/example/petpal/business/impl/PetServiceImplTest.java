@@ -3,10 +3,7 @@ package com.example.petpal.business.impl;
 import com.example.petpal.business.domain.*;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.domain.enums.VaccinationType;
-import com.example.petpal.business.exception.InvalidBreedException;
-import com.example.petpal.business.exception.InvalidPetException;
-import com.example.petpal.business.exception.InvalidUserException;
-import com.example.petpal.business.exception.InvalidVaccinationException;
+import com.example.petpal.business.exception.*;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IUserRepository;
@@ -128,7 +125,7 @@ class PetServiceImplTest {
     }
 
     @Test
-    void createPet_shouldReturnCreatedPet() throws InvalidBreedException, InvalidVaccinationException, InvalidUserException {
+    void createPet_shouldReturnCreatedPet() throws InvalidBreedException, InvalidVaccinationException, InvalidUserException, CreationFailException {
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
         when(petRepository.createPet(any(Pet.class), eq(user))).thenReturn(50L);
@@ -171,7 +168,7 @@ class PetServiceImplTest {
     }
 
     @Test
-    void createPet_shouldAddVaccinationsWhenValid() throws InvalidBreedException, InvalidVaccinationException, InvalidUserException {
+    void createPet_shouldAddVaccinationsWhenValid() throws InvalidBreedException, InvalidVaccinationException, InvalidUserException, CreationFailException {
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
         when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(vaccination));
@@ -202,7 +199,7 @@ class PetServiceImplTest {
 
 
     @Test
-    void createPet_shouldNotAddVaccinationsWhenEmptyList() throws InvalidBreedException, InvalidVaccinationException, InvalidUserException {
+    void createPet_shouldNotAddVaccinationsWhenEmptyList() throws InvalidBreedException, InvalidVaccinationException, InvalidUserException, CreationFailException {
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
         when(petRepository.createPet(any(Pet.class), eq(user))).thenReturn(50L);

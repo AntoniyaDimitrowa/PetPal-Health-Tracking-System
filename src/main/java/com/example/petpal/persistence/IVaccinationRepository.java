@@ -1,6 +1,5 @@
 package com.example.petpal.persistence;
 
-import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
 

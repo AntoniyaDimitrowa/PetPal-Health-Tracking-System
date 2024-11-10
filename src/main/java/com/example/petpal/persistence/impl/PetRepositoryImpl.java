@@ -4,7 +4,6 @@ import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IPetRepositoryJPA;
-import com.example.petpal.persistence.IUserRepositoryJPA;
 import com.example.petpal.persistence.converters.PetConverter;
 import com.example.petpal.persistence.converters.UserConverter;
 import com.example.petpal.persistence.entity.PetEntity;
@@ -15,11 +14,9 @@ import java.util.Optional;
 @Repository
 public class PetRepositoryImpl implements IPetRepository {
     private final IPetRepositoryJPA petRepositoryJPA;
-    private final IUserRepositoryJPA userRepositoryJPA;
 
-    public PetRepositoryImpl(IPetRepositoryJPA petRepositoryJPA, IUserRepositoryJPA userRepositoryJPA) {
+    public PetRepositoryImpl(IPetRepositoryJPA petRepositoryJPA) {
         this.petRepositoryJPA = petRepositoryJPA;
-        this.userRepositoryJPA = userRepositoryJPA;
     }
 
     @Override
