@@ -11,6 +11,7 @@ import com.example.petpal.persistence.IVaccinationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,15 +30,15 @@ public class VaccinationServiceImpl implements IVaccinationService {
         return vaccinationRepository.getVaccinationRecordsByPetId(petId);
     }
     @Override
-    public void createVaccinationRecord(Long petId, VaccinationRecord vaccinationRecord) throws InvalidPetException, InvalidVaccinationException {
+    public Long createVaccinationRecord(Long petId, Long vaccinationId, Date date) throws InvalidPetException, InvalidVaccinationException {
         Pet pet = petRepository.getPet(petId)
                 .orElseThrow(() -> new InvalidPetException(petId));
 
-        if(vaccinationRepository.getVaccinationById(vaccinationRecord.getVaccination().getId()).isEmpty()) {
-            throw new InvalidVaccinationException(vaccinationRecord.getVaccination().getId());
-        }
+        Vaccination vaccination = vaccinationRepository.getVaccinationById(vaccinationId)
+                .orElseThrow(() -> new InvalidVaccinationException(vaccinationId));
 
-        vaccinationRepository.addVaccinationRecordToPet(pet.getId(), vaccinationRecord);
+        VaccinationRecord newVaccinationRecord = VaccinationRecord.builder().vaccination(vaccination).date(date).build();
+        return vaccinationRepository.addVaccinationRecordToPet(pet.getId(), newVaccinationRecord);
     }
 
     public List<Vaccination> getVaccinations() {
