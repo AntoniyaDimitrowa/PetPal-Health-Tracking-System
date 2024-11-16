@@ -59,7 +59,7 @@ class VaccinationServiceImplTest {
     void createVaccinationRecord_shouldThrowExceptionIfPetNotFound() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidPetException.class, () -> vaccinationService.createVaccinationRecord(100L, vaccinationRecord));
+        assertThrows(InvalidPetException.class, () -> vaccinationService.createVaccinationRecord(100L, 1L, new Date()));
         verify(petRepository, times(1)).getPet(100L);  // Ensure that getPet was called once
     }
 
@@ -68,7 +68,7 @@ class VaccinationServiceImplTest {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidVaccinationException.class, () -> vaccinationService.createVaccinationRecord(1L, vaccinationRecord));
+        assertThrows(InvalidVaccinationException.class, () -> vaccinationService.createVaccinationRecord(1L, 1L, new Date()));
         verify(vaccinationRepository, times(1)).getVaccinationById(1L);  // Ensure that getVaccinationById was called once
     }
 
@@ -77,7 +77,7 @@ class VaccinationServiceImplTest {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
         when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(vaccinationRecord.getVaccination()));
 
-        vaccinationService.createVaccinationRecord(1L, vaccinationRecord);
+        vaccinationService.createVaccinationRecord(1L, 1L, new Date());
 
         verify(vaccinationRepository, times(1)).addVaccinationRecordToPet(eq(pet.getId()), any(VaccinationRecord.class));
         verify(vaccinationRepository, times(1)).getVaccinationById(1L);

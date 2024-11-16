@@ -2,6 +2,7 @@ package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.Vaccination;
 import com.example.petpal.business.domain.VaccinationRecord;
+import com.example.petpal.controller.dto.vaccination.CreateVaccinationRecordDTO;
 import com.example.petpal.controller.dto.vaccination.VaccinationDTO;
 import com.example.petpal.controller.dto.vaccination.VaccinationRecordDTO;
 import lombok.AccessLevel;
