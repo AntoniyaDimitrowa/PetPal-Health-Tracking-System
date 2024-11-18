@@ -83,6 +83,7 @@ class PetServiceImplTest {
     @Test
     void updatePet_shouldThrowInvalidPetExceptionWhenPetDoesNotExist() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
+        when(breedRepository.getBreedById(breed.getId())).thenReturn(Optional.of(breed));
 
         assertThrows(InvalidPetException.class, () -> petService.updatePet(invalidPet, breed.getId()));
 

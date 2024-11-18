@@ -3,6 +3,7 @@ package com.example.petpal.controller.converters;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.controller.dto.pet.CreatePetDTO;
 import com.example.petpal.controller.dto.pet.PetDTO;
+import com.example.petpal.controller.dto.pet.UpdatePetDTO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -69,5 +70,17 @@ public class PetConverter {
             pets.add(convertFromPetDTOToPet(dto));
         }
         return pets;
+    }
+
+    public static Pet convertFromUpdatePetDTOToPet(UpdatePetDTO petDTO) {
+        if (petDTO == null) return null;
+        return Pet.builder()
+                .id(petDTO.getId())
+                .name(petDTO.getName())
+                .gender(petDTO.getGender())
+                .birthdate(petDTO.getBirthdate())
+                .weight(petDTO.getWeight())
+                .image(petDTO.getImage())
+                .build();
     }
 }

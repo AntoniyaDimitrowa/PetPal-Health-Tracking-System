@@ -7,6 +7,7 @@ import com.example.petpal.controller.converters.PetConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.pet.CreatePetDTO;
 import com.example.petpal.controller.dto.pet.PetDTO;
+import com.example.petpal.controller.dto.pet.UpdatePetDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,11 +52,11 @@ public class PetController {
         }
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Void> updatePet(@PathVariable long id, @RequestBody CreatePetDTO dto) {
+    @PutMapping()
+    public ResponseEntity<Void> updatePet(@RequestBody UpdatePetDTO dto) {
         try {
             petService.updatePet(
-                    PetConverter.convertFromCreatePetDTOToPet(dto),
+                    PetConverter.convertFromUpdatePetDTOToPet(dto),
                     dto.getBreedId()
             );
             return ResponseEntity.noContent().build();

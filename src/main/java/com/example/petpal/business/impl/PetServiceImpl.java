@@ -74,9 +74,14 @@ public class PetServiceImpl implements IPetService {
         Breed breed = breedRepository.getBreedById(breedId)
                 .orElseThrow(() -> new InvalidBreedException(breedId));
 
-        pet.setBreed(breed);
+        existingPet.setName(pet.getName());
+        existingPet.setBreed(breed);
+        existingPet.setBirthdate(pet.getBirthdate());
+        existingPet.setImage(pet.getImage());
+        existingPet.setGender(pet.getGender());
+        existingPet.setWeight(pet.getWeight());
 
-        petRepository.updatePet(existingPet.getId(), pet);
+        petRepository.updatePet(existingPet.getId(), existingPet);
     }
 
     @Override
