@@ -53,13 +53,13 @@ public class PetController {
     }
 
     @PutMapping()
-    public ResponseEntity<Void> updatePet(@RequestBody UpdatePetDTO dto) {
+    public ResponseEntity<String> updatePet(@RequestBody UpdatePetDTO dto) {
         try {
             petService.updatePet(
                     PetConverter.convertFromUpdatePetDTOToPet(dto),
                     dto.getBreedId()
             );
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("Pet updated successfully");
         } catch (InvalidPetException | InvalidBreedException e) {
             return ResponseEntity.notFound().build();
         }
