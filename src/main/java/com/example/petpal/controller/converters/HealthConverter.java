@@ -3,6 +3,7 @@ package com.example.petpal.controller.converters;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
+import com.example.petpal.controller.dto.health.CreateHealthRecordDTO;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class HealthConverter {
     public static HealthRecord convertFromHealthRecordDTOToHealthRecord(HealthRecordDTO dto) {
         if (dto == null) return null;
         return HealthRecord.builder()
+                .id(dto.getId())
                 .date(dto.getDate())
                 .foodIntake(dto.getFoodIntake())
                 .waterIntake(dto.getWaterIntake())
@@ -44,6 +46,7 @@ public class HealthConverter {
     public static HealthRecordDTO convertFromHealthRecordToHealthRecordDTO(HealthRecord healthRecord) {
         if (healthRecord == null) return null;
         return HealthRecordDTO.builder()
+                .id(healthRecord.getId())
                 .date(healthRecord.getDate())
                 .foodIntake(healthRecord.getFoodIntake())
                 .waterIntake(healthRecord.getWaterIntake())
@@ -88,5 +91,17 @@ public class HealthConverter {
             infos.add(convertFromBreedHealthInfoDTOToBreedHealthInfo(dto));
         }
         return infos;
+    }
+
+    public static HealthRecord convertFromCreateHealthRecordDTOToHealthRecord(CreateHealthRecordDTO dto) {
+        if (dto == null) return null;
+        return HealthRecord.builder()
+                .date(dto.getDate())
+                .foodIntake(dto.getFoodIntake())
+                .waterIntake(dto.getWaterIntake())
+                .activityLevel(dto.getActivityLevel())
+                .socialInteraction(dto.getSocialInteraction())
+                .notes(dto.getNotes())
+                .build();
     }
 }

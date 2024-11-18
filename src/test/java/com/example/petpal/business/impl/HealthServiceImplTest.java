@@ -1,13 +1,12 @@
 package com.example.petpal.business.impl;
 
-import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.BreedHealthInfo;
-import com.example.petpal.business.domain.HealthRecord;
-import com.example.petpal.business.domain.Pet;
+import com.example.petpal.business.domain.*;
 import com.example.petpal.business.exception.InvalidBreedException;
+import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IHealthRepository;
+import com.example.petpal.persistence.IMoodRepository;
 import com.example.petpal.persistence.IPetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,11 +32,21 @@ class HealthServiceImplTest {
     @Mock
     private IBreedRepository breedRepository;
 
+    @Mock
+    private IMoodRepository moodRepository;
+
     @InjectMocks
     private HealthServiceImpl healthService;
 
     private static final Pet pet = Pet.builder().id(1L).build();
-    private static final Breed breed = Breed.builder().id(1L).name("Labrador").build();
+
+    private static final Mood mood = Mood.builder()
+            .id(1L)
+            .name("Happy")
+            .emoji("😊")
+            .build();
+
+    private static final Breed breed = Breed.builder().id(1L).name("Labrador").normalMood(mood).build();
 
     @BeforeEach
     void setUp() {
@@ -48,19 +57,33 @@ class HealthServiceImplTest {
     @Test
     void createHealthRecord_shouldThrowExceptionIfPetNotFound() {
         when(petRepository.getPet(100L)).thenReturn(Optional.empty());
+        when(moodRepository.getMoodById(1L)).thenReturn(Optional.of(mood));
 
-        assertThrows(InvalidPetException.class, () -> healthService.createHealthRecord(100L, HealthRecord.builder().build()));
+        assertThrows(InvalidPetException.class, () -> healthService.createHealthRecord(100L, HealthRecord.builder().build(), 1L));
 
         verify(petRepository).getPet(100L);
         verifyNoInteractions(healthRepository);
     }
 
     @Test
-    void createHealthRecord_shouldCreateRecordIfPetExists() throws InvalidPetException {
+    void createHealthRecord_shouldThrowExceptionIfMoodNotFound() {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
+        when(moodRepository.getMoodById(100L)).thenReturn(Optional.empty());
+
+        assertThrows(InvalidMoodException.class, () -> healthService.createHealthRecord(1L, HealthRecord.builder().build(), 100L));
+
+        verify(petRepository).getPet(1L);
+        verify(moodRepository).getMoodById(100L);
+        verifyNoInteractions(healthRepository);
+    }
+
+    @Test
+    void createHealthRecord_shouldCreateRecordIfPetExists() throws InvalidPetException, InvalidMoodException {
+        when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
+        when(moodRepository.getMoodById(1L)).thenReturn(Optional.of(mood));
         when(healthRepository.createHealthRecordToPet(eq(1L), any(HealthRecord.class))).thenReturn(1L);
 
-        Long id = healthService.createHealthRecord(1L, HealthRecord.builder().build());
+        Long id = healthService.createHealthRecord(1L, HealthRecord.builder().build(), 1L);
 
         assertNotNull(id);
         verify(healthRepository).createHealthRecordToPet(eq(1L), any(HealthRecord.class));

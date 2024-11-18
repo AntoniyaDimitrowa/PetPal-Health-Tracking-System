@@ -3,12 +3,16 @@ package com.example.petpal.controller;
 import com.example.petpal.business.IHealthService;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
+import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.exception.InvalidBreedException; // Import the exception
 import com.example.petpal.controller.converters.HealthConverter;
+import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
+import com.example.petpal.controller.dto.health.CreateHealthRecordDTO;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +36,12 @@ public class HealthController {
     }
 
     @PostMapping("/pets/{petId}/records")
-    public ResponseEntity<Void> createHealthRecord(@PathVariable Long petId, @RequestBody HealthRecordDTO healthRecordDTO) {
+    public ResponseEntity<CreateEntityResponse> createHealthRecord(@PathVariable Long petId, @RequestBody CreateHealthRecordDTO healthRecordDTO) {
         try {
-            HealthRecord healthRecord = HealthConverter.convertFromHealthRecordDTOToHealthRecord(healthRecordDTO);
-            healthService.createHealthRecord(petId, healthRecord);
-            return ResponseEntity.status(201).build();
-        } catch (InvalidPetException e) {
+            HealthRecord healthRecord = HealthConverter.convertFromCreateHealthRecordDTOToHealthRecord(healthRecordDTO);
+            Long newHealthRecordId = healthService.createHealthRecord(petId, healthRecord, healthRecordDTO.getMoodId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newHealthRecordId).build());
+        } catch (InvalidPetException | InvalidMoodException e) {
             return ResponseEntity.notFound().build();
         }
     }
