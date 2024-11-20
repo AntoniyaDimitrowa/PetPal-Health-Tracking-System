@@ -33,10 +33,18 @@ public class PetRepositoryImpl implements IPetRepository {
         PetEntity existingPet = petRepositoryJPA.findById(id).get();
 
         PetEntity updatedPet = PetConverter.convertFromPetToPetEntity(pet);
-        updatedPet.setId(id);
-        updatedPet.setOwner(existingPet.getOwner());
-        petRepositoryJPA.save(updatedPet);
+        // Update the fields of the existing entity
+        existingPet.setName(pet.getName());
+        existingPet.setBreed(updatedPet.getBreed());
+        existingPet.setBirthdate(pet.getBirthdate());
+        existingPet.setWeight(pet.getWeight());
+        existingPet.setGender(pet.getGender());
+        existingPet.setImage(pet.getImage());
+
+        // Save the updated entity
+        petRepositoryJPA.save(existingPet);
     }
+
 
     @Override
     public boolean deletePet(Long petId) {

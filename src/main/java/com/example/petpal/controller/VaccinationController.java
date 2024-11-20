@@ -1,10 +1,8 @@
 package com.example.petpal.controller;
 
 import com.example.petpal.business.IVaccinationService;
-import com.example.petpal.business.exception.CreationFailException;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.exception.InvalidVaccinationException;
-import com.example.petpal.controller.converters.PetConverter;
 import com.example.petpal.controller.converters.VaccinationConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.vaccination.CreateVaccinationRecordDTO;

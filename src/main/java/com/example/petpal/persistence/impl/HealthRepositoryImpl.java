@@ -5,9 +5,12 @@ import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.persistence.IBreedHealthInfoRepositoryJPA;
 import com.example.petpal.persistence.IHealthRecordRepositoryJPA;
 import com.example.petpal.persistence.IHealthRepository;
+import com.example.petpal.persistence.IPetRepositoryJPA;
 import com.example.petpal.persistence.converters.HealthConverter;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 import com.example.petpal.persistence.entity.HealthRecordEntity;
+import com.example.petpal.persistence.entity.PetEntity;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -15,17 +18,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@AllArgsConstructor
 public class HealthRepositoryImpl implements IHealthRepository {
 
 
     private final IBreedHealthInfoRepositoryJPA breedHealthInfoRepository;
 
     private final IHealthRecordRepositoryJPA healthRecordRepository;
+    private final IPetRepositoryJPA petRepositoryJPA;
 
-    public HealthRepositoryImpl(IBreedHealthInfoRepositoryJPA breedHealthInfoRepository, IHealthRecordRepositoryJPA healthRecordRepository) {
-        this.breedHealthInfoRepository = breedHealthInfoRepository;
-        this.healthRecordRepository = healthRecordRepository;
-    }
     @Override
     public Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age) {
         //TODO fix this method
@@ -64,7 +65,11 @@ public class HealthRepositoryImpl implements IHealthRepository {
 
     @Override
     public Long createHealthRecordToPet(long petId, HealthRecord healthRecord) {
+        PetEntity pet = petRepositoryJPA.findById(petId)
+                .orElseThrow(() -> new RuntimeException("Pet not found"));
+
         HealthRecordEntity entity = HealthConverter.convertFromHealthRecordToHealthRecordEntity(healthRecord);
+        entity.setPet(pet);
 
         HealthRecordEntity savedEntity = healthRecordRepository.save(entity);
         return savedEntity.getId();

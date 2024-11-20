@@ -1,12 +1,15 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IHealthService;
+import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.exception.InvalidBreedException;
+import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IHealthRepository;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.exception.InvalidPetException;
+import com.example.petpal.persistence.IMoodRepository;
 import com.example.petpal.persistence.IPetRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ public class HealthServiceImpl implements IHealthService {
     private final IPetRepository petRepository;
     private final IHealthRepository healthRepository;
     private final IBreedRepository breedRepository;
+    private final IMoodRepository moodRepository;
 
     @Override
     public List<HealthRecord> getHealthRecordsByPetId(Long petId) throws InvalidPetException {
@@ -30,11 +34,15 @@ public class HealthServiceImpl implements IHealthService {
     }
 
     @Override
-    public Long createHealthRecord(Long petId, HealthRecord healthRecord) throws InvalidPetException {
+    public Long createHealthRecord(Long petId, HealthRecord healthRecord, Long moodId) throws InvalidPetException, InvalidMoodException {
         if(petRepository.getPet(petId).isEmpty()) {
             throw new InvalidPetException(petId);
         }
 
+        Mood mood = moodRepository.getMoodById(moodId)
+                .orElseThrow(() -> new InvalidMoodException(moodId));
+
+        healthRecord.setMood(mood);
         return healthRepository.createHealthRecordToPet(petId, healthRecord);
     }
 
