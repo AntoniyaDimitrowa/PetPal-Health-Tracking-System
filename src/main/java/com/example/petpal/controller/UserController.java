@@ -2,11 +2,13 @@ package com.example.petpal.controller;
 
 import com.example.petpal.business.IUserService;
 import com.example.petpal.business.domain.User;
+import com.example.petpal.business.exception.InvalidCredentialsException;
 import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.business.exception.UnauthorizedDataAccessException;
 import com.example.petpal.controller.converters.UserConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.RegisterDTO;
+import com.example.petpal.controller.dto.user.UpdateUserDTO;
 import com.example.petpal.controller.dto.user.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,12 +49,12 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody UpdateUserDTO userDTO) {
         try {
-            User updatedUser = UserConverter.convertFromUserDTOToUser(userDTO);
-            userService.updateUser(id, updatedUser);
+            User updatedUser = UserConverter.convertFromUpdateUserDTOToUser(userDTO);
+            userService.updateUser(id, userDTO.getOldPassword(), updatedUser);
             return ResponseEntity.noContent().build();
-        } catch (InvalidUserException e) {
+        } catch (InvalidUserException | InvalidCredentialsException e) {
             return ResponseEntity.notFound().build();
         }
     }

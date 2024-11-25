@@ -9,10 +9,10 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class UpdateUserDTO {
-    private Long id;
     private String name;
     private String email;
-    private String password;
+    private String oldPassword;
+    private String newPassword;
     private String address;
     private String image;
 }

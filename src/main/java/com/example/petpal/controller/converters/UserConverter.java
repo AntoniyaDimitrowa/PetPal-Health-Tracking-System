@@ -63,10 +63,9 @@ public class UserConverter {
     public static User convertFromUpdateUserDTOToUser(UpdateUserDTO updateUserDTO) {
         if (updateUserDTO == null) return null;
         return User.builder()
-                .id(updateUserDTO.getId())
                 .name(updateUserDTO.getName())
                 .email(updateUserDTO.getEmail())
-                .password(updateUserDTO.getPassword())
+                .password(updateUserDTO.getNewPassword())
                 .address(updateUserDTO.getAddress())
                 .image(updateUserDTO.getImage())
                 .build();

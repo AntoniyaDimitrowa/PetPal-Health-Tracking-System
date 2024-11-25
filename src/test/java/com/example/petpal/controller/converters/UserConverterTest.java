@@ -51,10 +51,9 @@ class UserConverterTest {
             .address(ADDRESS)
             .build();
     private static final UpdateUserDTO updateUserDTO = UpdateUserDTO.builder()
-            .id(1L)
             .name(USER_NAME)
             .email(EMAIL)
-            .password(PASSWORD)
+            .newPassword(PASSWORD)
             .address(ADDRESS)
             .image(IMAGE)
             .build();
@@ -120,7 +119,7 @@ class UserConverterTest {
         User result = UserConverter.convertFromUpdateUserDTOToUser(updateUserDTO);
 
         assertNotNull(result);
-        assertEquals(1L, result.getId());
+        //assertEquals(1L, result.getId());
         assertEquals(USER_NAME, result.getName());
         assertEquals(EMAIL, result.getEmail());
         assertEquals(PASSWORD, result.getPassword());

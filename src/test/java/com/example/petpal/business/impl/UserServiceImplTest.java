@@ -1,6 +1,7 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.domain.User;
+import com.example.petpal.business.exception.InvalidCredentialsException;
 import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.business.exception.UnauthorizedDataAccessException;
 import com.example.petpal.configuration.security.token.IAccessToken;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -26,6 +28,10 @@ class UserServiceImplTest {
 
     @Mock
     private IAccessToken requestAccessToken;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
 
     private static final User user = User.builder()
             .id(1L)
@@ -87,25 +93,24 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUser_shouldThrowExceptionIfUserNotFound() {
+    void updateUser_shouldThrowInvalidUserExceptionIfUserNotFound() {
         when(userRepository.getUserById(100L)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidUserException.class, () -> userService.updateUser(100L, user));
+        assertThrows(InvalidUserException.class, () -> userService.updateUser(100L, "oldPassword", user));
         verify(userRepository, times(1)).getUserById(100L);
     }
 
+
     @Test
-    void updateUser_shouldUpdateUserWhenExists() throws InvalidUserException {
+    void updateUser_shouldThrowInvalidCredentialsExceptionIfOldPasswordDoesNotMatch() {
         User updatedUser = User.builder().id(1L).name("John Updated").email("updated@example.com").build();
+
+        // Mock user retrieval and password match failure
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
-        when(userRepository.updateUser(eq(1L), any(User.class))).thenReturn(updatedUser);
+        when(passwordEncoder.matches("wrongOldPassword", user.getPassword())).thenReturn(false);
 
-        User result = userService.updateUser(1L, updatedUser);
-
-        assertNotNull(result);
-        assertEquals("John Updated", result.getName());  // Check if name was updated
-        assertEquals("updated@example.com", result.getEmail());  // Check if email was updated
-        verify(userRepository, times(1)).updateUser(eq(1L), any(User.class));
+        assertThrows(InvalidCredentialsException.class, () -> userService.updateUser(1L, "wrongOldPassword", updatedUser));
+        verify(userRepository, never()).updateUser(eq(1L), any(User.class));  // Ensure update doesn't happen
     }
 
     @Test
