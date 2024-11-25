@@ -3,6 +3,7 @@ package com.example.petpal.business.impl;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.business.exception.UnauthorizedDataAccessException;
+import com.example.petpal.configuration.security.token.IAccessToken;
 import com.example.petpal.persistence.IUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
+    @Mock
+    private IAccessToken requestAccessToken;
+
     private static final User user = User.builder()
             .id(1L)
             .name("John Doe")
@@ -41,26 +45,34 @@ class UserServiceImplTest {
         MockitoAnnotations.openMocks(this);  // Initialize mocks before each test
     }
 
-    //TODO fix the tests for the getUserById
-//    @Test
-//    void getUserById_shouldReturnUserWhenExists() throws UnauthorizedDataAccessException {
-//        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
-//
-//        Optional<User> result = userService.getUserById(1L);
-//
-//        assertTrue(result.isPresent());
-//        assertEquals(user, result.get());
-//        verify(userRepository, times(1)).getUserById(1L);
-//    }
+    @Test
+    void getUserById_shouldReturnUserWhenExists() throws UnauthorizedDataAccessException {
+        when(requestAccessToken.getUserId()).thenReturn(1L);
+        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
 
-//    @Test
-//    void getUserById_shouldThrowUnauthorizedDataAccessExceptionWhenNotFoundOrUnauthorized() throws UnauthorizedDataAccessException {
-//        when(userRepository.getUserById(100L)).thenReturn(Optional.empty());
-//
-//        assertThrows(new UnauthorizedDataAccessException(), userService.getUserById(100L));
-//
-//        verify(userRepository, times(1)).getUserById(100L);
-//    }
+        Optional<User> result = userService.getUserById(1L);
+
+        assertTrue(result.isPresent());
+        assertEquals(user, result.get());
+        verify(userRepository, times(1)).getUserById(1L);
+    }
+
+    @Test
+    void getUserById_shouldThrowUnauthorizedDataAccessExceptionWhenUnauthorized() {
+        when(requestAccessToken.getUserId()).thenReturn(2L); // Access token belongs to user 2
+
+        assertThrows(UnauthorizedDataAccessException.class, () -> userService.getUserById(1L));
+        verify(userRepository, never()).getUserById(1L);
+    }
+
+    @Test
+    void getUserById_shouldThrowUnauthorizedDataAccessExceptionWhenNoAccessToken() {
+        when(requestAccessToken.getUserId()).thenReturn(null); // Simulate no access token
+
+        assertThrows(UnauthorizedDataAccessException.class, () -> userService.getUserById(1L));
+        verify(userRepository, never()).getUserById(1L); // Don't call repository if token is missing
+    }
+
 
     @Test
     void createUser_shouldReturnUserIdWhenCreated() {

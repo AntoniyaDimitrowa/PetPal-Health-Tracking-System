@@ -20,8 +20,6 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public Optional<User> getUserById(Long userId) throws UnauthorizedDataAccessException {
-        System.out.println("URL userId: " + userId);
-        System.out.println("Token userId: " + requestAccessToken.getUserId());
         if (!Objects.equals(requestAccessToken.getUserId(), userId)) {
             throw new UnauthorizedDataAccessException();
         }
