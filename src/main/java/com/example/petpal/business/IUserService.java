@@ -2,11 +2,12 @@ package com.example.petpal.business;
 
 import com.example.petpal.business.domain.User;
 import com.example.petpal.business.exception.InvalidUserException;
+import com.example.petpal.business.exception.UnauthorizedDataAccessException;
 
 import java.util.Optional;
 
 public interface IUserService {
-    Optional<User> getUserById(Long userId);
+    Optional<User> getUserById(Long userId) throws UnauthorizedDataAccessException;
     Long createUser(User user);
     User updateUser(Long userId, User updatedUser) throws InvalidUserException;
     boolean deleteUser(Long userId);

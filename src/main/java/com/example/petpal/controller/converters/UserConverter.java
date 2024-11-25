@@ -55,6 +55,8 @@ public class UserConverter {
                     .memberSince(new Date())
                     .role("Owner")
                     .address(userDTO.getAddress())
+                    .pets(Optional.empty())
+                    .breedHealthInfos(Optional.empty())
                     .build();
         }
 

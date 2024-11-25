@@ -3,6 +3,7 @@ package com.example.petpal.controller;
 import com.example.petpal.business.IUserService;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.business.exception.InvalidUserException;
+import com.example.petpal.business.exception.UnauthorizedDataAccessException;
 import com.example.petpal.controller.converters.UserConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.RegisterDTO;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Console;
 import java.util.Optional;
 
 @RestController
@@ -25,12 +27,16 @@ public class UserController {
 
     @GetMapping("{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable(value = "userId") final long userId) {
-        Optional<User> userOptional = userService.getUserById(userId);
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        try {
+            Optional<User> userOptional = userService.getUserById(userId);
+            if (userOptional.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            UserDTO userDTO = UserConverter.convertFromUserToUserDTO(userOptional.get());
+            return ResponseEntity.ok(userDTO);
+        } catch (UnauthorizedDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 Forbidden
         }
-        UserDTO userDTO = UserConverter.convertFromUserToUserDTO(userOptional.get());
-        return ResponseEntity.ok(userDTO);
     }
 
     @PostMapping
