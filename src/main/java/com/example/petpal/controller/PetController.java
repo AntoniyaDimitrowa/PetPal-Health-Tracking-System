@@ -8,6 +8,7 @@ import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.pet.CreatePetDTO;
 import com.example.petpal.controller.dto.pet.PetDTO;
 import com.example.petpal.controller.dto.pet.UpdatePetDTO;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,7 @@ public class PetController {
     }
 
     @PostMapping
+    @RolesAllowed("Owner")
     public ResponseEntity<CreateEntityResponse> createPet(@RequestBody CreatePetDTO dto) {
         try {
             long newPetId = petService.createPet(
@@ -53,6 +55,7 @@ public class PetController {
     }
 
     @PutMapping()
+    @RolesAllowed("Owner")
     public ResponseEntity<String> updatePet(@RequestBody UpdatePetDTO dto) {
         try {
             petService.updatePet(
@@ -66,6 +69,7 @@ public class PetController {
     }
 
     @DeleteMapping("{id}")
+    @RolesAllowed("Owner")
     public ResponseEntity<Void> deletePet(@PathVariable long id) {
         boolean deleted = petService.deletePet(id);
         if (deleted) {

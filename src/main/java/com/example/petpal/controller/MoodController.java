@@ -5,6 +5,7 @@ import com.example.petpal.business.domain.Mood;
 import com.example.petpal.controller.converters.MoodConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.mood.MoodDTO;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,12 +40,14 @@ public class MoodController {
     }
 
     @PostMapping
+    @RolesAllowed("Admin")
     public ResponseEntity<CreateEntityResponse> createMood(@RequestBody MoodDTO dto) {
         long newMoodId = moodService.createMood(MoodConverter.convertFromMoodDTOToMood(dto));
         return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newMoodId).build());
     }
 
     @DeleteMapping("{id}")
+    @RolesAllowed("Admin")
     public ResponseEntity<Void> deleteMood(@PathVariable long id) {
         boolean deleted = moodService.deleteMood(id);
         if (deleted) {

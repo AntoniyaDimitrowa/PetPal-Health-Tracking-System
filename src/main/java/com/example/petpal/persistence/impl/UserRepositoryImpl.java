@@ -27,6 +27,12 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
+    public Optional<User> getUserByEmail(String email) {
+        Optional<UserEntity> userEntityOpt = userRepositoryJPA.findByEmail(email);
+        return userEntityOpt.map(UserConverter::convertFromUserEntityToUser);
+    }
+
+    @Override
     public Long createUser(User user) {
         UserEntity userEntity = UserConverter.convertFromUserToUserEntity(user);
         UserEntity savedEntity = userRepositoryJPA.save(userEntity);

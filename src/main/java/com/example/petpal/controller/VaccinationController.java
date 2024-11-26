@@ -7,6 +7,7 @@ import com.example.petpal.controller.converters.VaccinationConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.vaccination.CreateVaccinationRecordDTO;
 import com.example.petpal.controller.dto.vaccination.VaccinationDTO;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ public class VaccinationController {
     }
 
     @PostMapping()
+    @RolesAllowed("Owner")
     public ResponseEntity<CreateEntityResponse> createVaccinationRecord (@RequestBody CreateVaccinationRecordDTO dto) {
         try {
             long newVaccinationRecordId = vaccinationService.createVaccinationRecord(
