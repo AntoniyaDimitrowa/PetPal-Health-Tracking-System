@@ -7,7 +7,6 @@ import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.business.exception.UnauthorizedDataAccessException;
 import com.example.petpal.configuration.security.token.IAccessToken;
 import com.example.petpal.persistence.IUserRepository;
-import com.example.petpal.persistence.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

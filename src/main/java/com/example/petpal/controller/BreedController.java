@@ -9,6 +9,7 @@ import com.example.petpal.controller.dto.*;
 import com.example.petpal.controller.dto.breed.BreedDTO;
 import com.example.petpal.controller.dto.breed.CreateBreedDTO;
 import com.example.petpal.controller.dto.breed.UpdateBreedDTO;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,7 @@ public class BreedController {
     }
 
     @PostMapping
+    @RolesAllowed("Admin")
     public ResponseEntity<CreateEntityResponse> createBreed(@RequestBody CreateBreedDTO dto) {
         try {
             long newBreedId = breedService.createBreed(BreedConverter.convertFromCreateBreedDTOToBreed(dto), dto.getNormalMoodId());
@@ -53,6 +55,7 @@ public class BreedController {
     }
 
     @PutMapping("{id}")
+    @RolesAllowed("Admin")
     public ResponseEntity<BreedDTO> updateBreed(@RequestBody UpdateBreedDTO dto, @PathVariable Long id) {
         try {
             breedService.updateBreed(id, BreedConverter.convertFromUpdateBreedDTOToBreed(dto), dto.getNormalMoodId());
@@ -64,6 +67,7 @@ public class BreedController {
     }
 
     @DeleteMapping("{id}")
+    @RolesAllowed("Admin")
     public ResponseEntity<Void> deleteBreed(@PathVariable long id) {
         boolean deleted = breedService.deleteBreed(id);
         if (deleted) {

@@ -119,7 +119,6 @@ class UserConverterTest {
         User result = UserConverter.convertFromUpdateUserDTOToUser(updateUserDTO);
 
         assertNotNull(result);
-        //assertEquals(1L, result.getId());
         assertEquals(USER_NAME, result.getName());
         assertEquals(EMAIL, result.getEmail());
         assertEquals(PASSWORD, result.getPassword());

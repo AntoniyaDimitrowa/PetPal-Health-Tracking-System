@@ -11,6 +11,7 @@ import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
 import com.example.petpal.controller.dto.health.CreateHealthRecordDTO;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ public class HealthController {
     private final IHealthService healthService;
 
     @GetMapping("/pets/{petId}/records")
+    @RolesAllowed("Owner")
     public ResponseEntity<List<HealthRecordDTO>> getHealthRecordsByPetId(@PathVariable Long petId) {
         try {
             List<HealthRecord> healthRecords = healthService.getHealthRecordsByPetId(petId);
@@ -36,6 +38,7 @@ public class HealthController {
     }
 
     @PostMapping("/pets/{petId}/records")
+    @RolesAllowed("Owner")
     public ResponseEntity<CreateEntityResponse> createHealthRecord(@PathVariable Long petId, @RequestBody CreateHealthRecordDTO healthRecordDTO) {
         try {
             HealthRecord healthRecord = HealthConverter.convertFromCreateHealthRecordDTOToHealthRecord(healthRecordDTO);
@@ -47,12 +50,14 @@ public class HealthController {
     }
 
     @GetMapping("/breeds/{breedId}/health")
+    @RolesAllowed("Veterinarian")
     public ResponseEntity<List<BreedHealthInfoDTO>> getHealthInfoForBreed(@PathVariable Long breedId) {
         List<BreedHealthInfo> healthInfos = healthService.getHealthInfoByBreedId(breedId);
         return ResponseEntity.ok(HealthConverter.convertFromBreedHealthInfosToDTOs(healthInfos));
     }
 
     @PostMapping("/breeds/{breedId}/health")
+    @RolesAllowed("Veterinarian")
     public ResponseEntity<Void> createHealthInfoForBreed(@PathVariable Long breedId, @RequestBody BreedHealthInfoDTO breedHealthInfoDTO) {
         try {
             BreedHealthInfo breedHealthInfo = HealthConverter.convertFromBreedHealthInfoDTOToBreedHealthInfo(breedHealthInfoDTO);

@@ -10,6 +10,7 @@ import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.RegisterDTO;
 import com.example.petpal.controller.dto.user.UpdateUserDTO;
 import com.example.petpal.controller.dto.user.UserDTO;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,7 @@ public class UserController {
     }
 
     @PostMapping
+    @RolesAllowed("Admin")
     public ResponseEntity<CreateEntityResponse> createUser(@RequestBody RegisterDTO userDTO) {
         User user = UserConverter.convertFromRegisterDTOToUser(userDTO);
         Long createdUserId = userService.createUser(user);
@@ -49,6 +51,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
+    @RolesAllowed("Owner")
     public ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody UpdateUserDTO userDTO) {
         try {
             User updatedUser = UserConverter.convertFromUpdateUserDTOToUser(userDTO);
@@ -60,6 +63,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
+    @RolesAllowed("Admin")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) {
         boolean deleted = userService.deleteUser(id);
         if (deleted) {
