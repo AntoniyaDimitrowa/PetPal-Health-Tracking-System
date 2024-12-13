@@ -70,6 +70,7 @@ public class HealthConverter {
     public static BreedHealthInfoDTO convertFromBreedHealthInfoToBreedHealthInfoDTO(BreedHealthInfo info) {
         if (info == null) return null;
         return BreedHealthInfoDTO.builder()
+                .breed(BreedConverter.convertFromBreedToBreedDTO(info.getBreed()))
                 .ageRangeEnd(info.getAgeRangeEnd())
                 .ageRangeStart(info.getAgeRangeStart())
                 .normalFoodIntake(info.getNormalFoodIntake())

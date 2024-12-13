@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    @RolesAllowed("Owner")
+    @RolesAllowed({"Owner", "Vet"})
     public ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody UpdateUserDTO userDTO) {
         try {
             User updatedUser = UserConverter.convertFromUpdateUserDTOToUser(userDTO);
