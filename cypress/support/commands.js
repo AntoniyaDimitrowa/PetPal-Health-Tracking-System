@@ -23,3 +23,10 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+import 'cypress-file-upload';
+Cypress.Commands.add('selectReactSelectOption', (selectInputSelector, optionText) => {
+    cy.get(selectInputSelector).first().click(); // Open the dropdown
+    cy.get(selectInputSelector).first()
+        .type(`${optionText}{enter}`); // Type the option and press enter to select
+});
