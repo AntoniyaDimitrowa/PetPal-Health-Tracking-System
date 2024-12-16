@@ -1,10 +1,7 @@
 package com.example.petpal.persistence.impl;
 
-import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.User;
-import com.example.petpal.business.exception.InvalidBreedException;
-import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IPetRepositoryJPA;
 import com.example.petpal.persistence.converters.PetConverter;

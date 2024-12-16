@@ -160,7 +160,7 @@ class HealthServiceImplTest {
 
         when(breedRepository.getBreedById(breedId)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidBreedException.class, () -> healthService.createHealthInfoForBreed(breedId, ageRangeStart, ageRangeEnd, breedHealthInfo));
+        assertThrows(InvalidBreedException.class, () -> healthService.createHealthInfoForBreed(breedId, breedHealthInfo));
 
         verify(breedRepository).getBreedById(breedId);
     }
@@ -173,12 +173,12 @@ class HealthServiceImplTest {
         BreedHealthInfo breedHealthInfo = BreedHealthInfo.builder().build();
 
         when(breedRepository.getBreedById(breedId)).thenReturn(Optional.of(breed));
-        when(healthRepository.createHealthInfoForBreed(breedId, ageRangeStart, ageRangeEnd, breedHealthInfo)).thenReturn(1L);
+        when(healthRepository.createHealthInfoForBreed(breedHealthInfo)).thenReturn(1L);
 
-        Long id = healthService.createHealthInfoForBreed(breedId, ageRangeStart, ageRangeEnd, breedHealthInfo);
+        Long id = healthService.createHealthInfoForBreed(breedId, breedHealthInfo);
 
         assertNotNull(id);
-        verify(healthRepository).createHealthInfoForBreed(breedId, ageRangeStart, ageRangeEnd, breedHealthInfo);
+        verify(healthRepository).createHealthInfoForBreed(breedHealthInfo);
     }
 
     // Tests for getHealthInfoByBreedId

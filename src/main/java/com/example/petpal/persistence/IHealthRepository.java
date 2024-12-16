@@ -10,7 +10,7 @@ public interface IHealthRepository {
     Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age);
     List<BreedHealthInfo> getHealthInfoByBreedId(long breedId);
 
-    Long createHealthInfoForBreed(Long breedId, int ageRangeStart, int ageRangeEnd, BreedHealthInfo info);
+    Long createHealthInfoForBreed(BreedHealthInfo info);
 
     List<HealthRecord> getHealthRecordsByPetId(long petId);
 

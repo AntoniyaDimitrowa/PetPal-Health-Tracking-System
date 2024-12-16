@@ -60,22 +60,28 @@ public class HealthConverter {
     public static BreedHealthInfo convertFromBreedHealthInfoEntityToBreedHealthInfo(BreedHealthInfoEntity entity) {
         if (entity == null) return null;
         return BreedHealthInfo.builder()
+                .id(entity.getId())
                 .breed(entity.getBreed() != null ? BreedConverter.convertFromBreedEntityToBreed(entity.getBreed()) : null)
                 .ageRangeEnd(entity.getAgeRangeEnd())
                 .ageRangeStart(entity.getAgeRangeStart())
                 .normalFoodIntake(entity.getNormalFoodIntake())
                 .normalWaterIntake(entity.getNormalWaterIntake())
+                .weightRangeMin(entity.getWeightRangeMin())
+                .weightRangeMax(entity.getWeightRangeMax())
                 .build();
     }
 
     public static BreedHealthInfoEntity convertFromBreedHealthInfoToBreedHealthInfoEntity(BreedHealthInfo info) {
         if (info == null) return null;
         return BreedHealthInfoEntity.builder()
+                .id(info.getId())
                 .breed(info.getBreed() != null ? BreedConverter.convertFromBreedToBreedEntity(info.getBreed()) : null)
                 .ageRangeEnd(info.getAgeRangeEnd())
                 .ageRangeStart(info.getAgeRangeStart())
                 .normalFoodIntake(info.getNormalFoodIntake())
                 .normalWaterIntake(info.getNormalWaterIntake())
+                .weightRangeMin(info.getWeightRangeMin())
+                .weightRangeMax(info.getWeightRangeMax())
                 .build();
     }
 
