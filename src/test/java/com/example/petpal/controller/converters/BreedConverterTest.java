@@ -5,12 +5,14 @@ import com.example.petpal.business.domain.Mood;
 import com.example.petpal.controller.dto.breed.BreedDTO;
 import com.example.petpal.controller.dto.breed.CreateBreedDTO;
 import com.example.petpal.controller.dto.breed.UpdateBreedDTO;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("unit")
 class BreedConverterTest {
 
     private static final Mood mood = Mood.builder().id(1L).name("Happy").emoji("😊").build();

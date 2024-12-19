@@ -9,6 +9,7 @@ import com.example.petpal.persistence.IHealthRepository;
 import com.example.petpal.persistence.IMoodRepository;
 import com.example.petpal.persistence.IPetRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@Tag("unit")
 class HealthServiceImplTest {
 
     @Mock

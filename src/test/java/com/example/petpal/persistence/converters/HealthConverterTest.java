@@ -4,12 +4,14 @@ import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.persistence.entity.BreedHealthInfoEntity;
 import com.example.petpal.persistence.entity.HealthRecordEntity;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("unit")
 class HealthConverterTest {
 
     private static final HealthRecord healthRecord = HealthRecord.builder()

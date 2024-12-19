@@ -15,6 +15,7 @@ import com.example.petpal.controller.dto.pet.UpdatePetDTO;
 import com.example.petpal.controller.dto.breed.BreedDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
@@ -37,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(PetController.class)
 @Import({WebSecurityConfig.class}) // Ensure WebSecurityConfig is imported
+@Tag("integration")
 class PetControllerTest {
 
     @Autowired

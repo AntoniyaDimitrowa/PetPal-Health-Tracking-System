@@ -5,6 +5,7 @@ import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.VaccinationType;
 import com.example.petpal.persistence.entity.VaccinationEntity;
 import com.example.petpal.persistence.entity.VaccinationRecordEntity;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("unit")
 class VaccinationConverterTest {
 
     private static final Date DATE = new Date();

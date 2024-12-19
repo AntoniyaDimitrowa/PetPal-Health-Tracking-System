@@ -2,37 +2,21 @@ describe('End-to-End Add Pet Flow', () => {
   const baseURLforBE = "http://localhost:8090";
   const baseURLforFE = "http://localhost:5173";
 
+  let createdPetId;
+
   beforeEach(() => {
+    // Navigate to Add Pet page
     cy.visit(baseURLforFE + '/login');
     cy.get('#email').type('antsimdim04@gmail.com');
     cy.get('#password').type('1234');
     cy.get('form').submit();
     cy.url().should('eq', baseURLforFE + '/account');
     cy.contains('Profile Information');
-
-    // Navigate to Add Pet page
     cy.contains('Add Pet').click();
     cy.url().should('eq', baseURLforFE + '/addPet');
-
-    cy.intercept('POST', baseURLforBE + `/pets`, (req) => {
-      expect(req.body).to.deep.include({
-        name: 'Buddy',
-        breedId: 5, // Assuming 'Bulldog' has breedId = 5 in your backend
-        gender: 'MALE',
-        userId: 4, // Assuming userId is determined from session/backend logic
-        weight: 20.2,
-        vaccinationRecordsIds: [],
-      });
-      expect(req.body.birthdate).to.match(/2022-01-01/); // Confirming correct date format
-      expect(req.body.image).to.be.a('string'); // Base64-encoded image
-      req.reply({
-        statusCode: 201,
-        body: { message: 'Pet has been successfully created!' },
-      });
-    }).as('mockAddPet');
   });
 
-  it('should log in, navigate to account, and add a pet successfully', () => {
+  it('should log in, navigate to account, add a pet, verify its existence, and delete it successfully', () => {
     // Upload pet image
     cy.fixture('dog.jpg', 'base64').then((image) => {
       const blob = Cypress.Blob.base64StringToBlob(image, 'image/jpeg');
@@ -53,10 +37,46 @@ describe('End-to-End Add Pet Flow', () => {
     cy.get('#weight').type('20.2');
     cy.get('#gender').select('male');
 
-    // Submit form and verify success message
+    // Submit the form
+    cy.intercept('POST', `${baseURLforBE}/pets`).as('createPet');
     cy.get('form').submit();
-    cy.contains('Pet has been successfully created!');
-    cy.wait('@mockAddPet');
+
+    // Wait for pet creation and capture ID
+    cy.wait('@createPet').then((interception) => {
+      const responseBody = interception.response.body;
+      createdPetId = responseBody.id;
+      expect(createdPetId).to.exist; // Validate ID
+    }).then(() => {
+      // Verify the pet is displayed
+      cy.visit(`${baseURLforFE}/account`);
+      cy.contains('My Pets');
+      cy.contains('Buddy');
+      cy.contains('Bulldog');
+      cy.contains('20.2 kg');
+    }).then(() => {
+      // Delete the pet
+      cy.request({
+        method: 'DELETE',
+        url: `${baseURLforBE}/pets/${createdPetId}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      }).then((response) => {
+        expect(response.status).to.eq(204);
+      });
+    }).then(() => {
+      // Verify the pet no longer exists
+      cy.request({
+        method: 'GET',
+        url: `${baseURLforBE}/pets/${createdPetId}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // Pass token
+        },
+        failOnStatusCode: false, // Allow non-2xx responses
+      }).then((response) => {
+        expect(response.status).to.eq(404); // Verify pet is deleted
+      });
+    });
   });
 
   it('should display validation errors for missing or incorrect input', () => {
@@ -87,8 +107,7 @@ describe('End-to-End Add Pet Flow', () => {
     // Submit form and verify error
     cy.get('form').submit();
     cy.contains(
-        'Vaccination "Rabies" is not allowed for dogs younger than 16 weeks.'
+      'Vaccination "Rabies" is not allowed for dogs younger than 16 weeks.'
     );
-});
-
+  });
 });

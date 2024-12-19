@@ -4,6 +4,7 @@ import com.example.petpal.business.domain.User;
 import com.example.petpal.controller.dto.RegisterDTO;
 import com.example.petpal.controller.dto.user.UpdateUserDTO;
 import com.example.petpal.controller.dto.user.UserDTO;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("unit")
 class UserConverterTest {
 
     private static final String USER_NAME = "John Doe";

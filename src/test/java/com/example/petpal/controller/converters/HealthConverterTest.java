@@ -5,6 +5,7 @@ import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("unit")
 class HealthConverterTest {
 
     private static final Mood mood = Mood.builder().id(1L).name("Happy").emoji("😊").build();

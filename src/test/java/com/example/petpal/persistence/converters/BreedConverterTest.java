@@ -4,12 +4,14 @@ import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.persistence.entity.BreedEntity;
 import com.example.petpal.persistence.entity.MoodEntity;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("unit")
 class BreedConverterTest {
 
     private static final Mood mood = Mood.builder()
