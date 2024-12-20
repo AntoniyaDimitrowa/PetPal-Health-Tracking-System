@@ -18,7 +18,7 @@ build:
   stage: build
   before_script:
     # Clone the frontend repository into a sibling directory
-    - git clone https://<YOUR_FE_REPO_URL> ../frontend-repo
+  - git clone https://git.fhict.nl/I529672/semester3-individualproject-petpal-fe.git ../frontend-repo
   script:
     # Build the backend
     - ./gradlew assemble
