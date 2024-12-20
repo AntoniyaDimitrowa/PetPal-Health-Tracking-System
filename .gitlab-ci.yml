@@ -16,10 +16,16 @@ stages:
 # Build Stage
 build:
   stage: build
+  before_script:
+    # Clone the frontend repository into a sibling directory
+    - git clone https://<YOUR_FE_REPO_URL> ../frontend-repo
   script:
+    # Build the backend
     - ./gradlew assemble
     - ls -l build/libs/
-    - docker build -t semester3-individualproject-petpal-fe:latest ../semester3-individualproject-petpal-fe/Pet\ Care\ Front\ End/petCareFrontEnd
+
+    # Build the frontend Docker image
+    - docker build -t semester3-individualproject-petpal-fe:latest ../frontend-repo/Pet\ Care\ Front\ End/petCareFrontEnd
   artifacts:
     paths:
       - build/libs/
