@@ -27,8 +27,8 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -74,19 +74,46 @@ dependencies {
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+	useJUnitPlatform {
+		includeTags 'unit', 'integration' // Ensures this task runs both unit and integration tests.
+	}
 }
 
-sonar{
-	properties{
+sonar {
+	properties {
 		property "sonar.projectKey", "petpal"
 		property "sonar.projectName", "petpal"
 		property 'sonar.token', "sqp_cfa55df29af0d550a23c9d19732e4ad9b1018627"
 	}
 }
 
-jacocoTestReport{
-	reports{
+jacocoTestReport {
+	executionData fileTree(dir: "$buildDir", includes: [
+			"jacoco/unitTest.exec",
+			"jacoco/integrationTest.exec"
+	])
+	reports {
 		xml.required = true
+		html.required = true
 	}
+}
+
+// Task for Unit Tests
+tasks.register('unitTest', Test) {
+	description = 'Run unit tests'
+	useJUnitPlatform {
+		includeTags 'unit' // Use @Tag("unit") in test classes
+	}
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+}
+
+// Task for Integration Tests
+tasks.register('integrationTest', Test) {
+	description = 'Run integration tests'
+	useJUnitPlatform {
+		includeTags 'integration' // Use @Tag("integration") in test classes
+	}
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
 }
