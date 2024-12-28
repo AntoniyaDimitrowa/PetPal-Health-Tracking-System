@@ -13,11 +13,11 @@ services:
       - petpal-network
 
   petPal-app:
-    image: semester3-individualproject-petpal:latest
-    container_name: petpal-be
     build:
       context: .
       dockerfile: Dockerfile
+    image: semester3-individualproject-petpal:latest
+    container_name: petpal-be
 
     ports:
       - "8090:8080"

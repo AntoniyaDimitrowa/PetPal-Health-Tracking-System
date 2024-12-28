@@ -16,16 +16,9 @@ stages:
 # Build Stage
 build:
   stage: build
-  before_script:
-    # Clone the frontend repository into a sibling directory
-  - git clone https://git.fhict.nl/I529672/semester3-individualproject-petpal-fe.git ../frontend-repo
   script:
-    # Build the backend
-    - ./gradlew assemble
-    - ls -l build/libs/
-
-    # Build the frontend Docker image
-    - docker build -t semester3-individualproject-petpal-fe:latest ../frontend-repo/Pet\ Care\ Front\ End/petCareFrontEnd
+    # Build all Docker images using docker-compose
+    - docker-compose build
   artifacts:
     paths:
       - build/libs/
@@ -54,10 +47,12 @@ end-to-end-tests:
   stage: end-to-end-tests
   image: cypress/base:16.14.0 # Cypress Docker image with Node.js
   before_script:
-    - cd semester3-individualproject-petpal # Navigate to the project folder (relative path)
-    - npm ci # Install exact dependencies from package-lock.json
+    - docker-compose up --build -d # Start all services using Docker Compose
+    - sleep 120 # Allow some time for containers to initialize (adjust as needed)
   script:
     - npx cypress run --config-file cypress.config.js # Run Cypress tests
+  after_script:
+    - docker-compose down # Tear down the services after tests
   artifacts:
     paths:
       - cypress/videos # Save Cypress videos
