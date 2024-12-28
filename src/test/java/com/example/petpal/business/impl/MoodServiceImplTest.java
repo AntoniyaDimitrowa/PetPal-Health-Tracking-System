@@ -3,6 +3,7 @@ package com.example.petpal.business.impl;
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.persistence.IMoodRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@Tag("unit")
 class MoodServiceImplTest {
 
     @Mock

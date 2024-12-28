@@ -15,7 +15,7 @@ public interface IHealthService {
 
     BreedHealthInfo getHealthInfoForBreed(Long breedId, int age);
 
-    Long createHealthInfoForBreed(Long breedId, int ageRangeStart, int ageRangeEnd, BreedHealthInfo info) throws InvalidBreedException;
+    Long createHealthInfoForBreed(Long breedId, BreedHealthInfo info) throws InvalidBreedException;
 
     List<BreedHealthInfo> getHealthInfoByBreedId(Long breedId);
 

@@ -1,6 +1,7 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IHealthService;
+import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -53,12 +55,14 @@ public class HealthServiceImpl implements IHealthService {
     }
 
     @Override
-    public Long createHealthInfoForBreed(Long breedId, int ageRangeStart, int ageRangeEnd, BreedHealthInfo info) throws InvalidBreedException {
-        if(breedRepository.getBreedById(breedId).isEmpty()) {
+    public Long createHealthInfoForBreed(Long breedId, BreedHealthInfo info) throws InvalidBreedException {
+        Optional<Breed> breed = breedRepository.getBreedById(breedId);
+        if(breed.isEmpty()) {
             throw new InvalidBreedException(breedId);
         }
 
-        return healthRepository.createHealthInfoForBreed(breedId, ageRangeStart, ageRangeEnd, info);
+        info.setBreed(breed.get());
+        return healthRepository.createHealthInfoForBreed(info);
     }
 
     @Override

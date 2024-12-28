@@ -13,11 +13,11 @@ services:
       - petpal-network
 
   petPal-app:
-    image: semester3-individualproject-petpal:latest
-    container_name: petpal-be
     build:
       context: .
       dockerfile: Dockerfile
+    image: semester3-individualproject-petpal:latest
+    container_name: petpal-be
 
     ports:
       - "8090:8080"
@@ -32,6 +32,18 @@ services:
       JAVA_OPTS: ""
 
     restart: unless-stopped
+
+  petpal-fe:
+    build:
+      context: ../semester3-individualproject-petpal-fe/Pet Care Front End/petCareFrontEnd
+      dockerfile: Dockerfile
+    container_name: petpal-fe
+    ports:
+      - "3000:80" # Serve frontend on localhost:3000
+    depends_on:
+      - petPal-app
+    networks:
+      - petpal-network
 
 networks:
   petpal-network:

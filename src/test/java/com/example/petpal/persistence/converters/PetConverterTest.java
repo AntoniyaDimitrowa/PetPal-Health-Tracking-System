@@ -6,6 +6,7 @@ import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.VaccinationRecord;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.persistence.entity.PetEntity;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("unit")
 class PetConverterTest {
 
     private static final Breed breed = new Breed(1L, "Labrador", "Friendly and outgoing", null, 1.5, new ArrayList<>());

@@ -1,16 +1,14 @@
 package com.example.petpal.persistence.impl;
 
-import com.example.petpal.business.domain.Breed;
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.User;
-import com.example.petpal.business.exception.InvalidBreedException;
-import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IPetRepositoryJPA;
 import com.example.petpal.persistence.converters.PetConverter;
 import com.example.petpal.persistence.converters.UserConverter;
 import com.example.petpal.persistence.entity.PetEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -47,10 +45,15 @@ public class PetRepositoryImpl implements IPetRepository {
 
 
     @Override
+    @Transactional
     public boolean deletePet(Long petId) {
         if (petRepositoryJPA.existsById(petId)) {
-            petRepositoryJPA.deleteById(petId);
-            return true;
+            try {
+                petRepositoryJPA.deletePetById(petId);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
         }
         return false;
     }

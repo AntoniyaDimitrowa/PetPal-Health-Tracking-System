@@ -7,31 +7,78 @@ variables:
 
 stages:
   - build
-  - test
+  - unit-tests
+  - integration-tests
+  - end-to-end-tests
   - sonarqube-check
   - deploy
 
+# Build Stage
 build:
   stage: build
+  before_script:
+    - git config --global core.longPaths true  # Enable long path support in Git
   script:
-    - ./gradlew assemble
-    - ls -l build/libs/
+    # Clone the frontend repository using the PAT for authentication
+    - git clone https://gitlab-ci-token:$CI_GITLAB_TOKEN@git.fhict.nl/I529672/semester3-individualproject-petpal-fe.git
+    - cd semester3-individualproject-petpal-fe
+    - cd "Pet Care Front End"
+    - cd petCareFrontEnd    
+    - npm install  # Install frontend dependencies
+    - cd ../../..  # Go back to the root directory
+    # Build all Docker images using docker-compose
+    - docker-compose -f docker-compose.ci.yml build
   artifacts:
     paths:
       - build/libs/
       - build/classes/
 
-test:
-  stage: test
+# Unit Tests Stage
+unit-tests:
+  stage: unit-tests
   script:
-    - ./gradlew test
+    - ./gradlew unitTest
+  artifacts:
+    reports:
+      junit: build/test-results/test/TEST-*.xml
 
+# Integration Tests Stage
+integration-tests:
+  stage: integration-tests
+  script:
+    - ./gradlew integrationTest
+  artifacts:
+    reports:
+      junit: build/test-results/test/TEST-*.xml
+
+# End-to-End Tests Stage (Cypress)
+end-to-end-tests:
+  stage: end-to-end-tests
+  image: cypress/base:16.14.0 # Cypress Docker image with Node.js
+  before_script:
+    - docker-compose -f docker-compose.ci.yml up --build -d # Start all services using Docker Compose
+    - sleep 120 # Allow some time for containers to initialize (adjust as needed)
+  script:
+    - npx cypress run --config-file cypress.config.js # Run Cypress tests
+  after_script:
+    - docker-compose -f docker-compose.ci.yml down # Tear down the services after tests
+  artifacts:
+    paths:
+      - cypress/videos # Save Cypress videos
+      - cypress/screenshots # Save Cypress screenshots
+      - cypress/results # Save Cypress test results, if generated
+    expire_in: 7 days # Retain artifacts for a week
+
+
+
+# SonarQube Analysis
 sonarqube-check:
   stage: sonarqube-check
   script:
     - ./gradlew sonar test jacocoTestReport
 
+# Deploy Stage
 deploy:
   stage: deploy
   script:
-    - docker-compose up --build -d
+    - docker-compose -f docker-compose.ci.yml up --build -d

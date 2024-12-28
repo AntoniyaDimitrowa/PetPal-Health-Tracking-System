@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.Console;
 import java.util.Optional;
 
 @RestController
@@ -51,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    @RolesAllowed("Owner")
+    @RolesAllowed({"Owner", "Vet"})
     public ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody UpdateUserDTO userDTO) {
         try {
             User updatedUser = UserConverter.convertFromUpdateUserDTOToUser(userDTO);

@@ -44,12 +44,8 @@ public class HealthRepositoryImpl implements IHealthRepository {
     }
 
     @Override
-    public Long createHealthInfoForBreed(Long breedId, int ageRangeStart, int ageRangeEnd, BreedHealthInfo info) {
+    public Long createHealthInfoForBreed(BreedHealthInfo info) {
         BreedHealthInfoEntity entity = HealthConverter.convertFromBreedHealthInfoToBreedHealthInfoEntity(info);
-
-        entity.getBreed().setId(breedId);
-        entity.setAgeRangeStart(ageRangeStart);
-        entity.setAgeRangeEnd(ageRangeEnd);
 
         BreedHealthInfoEntity savedEntity = breedHealthInfoRepository.save(entity);
         return savedEntity.getId();

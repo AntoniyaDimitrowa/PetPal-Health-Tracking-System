@@ -1,0 +1,51 @@
+# docker-compose.ci.yml
+version: '3.8'
+
+services:
+  petpal-db:
+    image: mysql:latest
+    container_name: petpal-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: petpal-db
+    ports:
+      - "3390:3306"
+    volumes:
+      - petpal-data:/var/lib/mysql
+    networks:
+      - petpal-network
+
+  petPal-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: semester3-individualproject-petpal:latest
+    container_name: petpal-be
+    ports:
+      - "8090:8080"
+    depends_on:
+      - petpal-db
+    networks:
+      - petpal-network
+    environment:
+      JAVA_OPTS: ""
+    restart: unless-stopped
+
+  petpal-fe:
+    build:
+      context: ./semester3-individualproject-petpal-fe/Pet Care Front End/petCareFrontEnd
+      dockerfile: Dockerfile
+    container_name: petpal-fe
+    ports:
+      - "3000:80"
+    depends_on:
+      - petPal-app
+    networks:
+      - petpal-network
+
+networks:
+  petpal-network:
+    driver: bridge
+
+volumes:
+  petpal-data:

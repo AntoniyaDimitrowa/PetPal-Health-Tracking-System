@@ -2,12 +2,14 @@ package com.example.petpal.persistence.converters;
 
 import com.example.petpal.business.domain.Mood;
 import com.example.petpal.persistence.entity.MoodEntity;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("unit")
 class MoodConverterTest {
 
     private static final Mood moodHappy = Mood.builder().id(1L).name("Happy").emoji("😊").build();

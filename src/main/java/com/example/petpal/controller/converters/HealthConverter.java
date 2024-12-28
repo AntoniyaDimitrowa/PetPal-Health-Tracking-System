@@ -3,6 +3,7 @@ package com.example.petpal.controller.converters;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
+import com.example.petpal.controller.dto.health.CreateBreedHealthInfoDTO;
 import com.example.petpal.controller.dto.health.CreateHealthRecordDTO;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
 import lombok.AccessLevel;
@@ -57,23 +58,43 @@ public class HealthConverter {
                 .build();
     }
 
-    public static BreedHealthInfo convertFromBreedHealthInfoDTOToBreedHealthInfo(BreedHealthInfoDTO dto) {
+    public static BreedHealthInfo convertFromCreateBreedHealthInfoDTOToBreedHealthInfo(CreateBreedHealthInfoDTO dto) {
         if (dto == null) return null;
         return BreedHealthInfo.builder()
                 .ageRangeEnd(dto.getAgeRangeEnd())
                 .ageRangeStart(dto.getAgeRangeStart())
                 .normalFoodIntake(dto.getNormalFoodIntake())
                 .normalWaterIntake(dto.getNormalWaterIntake())
+                .weightRangeMin(dto.getWeightRangeMin())
+                .weightRangeMax(dto.getWeightRangeMax())
+                .build();
+    }
+
+    public static BreedHealthInfo convertFromBreedHealthInfoDTOToBreedHealthInfo(BreedHealthInfoDTO dto) {
+        if (dto == null) return null;
+        return BreedHealthInfo.builder()
+                .id(dto.getId())
+                .breed(BreedConverter.convertFromBreedDTOToBreed(dto.getBreed()))
+                .ageRangeEnd(dto.getAgeRangeEnd())
+                .ageRangeStart(dto.getAgeRangeStart())
+                .normalFoodIntake(dto.getNormalFoodIntake())
+                .normalWaterIntake(dto.getNormalWaterIntake())
+                .weightRangeMin(dto.getWeightRangeMin())
+                .weightRangeMax(dto.getWeightRangeMax())
                 .build();
     }
 
     public static BreedHealthInfoDTO convertFromBreedHealthInfoToBreedHealthInfoDTO(BreedHealthInfo info) {
         if (info == null) return null;
         return BreedHealthInfoDTO.builder()
+                .id(info.getId())
+                .breed(BreedConverter.convertFromBreedToBreedDTO(info.getBreed()))
                 .ageRangeEnd(info.getAgeRangeEnd())
                 .ageRangeStart(info.getAgeRangeStart())
                 .normalFoodIntake(info.getNormalFoodIntake())
                 .normalWaterIntake(info.getNormalWaterIntake())
+                .weightRangeMin(info.getWeightRangeMin())
+                .weightRangeMax(info.getWeightRangeMax())
                 .build();
     }
 

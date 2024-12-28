@@ -1,6 +1,7 @@
     package com.example.petpal.persistence.entity;
 
     import jakarta.persistence.*;
+    import jakarta.validation.constraints.Max;
     import jakarta.validation.constraints.Min;
     import jakarta.validation.constraints.NotNull;
     import lombok.AllArgsConstructor;
@@ -31,11 +32,13 @@
 
         @NotNull
         @Min(0)
+        @Max(31)
         @Column(nullable = false)
         private int ageRangeStart;
 
         @NotNull
         @Min(1)
+        @Max(32)
         @Column(nullable = false)
         private int ageRangeEnd;
 
@@ -46,4 +49,14 @@
         @NotNull
         @Column(nullable = false)
         private double normalWaterIntake; // in liters
+
+        @NotNull
+        @Min(0)
+        @Column(nullable = false)
+        private double weightRangeMin;
+
+        @NotNull
+        @Min(0)
+        @Column(nullable = false)
+        private double weightRangeMax;
     }

@@ -9,6 +9,7 @@ import com.example.petpal.business.exception.InvalidBreedException; // Import th
 import com.example.petpal.controller.converters.HealthConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.health.BreedHealthInfoDTO;
+import com.example.petpal.controller.dto.health.CreateBreedHealthInfoDTO;
 import com.example.petpal.controller.dto.health.CreateHealthRecordDTO;
 import com.example.petpal.controller.dto.health.HealthRecordDTO;
 import jakarta.annotation.security.RolesAllowed;
@@ -58,10 +59,10 @@ public class HealthController {
 
     @PostMapping("/breeds/{breedId}/health")
     @RolesAllowed("Veterinarian")
-    public ResponseEntity<Void> createHealthInfoForBreed(@PathVariable Long breedId, @RequestBody BreedHealthInfoDTO breedHealthInfoDTO) {
+    public ResponseEntity<Void> createHealthInfoForBreed(@PathVariable Long breedId, @RequestBody CreateBreedHealthInfoDTO breedHealthInfoDTO) {
         try {
-            BreedHealthInfo breedHealthInfo = HealthConverter.convertFromBreedHealthInfoDTOToBreedHealthInfo(breedHealthInfoDTO);
-            healthService.createHealthInfoForBreed(breedId, breedHealthInfo.getAgeRangeStart(), breedHealthInfo.getAgeRangeEnd(), breedHealthInfo);
+            BreedHealthInfo breedHealthInfo = HealthConverter.convertFromCreateBreedHealthInfoDTOToBreedHealthInfo(breedHealthInfoDTO);
+            healthService.createHealthInfoForBreed(breedId, breedHealthInfo);
             return ResponseEntity.status(201).build();
         } catch (InvalidBreedException e) {
             return ResponseEntity.badRequest().build();  // Return a 400 Bad Request if the breed is invalid
