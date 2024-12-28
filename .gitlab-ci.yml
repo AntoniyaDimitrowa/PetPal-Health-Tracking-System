@@ -18,6 +18,9 @@ build:
   stage: build
   before_script:
     - git config --global core.longPaths true  # Enable long path support in Git
+    - git config --global advice.nameTooLong false  # Suppress warnings about long filenames
+    - git clean -fdx  # Clean untracked files to avoid any long path issues with the repo state
+    - git reset --hard  # Reset repository to avoid any issues with long paths
   script:
     # Clone the frontend repository using the PAT for authentication
     - git clone https://gitlab-ci-token:$CI_GITLAB_TOKEN@git.fhict.nl/I529672/semester3-individualproject-petpal-fe.git
