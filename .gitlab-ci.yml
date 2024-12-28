@@ -16,6 +16,8 @@ stages:
 # Build Stage
 build:
   stage: build
+  before_script:
+    - git config --global core.longPaths true  # Enable long path support in Git
   script:
     # Clone the frontend repository using the PAT for authentication
     - git clone https://gitlab-ci-token:$CI_GITLAB_TOKEN@git.fhict.nl/I529672/semester3-individualproject-petpal-fe.git
