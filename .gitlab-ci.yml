@@ -17,6 +17,7 @@ stages:
 build:
   stage: build
   before_script:
+    - git config --system core.longpaths true  # Enable long path support system-wide for Windows
     - git config --global core.longPaths true  # Enable long path support in Git
     - git config --global advice.nameTooLong false  # Suppress warnings about long filenames
     - git clean -fdx  # Clean untracked files to avoid any long path issues with the repo state
