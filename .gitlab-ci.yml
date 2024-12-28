@@ -19,7 +19,7 @@ build:
   script:
     # Clone the frontend repository using the PAT for authentication
     - git clone https://gitlab-ci-token:$CI_GITLAB_TOKEN@git.fhict.nl/I529672/semester3-individualproject-petpal-fe.git
-    - cd semester3-individualproject-petpal-fe/Pet Care Front End/petCareFrontEnd
+    - cd "semester3-individualproject-petpal-fe/Pet Care Front End/petCareFrontEnd"
     - npm install  # Install frontend dependencies
     - cd ..  # Go back to the root directory
     # Build all Docker images using docker-compose
