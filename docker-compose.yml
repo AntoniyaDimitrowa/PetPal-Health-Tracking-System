@@ -38,8 +38,9 @@ services:
       context: ../semester3-individualproject-petpal-fe/Pet Care Front End/petCareFrontEnd
       dockerfile: Dockerfile
     container_name: petpal-fe
+    image: semester3-individualproject-petpal-petpal-fe:latest  # Tag with 'latest'
     ports:
-      - "3000:80" # Serve frontend on localhost:3000
+      - "3000:80"
     depends_on:
       - petPal-app
     networks:
