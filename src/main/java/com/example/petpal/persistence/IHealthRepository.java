@@ -13,7 +13,11 @@ public interface IHealthRepository {
     Long createHealthInfoForBreed(BreedHealthInfo info);
 
     List<HealthRecord> getHealthRecordsByPetId(long petId);
+    List<HealthRecord> getHealthRecentRecordsByPetId(long petId, int numberOfRecords);
 
     Long createHealthRecordToPet(long petId, HealthRecord healthRecord);
 
+    List<Object[]> findHealthRecordsWithNormsForPet(Long petId, int month, int year);
+
+    List<Object[]> findMoodDistributionForPet(Long petId, int month, int year);
 }

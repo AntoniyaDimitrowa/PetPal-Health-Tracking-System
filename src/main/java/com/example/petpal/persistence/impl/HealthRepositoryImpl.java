@@ -29,8 +29,7 @@ public class HealthRepositoryImpl implements IHealthRepository {
 
     @Override
     public Optional<BreedHealthInfo> getHealthInfoForBreed(Long breedId, int age) {
-        //TODO fix this method
-        Optional<BreedHealthInfoEntity> healthInfoEntity = breedHealthInfoRepository.findByBreedIdAndAgeRangeStartLessThanEqualAndAgeRangeEndGreaterThanEqual(breedId, age, 1);
+        Optional<BreedHealthInfoEntity> healthInfoEntity = breedHealthInfoRepository.findByBreedIdAndAgeRangeStartLessThanEqualAndAgeRangeEndGreaterThanEqual(breedId, age);
 
         return healthInfoEntity.map(HealthConverter::convertFromBreedHealthInfoEntityToBreedHealthInfo);
     }
@@ -60,6 +59,13 @@ public class HealthRepositoryImpl implements IHealthRepository {
     }
 
     @Override
+    public List<HealthRecord> getHealthRecentRecordsByPetId(long petId, int numberOfRecords) {
+        List<HealthRecordEntity> healthRecordEntities = healthRecordRepository.findRecentRecordsByPetId(petId, numberOfRecords);
+
+        return HealthConverter.convertFromHealthRecordEntitiesToHealthRecords(healthRecordEntities);
+    }
+
+    @Override
     public Long createHealthRecordToPet(long petId, HealthRecord healthRecord) {
         PetEntity pet = petRepositoryJPA.findById(petId)
                 .orElseThrow(() -> new RuntimeException("Pet not found"));
@@ -69,5 +75,21 @@ public class HealthRepositoryImpl implements IHealthRepository {
 
         HealthRecordEntity savedEntity = healthRecordRepository.save(entity);
         return savedEntity.getId();
+    }
+
+    @Override
+    public List<Object[]> findHealthRecordsWithNormsForPet(Long petId, int month, int year) {
+        PetEntity pet = petRepositoryJPA.findById(petId)
+                .orElseThrow(() -> new RuntimeException("Pet not found"));
+
+        return healthRecordRepository.findHealthRecordsWithNormsForPet(petId, month, year);
+    }
+
+    @Override
+    public List<Object[]> findMoodDistributionForPet(Long petId, int month, int year) {
+        PetEntity pet = petRepositoryJPA.findById(petId)
+                .orElseThrow(() -> new RuntimeException("Pet not found"));
+
+        return healthRecordRepository.findMoodDistributionForPet(petId, month, year);
     }
 }
