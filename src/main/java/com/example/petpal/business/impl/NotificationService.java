@@ -1,65 +1,45 @@
 package com.example.petpal.business.impl;
 
+import com.example.petpal.business.domain.HealthNotification;
+import com.example.petpal.business.exception.NotificationNotFoundException;
+import com.example.petpal.controller.converters.NotificationConverter;
+import com.example.petpal.controller.dto.NotificationDTO;
+import com.example.petpal.persistence.INotificationRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
 
-    @Value("${openai.api.url}")
-    private String openAiApiUrl;
+    private final INotificationRepository notificationRepository;
 
-    @Value("${openai.api.key}")
-    private String openAiApiKey;
+    public Page<NotificationDTO> getNotifications(String status, int page, int size) {
+        // Define pagination settings
+        Pageable pageable = PageRequest.of(page - 1, size);
 
-    public String generateNotification(String anomalies) {
-        // If no anomalies, return a positive message
-        if (anomalies == null || anomalies.trim().isEmpty()) {
-            return "Your pet is in good health!";
-        }
+        // Determine "read" status from the provided status string
+        boolean isRead = "read".equalsIgnoreCase(status);
 
-        RestTemplate restTemplate = new RestTemplate();
-        Map<String, Object> request = new HashMap<>();
-        request.put("model", "text-davinci-003");
-        request.put("prompt", buildPrompt(anomalies));
-        request.put("temperature", 0.7);
-        request.put("max_tokens", 100);
+        // Retrieve notifications from the repository
+        Page<HealthNotification> notifications = notificationRepository.findByIsRead(isRead, pageable);
 
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + openAiApiKey);
-        headers.put("Content-Type", "application/json");
-
-        // Call the OpenAI API and receive the response
-        Map<String, Object> response = restTemplate.postForObject(openAiApiUrl, request, Map.class, headers);
-
-        // Ensure response contains choices and safely extract the message
-        if (response != null && response.containsKey("choices")) {
-            Object choicesObject = response.get("choices");
-            if (choicesObject instanceof List<?>) {
-                List<Map<String, Object>> choices = (List<Map<String, Object>>) choicesObject;
-                if (!choices.isEmpty()) {
-                    // Safely extract the text from the first choice
-                    Map<String, Object> firstChoice = choices.get(0);
-                    if (firstChoice.containsKey("text")) {
-                        return firstChoice.get("text").toString().trim();
-                    }
-                }
-            }
-        }
-
-        // Fallback in case no valid response or text is found
-        String formattedAnomalies = anomalies.replace(", ", "\n").replace(";", "\n");
-        return "There was an issue generating a notification for your pet, but these are the raw results: \n" + formattedAnomalies;
+        // Convert domain objects to DTOs and return
+        return notifications.map(NotificationConverter::toDTO);
     }
 
-    private String buildPrompt(String anomalies) {
-        return "Generate a caring notification for the following issues: " + anomalies + ".";
+    public void markAsRead(Long notificationId) {
+        // Find the notification by its ID
+        HealthNotification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new NotificationNotFoundException("Notification not found"));
+
+        // Mark the notification as read
+        notification.setRead(true);
+
+        // Save the updated notification
+        notificationRepository.updateNotification(notification);
     }
 }

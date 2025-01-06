@@ -24,7 +24,7 @@ public class NotificationEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pet_id", nullable = false)
     private PetEntity pet;
 

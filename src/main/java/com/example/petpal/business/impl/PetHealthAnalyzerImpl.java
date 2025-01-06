@@ -8,8 +8,6 @@ import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.exception.InvalidUserException;
 import com.example.petpal.persistence.*;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,7 +22,7 @@ public class PetHealthAnalyzerImpl implements IPetHealthAnalyzer {
     private final IWeatherService weatherService;
     private final IPetRepository petRepository;
     private final IUserRepository userRepository;
-    private final NotificationService notificationService;
+    private final NotificationGenerator notificationGenerator;
     private final INotificationRepository notificationRepository;
 
     @Override
@@ -55,7 +53,7 @@ public class PetHealthAnalyzerImpl implements IPetHealthAnalyzer {
         anomalies.addAll(analyzeHistoricalTrends(recentRecords));
 
         // Generate notification message
-        String notificationMessage = notificationService.generateNotification(String.join(", ", anomalies));
+        String notificationMessage = notificationGenerator.generateNotification(String.join(", ", anomalies));
 
         HealthAnalysisResult result = new HealthAnalysisResult(newRecord.getId(), new Date(), pet, notificationMessage, false);
 
