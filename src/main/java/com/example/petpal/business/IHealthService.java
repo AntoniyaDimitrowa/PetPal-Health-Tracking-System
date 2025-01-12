@@ -5,20 +5,21 @@ import com.example.petpal.business.domain.HealthRecord;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
 import com.example.petpal.business.exception.InvalidPetException;
+import com.example.petpal.business.exception.UnauthorizedDataAccessException;
 import com.example.petpal.controller.dto.health.PetStatisticsDTO;
 
 import java.util.List;
 
 public interface IHealthService {
-    List<HealthRecord> getHealthRecordsByPetId(Long petId) throws InvalidPetException;
+    List<HealthRecord> getHealthRecordsByPetId(Long petId) throws InvalidPetException, UnauthorizedDataAccessException;
 
-    Long createHealthRecord(Long petId, HealthRecord healthRecord, Long moodId) throws InvalidPetException, InvalidMoodException;
+    Long createHealthRecord(Long petId, HealthRecord healthRecord, Long moodId) throws InvalidPetException, InvalidMoodException, UnauthorizedDataAccessException;
 
-    PetStatisticsDTO getStatisticsForPet(Long petId, int month, int year) throws InvalidPetException;
+    PetStatisticsDTO getStatisticsForPet(Long petId, int month, int year) throws InvalidPetException, UnauthorizedDataAccessException;
 
     BreedHealthInfo getHealthInfoForBreed(Long breedId, int age);
 
-    Long createHealthInfoForBreed(Long breedId, BreedHealthInfo info) throws InvalidBreedException;
+    Long createHealthInfoForBreed(Long breedId, Long userId, BreedHealthInfo info) throws InvalidBreedException, UnauthorizedDataAccessException;
 
     List<BreedHealthInfo> getHealthInfoByBreedId(Long breedId);
 

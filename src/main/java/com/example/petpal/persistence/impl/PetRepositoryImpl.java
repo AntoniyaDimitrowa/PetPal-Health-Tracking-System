@@ -2,6 +2,7 @@ package com.example.petpal.persistence.impl;
 
 import com.example.petpal.business.domain.Pet;
 import com.example.petpal.business.domain.User;
+import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IPetRepositoryJPA;
 import com.example.petpal.persistence.converters.PetConverter;
@@ -27,20 +28,24 @@ public class PetRepositoryImpl implements IPetRepository {
     }
 
     @Override
-    public void updatePet(Long id, Pet pet) {
-        PetEntity existingPet = petRepositoryJPA.findById(id).get();
+    public Pet updatePet(Long id, Pet pet) {
+        Optional<PetEntity> existingPetOptional = petRepositoryJPA.findById(id);
 
-        PetEntity updatedPet = PetConverter.convertFromPetToPetEntity(pet);
-        // Update the fields of the existing entity
-        existingPet.setName(pet.getName());
-        existingPet.setBreed(updatedPet.getBreed());
-        existingPet.setBirthdate(pet.getBirthdate());
-        existingPet.setWeight(pet.getWeight());
-        existingPet.setGender(pet.getGender());
-        existingPet.setImage(pet.getImage());
+        if(!existingPetOptional.isEmpty()) {
+            PetEntity existingPet = existingPetOptional.get();
+            PetEntity updatedPet = PetConverter.convertFromPetToPetEntity(pet);
+            // Update the fields of the existing entity
+            existingPet.setName(pet.getName());
+            existingPet.setBreed(updatedPet.getBreed());
+            existingPet.setBirthdate(pet.getBirthdate());
+            existingPet.setWeight(pet.getWeight());
+            existingPet.setGender(pet.getGender());
+            existingPet.setImage(pet.getImage());
 
-        // Save the updated entity
-        petRepositoryJPA.save(existingPet);
+            // Save the updated entity
+            petRepositoryJPA.save(existingPet);
+        }
+        return null;
     }
 
 

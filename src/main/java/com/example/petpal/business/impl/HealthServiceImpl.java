@@ -1,27 +1,18 @@
 package com.example.petpal.business.impl;
 
 import com.example.petpal.business.IHealthService;
-import com.example.petpal.business.domain.Breed;
-import com.example.petpal.business.domain.Mood;
+import com.example.petpal.business.domain.*;
 import com.example.petpal.business.exception.InvalidBreedException;
 import com.example.petpal.business.exception.InvalidMoodException;
+import com.example.petpal.business.exception.UnauthorizedDataAccessException;
+import com.example.petpal.configuration.security.token.IAccessToken;
 import com.example.petpal.controller.dto.health.PetStatisticsDTO;
-import com.example.petpal.persistence.IBreedRepository;
-import com.example.petpal.persistence.IHealthRepository;
-import com.example.petpal.business.domain.BreedHealthInfo;
-import com.example.petpal.business.domain.HealthRecord;
+import com.example.petpal.persistence.*;
 import com.example.petpal.business.exception.InvalidPetException;
-import com.example.petpal.persistence.IMoodRepository;
-import com.example.petpal.persistence.IPetRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -30,20 +21,30 @@ public class HealthServiceImpl implements IHealthService {
     private final IHealthRepository healthRepository;
     private final IBreedRepository breedRepository;
     private final IMoodRepository moodRepository;
+    private final IUserRepository userRepository;
+    private final IAccessToken requestAccessToken;
 
     @Override
-    public List<HealthRecord> getHealthRecordsByPetId(Long petId) throws InvalidPetException {
+    public List<HealthRecord> getHealthRecordsByPetId(Long petId) throws InvalidPetException, UnauthorizedDataAccessException {
         if(petRepository.getPet(petId).isEmpty()) {
             throw new InvalidPetException(petId);
         }
-
+        Optional<User> owner = userRepository.getUserByPetId(petId);
+        if(owner.isEmpty() || !Objects.equals(requestAccessToken.getUserId(), owner.get().getId())) {
+            throw new UnauthorizedDataAccessException();
+        }
         return healthRepository.getHealthRecordsByPetId(petId);
     }
 
     @Override
-    public Long createHealthRecord(Long petId, HealthRecord healthRecord, Long moodId) throws InvalidPetException, InvalidMoodException {
+    public Long createHealthRecord(Long petId, HealthRecord healthRecord, Long moodId) throws InvalidPetException, InvalidMoodException, UnauthorizedDataAccessException {
         if(petRepository.getPet(petId).isEmpty()) {
             throw new InvalidPetException(petId);
+        }
+
+        Optional<User> owner = userRepository.getUserByPetId(petId);
+        if(owner.isEmpty() || !Objects.equals(requestAccessToken.getUserId(), owner.get().getId())) {
+            throw new UnauthorizedDataAccessException();
         }
 
         Mood mood = moodRepository.getMoodById(moodId)
@@ -54,11 +55,15 @@ public class HealthServiceImpl implements IHealthService {
     }
 
     @Override
-    public PetStatisticsDTO getStatisticsForPet(Long petId, int month, int year) throws InvalidPetException {
+    public PetStatisticsDTO getStatisticsForPet(Long petId, int month, int year) throws InvalidPetException, UnauthorizedDataAccessException {
         if(petRepository.getPet(petId).isEmpty()) {
             throw new InvalidPetException(petId);
         }
 
+        Optional<User> owner = userRepository.getUserByPetId(petId);
+        if(owner.isEmpty() || !Objects.equals(requestAccessToken.getUserId(), owner.get().getId())) {
+            throw new UnauthorizedDataAccessException();
+        }
         // Fetch health records with norms
         List<Object[]> healthRecords = healthRepository.findHealthRecordsWithNormsForPet(petId, month, year);
 
@@ -88,7 +93,7 @@ public class HealthServiceImpl implements IHealthService {
         // Map mood distribution to DTO
         List<PetStatisticsDTO.MoodDistributionDTO> moodData = moodDistribution.stream()
                 .map(moodRecord -> new PetStatisticsDTO.MoodDistributionDTO((String) moodRecord[1], (long) moodRecord[2]))
-                .collect(Collectors.toList());
+                .toList();
 
         // Construct DTO
         return PetStatisticsDTO.builder()
@@ -106,10 +111,15 @@ public class HealthServiceImpl implements IHealthService {
     }
 
     @Override
-    public Long createHealthInfoForBreed(Long breedId, BreedHealthInfo info) throws InvalidBreedException {
+    public Long createHealthInfoForBreed(Long breedId, Long userId, BreedHealthInfo info) throws InvalidBreedException, UnauthorizedDataAccessException {
         Optional<Breed> breed = breedRepository.getBreedById(breedId);
         if(breed.isEmpty()) {
             throw new InvalidBreedException(breedId);
+        }
+
+        Optional<User> user = userRepository.getUserById(userId);
+        if(user.isEmpty() || !Objects.equals(requestAccessToken.getUserId(), userId)) {
+            throw new UnauthorizedDataAccessException();
         }
 
         info.setBreed(breed.get());

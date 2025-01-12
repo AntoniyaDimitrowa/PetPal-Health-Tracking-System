@@ -4,7 +4,10 @@ import com.example.petpal.business.domain.HealthNotification;
 import com.example.petpal.business.domain.HealthAnalysisResult;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.persistence.entity.NotificationEntity;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NotificationConverter {
 
     public static NotificationEntity analysisResultToNotificationEntity(HealthAnalysisResult result, User user) {

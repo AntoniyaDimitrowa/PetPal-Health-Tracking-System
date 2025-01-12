@@ -18,7 +18,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
-    private IAccessToken requestAccessToken;
+    private final IAccessToken requestAccessToken;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -36,10 +36,14 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User updateUser(Long userId, String oldPassword, User updatedUser) throws InvalidUserException, InvalidCredentialsException {
+    public User updateUser(Long userId, String oldPassword, User updatedUser) throws InvalidUserException, InvalidCredentialsException, UnauthorizedDataAccessException {
         Optional<User> user = userRepository.getUserById(userId);
         if(user.isEmpty()) {
             throw new InvalidUserException(userId);
+        }
+
+        if (!Objects.equals(requestAccessToken.getUserId(), userId)) {
+            throw new UnauthorizedDataAccessException();
         }
 
         if(!passwordEncoder.matches(oldPassword, user.get().getPassword())) {
@@ -49,7 +53,15 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public boolean deleteUser(Long userId) {
+    public boolean deleteUser(Long userId) throws UnauthorizedDataAccessException {
+        if (!Objects.equals(requestAccessToken.getUserId(), userId)) {
+            throw new UnauthorizedDataAccessException();
+        }
         return userRepository.deleteUser(userId);
+    }
+
+    @Override
+    public Optional<User> getUserByPetId(long petId) {
+        return userRepository.getUserByPetId(petId);
     }
 }

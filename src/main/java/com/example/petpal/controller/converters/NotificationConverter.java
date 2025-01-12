@@ -2,7 +2,10 @@ package com.example.petpal.controller.converters;
 
 import com.example.petpal.business.domain.HealthNotification;
 import com.example.petpal.controller.dto.NotificationDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NotificationConverter {
 
     public static NotificationDTO toDTO(HealthNotification domain) {

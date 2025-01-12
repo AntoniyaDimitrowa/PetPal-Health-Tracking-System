@@ -3,7 +3,6 @@ package com.example.petpal.persistence.impl;
 import com.example.petpal.business.domain.HealthAnalysisResult;
 import com.example.petpal.business.domain.HealthNotification;
 import com.example.petpal.business.domain.User;
-import com.example.petpal.controller.HealthController;
 import com.example.petpal.persistence.INotificationRepository;
 import com.example.petpal.persistence.INotificationRepositoryJPA;
 import com.example.petpal.persistence.converters.NotificationConverter;
@@ -32,8 +31,8 @@ public class NotificationRepositoryImpl implements INotificationRepository {
     }
 
     @Override
-    public Page<HealthNotification> findByIsRead(boolean isRead, Pageable pageable) {
-        var notificationEntities = notificationRepositoryJPA.findByIsRead(isRead, pageable);
+    public Page<HealthNotification> findByIsReadAndUserId(boolean isRead, Long userId, Pageable pageable) {
+        var notificationEntities = notificationRepositoryJPA.findByIsReadAndUserId(isRead,userId, pageable);
         return notificationEntities.map(NotificationConverter::convertToDomain);
     }
 
@@ -50,4 +49,10 @@ public class NotificationRepositoryImpl implements INotificationRepository {
         return notificationRepositoryJPA.findById(id)
                 .map(NotificationConverter::convertToDomain);
     }
+
+    @Override
+    public int getUnreadCountByUserId(Long userId){
+        return notificationRepositoryJPA.getUnreadCountByUserId(userId);
+    }
+
 }

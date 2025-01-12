@@ -170,5 +170,4 @@ public class PetHealthAnalyzerImpl implements IPetHealthAnalyzer {
 
         return anomalies;
     }
-
 }

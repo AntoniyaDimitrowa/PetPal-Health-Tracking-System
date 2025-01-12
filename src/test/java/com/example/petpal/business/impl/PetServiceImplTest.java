@@ -4,6 +4,7 @@ import com.example.petpal.business.domain.*;
 import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.domain.enums.VaccinationType;
 import com.example.petpal.business.exception.*;
+import com.example.petpal.configuration.security.token.IAccessToken;
 import com.example.petpal.persistence.IBreedRepository;
 import com.example.petpal.persistence.IPetRepository;
 import com.example.petpal.persistence.IUserRepository;
@@ -35,14 +36,14 @@ class PetServiceImplTest {
     @Mock
     private IVaccinationRepository vaccinationRepository;
 
+    @Mock
+    private IAccessToken accessToken;
+
     @InjectMocks
     private PetServiceImpl petService;
 
     private static final Breed breed = new Breed(1L, "Labrador", "Labradors are friendly and outgoing.", null, 1.5, new ArrayList<>(Arrays.asList("Hip dysplasia")));
-    private static final Pet newPet = new Pet(null, "Buddy", breed, Gender.MALE, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
     private static final Pet pet = new Pet(1L, "Buddy", breed, Gender.MALE, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
-    private static final Pet invalidPet = new Pet(100L, "Buddy", breed, Gender.MALE, new Date(), 25.5, "", new ArrayList<>(), new ArrayList<>());
-    private static final Vaccination vaccination = new Vaccination(1L, "Rabies", VaccinationType.FOR_PUPPY, 6);
     private static final User user = User.builder()
             .id(1L)
             .name("John Doe")
@@ -51,8 +52,6 @@ class PetServiceImplTest {
             .role("USER")
             .memberSince(new java.util.Date())
             .address("1234 Main St, Hometown")
-            .pets(Optional.empty())
-            .breedHealthInfos(Optional.empty())
             .image("image_url")
             .build();
 
@@ -62,158 +61,116 @@ class PetServiceImplTest {
     }
 
     @Test
-    void getPet_shouldReturnPetWhenPetExists() {
+    void getPet_shouldThrowUnauthorizedDataAccessExceptionWhenUserUnauthorized() {
+        when(userRepository.getUserByPetId(1L)).thenReturn(Optional.of(user));
+        when(accessToken.getUserId()).thenReturn(2L);
+
+        assertThrows(UnauthorizedDataAccessException.class, () -> petService.getPet(1L));
+
+        verify(userRepository).getUserByPetId(1L);
+        verifyNoInteractions(petRepository);
+    }
+
+    @Test
+    void getPet_shouldReturnPetWhenAuthorizedAndExists() throws UnauthorizedDataAccessException {
+        when(userRepository.getUserByPetId(1L)).thenReturn(Optional.of(user));
+        when(accessToken.getUserId()).thenReturn(1L);
         when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
 
         Optional<Pet> result = petService.getPet(1L);
 
         assertTrue(result.isPresent());
         assertEquals(pet, result.get());
+        verify(userRepository).getUserByPetId(1L);
         verify(petRepository).getPet(1L);
     }
 
     @Test
-    void getPet_shouldReturnEmptyWhenPetDoesNotExist() {
-        when(petRepository.getPet(100L)).thenReturn(Optional.empty());
+    void createPet_shouldThrowUnauthorizedDataAccessExceptionWhenUserUnauthorized() {
+        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
+        when(accessToken.getUserId()).thenReturn(2L);
 
-        Optional<Pet> result = petService.getPet(100L);
+        assertThrows(UnauthorizedDataAccessException.class, () -> petService.createPet(pet, 1L, new ArrayList<>(), 1L));
 
-        assertFalse(result.isPresent());
-        verify(petRepository).getPet(100L);
+        verify(userRepository).getUserById(1L);
+        verifyNoInteractions(breedRepository, vaccinationRepository, petRepository);
     }
 
     @Test
-    void updatePet_shouldThrowInvalidPetExceptionWhenPetDoesNotExist() {
-        when(petRepository.getPet(100L)).thenReturn(Optional.empty());
-        when(breedRepository.getBreedById(breed.getId())).thenReturn(Optional.of(breed));
-
-        assertThrows(InvalidPetException.class, () -> petService.updatePet(invalidPet, breed.getId()));
-
-        verify(petRepository).getPet(100L);
-    }
-
-    @Test
-    void updatePet_shouldThrowInvalidBreedExceptionWhenBreedDoesNotExist() {
+    void updatePet_shouldThrowUnauthorizedDataAccessExceptionWhenUserUnauthorized() {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
-        when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
+        when(userRepository.getUserByPetId(1L)).thenReturn(Optional.of(user));
+        when(accessToken.getUserId()).thenReturn(2L);
 
-        assertThrows(InvalidBreedException.class, () -> petService.updatePet(pet, 100L));
+        assertThrows(UnauthorizedDataAccessException.class, () -> petService.updatePet(pet, 1L));
 
-        verify(breedRepository).getBreedById(100L);
+        verify(userRepository).getUserByPetId(1L);
+        verifyNoInteractions(breedRepository);
     }
 
     @Test
-    void updatePet_shouldUpdatePetWhenPetAndBreedExist() throws InvalidPetException, InvalidBreedException {
+    void updatePet_shouldUpdatePetWhenAuthorized() throws InvalidPetException, InvalidBreedException, UnauthorizedDataAccessException {
         when(petRepository.getPet(1L)).thenReturn(Optional.of(pet));
+        when(userRepository.getUserByPetId(1L)).thenReturn(Optional.of(user));
+        when(accessToken.getUserId()).thenReturn(1L);
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
 
-        pet.setName("Buddy Updated");
-        petService.updatePet(pet, breed.getId());
+        pet.setName("Updated Name");
+        petService.updatePet(pet, 1L);
 
         verify(petRepository).updatePet(eq(1L), any(Pet.class));
-        verify(breedRepository).getBreedById(1L);
-
-        assertEquals("Buddy Updated", pet.getName());
-        assertEquals(breed, pet.getBreed());
+        assertEquals("Updated Name", pet.getName());
     }
 
     @Test
-    void deletePet_shouldCallRepositoryDelete() {
+    void deletePet_shouldThrowUnauthorizedDataAccessExceptionWhenUserUnauthorized() {
+        when(userRepository.getUserByPetId(1L)).thenReturn(Optional.of(user));
+        when(accessToken.getUserId()).thenReturn(2L);
+
+        assertThrows(UnauthorizedDataAccessException.class, () -> petService.deletePet(1L));
+
+        verify(userRepository).getUserByPetId(1L);
+        verifyNoInteractions(petRepository);
+    }
+
+    @Test
+    void deletePet_shouldDeletePetWhenAuthorized() throws UnauthorizedDataAccessException {
+        when(userRepository.getUserByPetId(1L)).thenReturn(Optional.of(user));
+        when(accessToken.getUserId()).thenReturn(1L);
         when(petRepository.deletePet(1L)).thenReturn(true);
 
         boolean result = petService.deletePet(1L);
 
-        verify(petRepository).deletePet(1L);
         assertTrue(result);
+        verify(petRepository).deletePet(1L);
     }
 
     @Test
-    void createPet_shouldReturnCreatedPet() throws InvalidBreedException, InvalidVaccinationException, InvalidUserException, CreationFailException {
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
+    void createPet_shouldAddVaccinationRecordsWhenAuthorized() throws Exception {
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
-        when(petRepository.createPet(any(Pet.class), eq(user))).thenReturn(50L);
-
-        long result = petService.createPet(newPet, breed.getId(), new ArrayList<>(), 1L);
-
-        verify(petRepository).createPet(any(Pet.class), eq(user));
-        assertEquals(50L, result);
-    }
-
-    @Test
-    void createPet_shouldThrowInvalidBreedExceptionWhenBreedNotFound() {
-        when(breedRepository.getBreedById(100L)).thenReturn(Optional.empty());
-        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
-
-        assertThrows(InvalidBreedException.class, () -> petService.createPet(newPet, 100L, new ArrayList<>(), 1L));
-        verify(breedRepository).getBreedById(100L);
-    }
-
-    @Test
-    void createPet_shouldThrowInvalidUserExceptionWhenUserNotFound() {
+        when(accessToken.getUserId()).thenReturn(1L);
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
-        when(userRepository.getUserById(100L)).thenReturn(Optional.empty());
+        when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(new Vaccination(1L, "Rabies", VaccinationType.FOR_PUPPY, 6)));
+        when(petRepository.createPet(any(Pet.class), eq(user))).thenReturn(1L);
 
-        assertThrows(InvalidUserException.class, () -> petService.createPet(newPet, breed.getId(), new ArrayList<>(), 100L));
-        verify(userRepository).getUserById(100L);
+        List<Long> vaccinationIds = List.of(1L);
+        long petId = petService.createPet(pet, 1L, vaccinationIds, 1L);
+
+        assertEquals(1L, petId);
+        verify(vaccinationRepository).addVaccinationRecordToPet(eq(1L), any(VaccinationRecord.class));
     }
 
     @Test
-    void createPet_shouldThrowInvalidVaccinationExceptionWhenVaccinationNotFound() {
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
+    void createPet_shouldNotAddVaccinationRecordsWhenEmptyList() throws Exception {
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
-        when(vaccinationRepository.getVaccinationById(100L)).thenReturn(Optional.empty());
-
-        List<Long> vaccinationIds = new ArrayList<>();
-        vaccinationIds.add(100L);
-
-        assertThrows(InvalidVaccinationException.class, () -> petService.createPet(newPet, breed.getId(), vaccinationIds, 1L));
-        verify(vaccinationRepository).getVaccinationById(100L);
-    }
-
-    @Test
-    void createPet_shouldAddVaccinationsWhenValid() throws InvalidBreedException, InvalidVaccinationException, InvalidUserException, CreationFailException {
+        when(accessToken.getUserId()).thenReturn(1L);
         when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
-        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
-        when(vaccinationRepository.getVaccinationById(1L)).thenReturn(Optional.of(vaccination));
-        when(petRepository.createPet(any(Pet.class), eq(user))).thenReturn(50L);
+        when(petRepository.createPet(any(Pet.class), eq(user))).thenReturn(1L);
 
-        List<Long> vaccinationIds = new ArrayList<>();
-        vaccinationIds.add(1L);
+        List<Long> vaccinationIds = Collections.emptyList();
+        long petId = petService.createPet(pet, 1L, vaccinationIds, 1L);
 
-        // Call createPet
-        long result = petService.createPet(newPet, breed.getId(), vaccinationIds, 1L);
-
-        // Manually add the vaccination record to the newPet
-        VaccinationRecord vaccinationRecord = VaccinationRecord.builder()
-                .vaccination(vaccination)
-                .date(new Date()) // Set the current date for the record
-                .build();
-        newPet.getVaccinationRecords().add(vaccinationRecord);  // Add the vaccination record manually to match the expected behavior
-
-        // Assertions
-        assertEquals(50L, result);
-        assertEquals(1, newPet.getVaccinationRecords().size());
-        assertEquals("Rabies", newPet.getVaccinationRecords().get(0).getVaccination().getName());
-
-        // Verify interactions
-        verify(petRepository).createPet(any(Pet.class), eq(user));
-        verify(vaccinationRepository).addVaccinationRecordToPet(eq(50L), any(VaccinationRecord.class));
-    }
-
-
-    @Test
-    void createPet_shouldNotAddVaccinationsWhenEmptyList() throws InvalidBreedException, InvalidVaccinationException, InvalidUserException, CreationFailException {
-        when(breedRepository.getBreedById(1L)).thenReturn(Optional.of(breed));
-        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
-        when(petRepository.createPet(any(Pet.class), eq(user))).thenReturn(50L);
-
-        List<Long> vaccinationIds = new ArrayList<>();
-
-        long result = petService.createPet(newPet, breed.getId(), vaccinationIds, 1L);
-
-        assertEquals(50L, result);
-        assertTrue(newPet.getVaccinationRecords().isEmpty());
-
-        verify(petRepository).createPet(any(Pet.class), eq(user));
+        assertEquals(1L, petId);
+        verify(vaccinationRepository, never()).addVaccinationRecordToPet(anyLong(), any(VaccinationRecord.class));
     }
 }

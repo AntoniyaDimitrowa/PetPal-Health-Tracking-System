@@ -27,13 +27,18 @@ public class PetController {
 
     @GetMapping("{id}")
     public ResponseEntity<PetDTO> getPet(@PathVariable(value = "id") final long id) {
-        Optional<Pet> petOptional = petService.getPet(id);
-        if (petOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        try {
+            Optional<Pet> petOptional = petService.getPet(id);
+            if (petOptional.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            Pet pet = petOptional.get();
+            PetDTO petDTO = PetConverter.convertFromPetToPetDTO(pet);
+            return ResponseEntity.ok(petDTO);
+        } catch (UnauthorizedDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        Pet pet = petOptional.get();
-        PetDTO petDTO = PetConverter.convertFromPetToPetDTO(pet);
-        return ResponseEntity.ok(petDTO);
+
     }
 
     @PostMapping
@@ -51,6 +56,8 @@ public class PetController {
             return ResponseEntity.notFound().build();
         } catch (InvalidBreedException | InvalidVaccinationException | CreationFailException e) {
             return ResponseEntity.badRequest().build();
+        } catch (UnauthorizedDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
@@ -65,17 +72,24 @@ public class PetController {
             return ResponseEntity.ok("Pet updated successfully");
         } catch (InvalidPetException | InvalidBreedException e) {
             return ResponseEntity.notFound().build();
+        } catch (UnauthorizedDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
     @DeleteMapping("{id}")
     @RolesAllowed("Owner")
     public ResponseEntity<Void> deletePet(@PathVariable long id) {
-        boolean deleted = petService.deletePet(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            boolean deleted = petService.deletePet(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (UnauthorizedDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
     }
 }

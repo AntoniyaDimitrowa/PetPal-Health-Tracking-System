@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface IPetRepository {
     Optional<Pet> getPet(Long petId);
-    void updatePet(Long id, Pet pet);
+    Pet updatePet(Long id, Pet pet);
     boolean deletePet(Long petId);
     Long createPet(Pet pet, User user);
 

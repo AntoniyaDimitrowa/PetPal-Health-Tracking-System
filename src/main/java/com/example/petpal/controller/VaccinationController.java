@@ -3,6 +3,7 @@ package com.example.petpal.controller;
 import com.example.petpal.business.IVaccinationService;
 import com.example.petpal.business.exception.InvalidPetException;
 import com.example.petpal.business.exception.InvalidVaccinationException;
+import com.example.petpal.business.exception.UnauthorizedDataAccessException;
 import com.example.petpal.controller.converters.VaccinationConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.vaccination.CreateVaccinationRecordDTO;
@@ -40,6 +41,8 @@ public class VaccinationController {
             return ResponseEntity.notFound().build();
         } catch (InvalidVaccinationException e) {
             return ResponseEntity.badRequest().build();
+        } catch (UnauthorizedDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 Forbidden
         }
     }
 }

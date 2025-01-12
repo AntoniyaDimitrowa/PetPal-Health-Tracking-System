@@ -3,7 +3,6 @@ package com.example.petpal.persistence;
 import com.example.petpal.business.domain.HealthAnalysisResult;
 import com.example.petpal.business.domain.HealthNotification;
 import com.example.petpal.business.domain.User;
-import com.example.petpal.persistence.entity.NotificationEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,8 +13,9 @@ public interface INotificationRepository {
 
     Optional<HealthNotification> findById(Long id);
 
-    Page<HealthNotification> findByIsRead(boolean isRead, Pageable pageable);
+    Page<HealthNotification> findByIsReadAndUserId(boolean isRead, Long userId, Pageable pageable);
 
     void updateNotification(HealthNotification notification);
 
+    int getUnreadCountByUserId(Long userId);
 }

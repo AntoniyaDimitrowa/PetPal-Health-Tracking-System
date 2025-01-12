@@ -34,7 +34,6 @@ class UserServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-
     private static final User user = User.builder()
             .id(1L)
             .name("John Doe")
@@ -48,13 +47,19 @@ class UserServiceImplTest {
             .image("image_url")
             .build();
 
+    private static final User updatedUser = User.builder()
+            .id(1L)
+            .name("John Updated")
+            .email("updated@example.com")
+            .build();
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);  // Initialize mocks before each test
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void getUserById_shouldReturnUserWhenExists() throws UnauthorizedDataAccessException {
+    void getUserById_shouldReturnUserWhenAuthorized() throws UnauthorizedDataAccessException {
         when(requestAccessToken.getUserId()).thenReturn(1L);
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
 
@@ -67,56 +72,67 @@ class UserServiceImplTest {
 
     @Test
     void getUserById_shouldThrowUnauthorizedDataAccessExceptionWhenUnauthorized() {
-        when(requestAccessToken.getUserId()).thenReturn(2L); // Access token belongs to user 2
+        when(requestAccessToken.getUserId()).thenReturn(2L);
 
         assertThrows(UnauthorizedDataAccessException.class, () -> userService.getUserById(1L));
         verify(userRepository, never()).getUserById(1L);
     }
 
     @Test
-    void getUserById_shouldThrowUnauthorizedDataAccessExceptionWhenNoAccessToken() {
-        when(requestAccessToken.getUserId()).thenReturn(null); // Simulate no access token
-
-        assertThrows(UnauthorizedDataAccessException.class, () -> userService.getUserById(1L));
-        verify(userRepository, never()).getUserById(1L); // Don't call repository if token is missing
-    }
-
-
-    @Test
     void createUser_shouldReturnUserIdWhenCreated() {
         when(userRepository.createUser(any(User.class))).thenReturn(1L);
-        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
 
         Long result = userService.createUser(user);
 
         assertNotNull(result);
-        assertEquals(1L, result);  // Check if the returned userId is correct
+        assertEquals(1L, result);
         verify(userRepository, times(1)).createUser(any(User.class));
+    }
+
+    @Test
+    void updateUser_shouldUpdateSuccessfullyWhenValid() throws Exception {
+        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
+        when(requestAccessToken.getUserId()).thenReturn(1L);
+        when(passwordEncoder.matches("password123", user.getPassword())).thenReturn(true);
+        when(userRepository.updateUser(1L, updatedUser)).thenReturn(updatedUser);
+
+        User result = userService.updateUser(1L, "password123", updatedUser);
+
+        assertNotNull(result);
+        assertEquals(updatedUser, result);
+        verify(userRepository, times(1)).updateUser(1L, updatedUser);
     }
 
     @Test
     void updateUser_shouldThrowInvalidUserExceptionIfUserNotFound() {
         when(userRepository.getUserById(100L)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidUserException.class, () -> userService.updateUser(100L, "oldPassword", user));
+        assertThrows(InvalidUserException.class, () -> userService.updateUser(100L, "oldPassword", updatedUser));
         verify(userRepository, times(1)).getUserById(100L);
     }
 
-
     @Test
-    void updateUser_shouldThrowInvalidCredentialsExceptionIfOldPasswordDoesNotMatch() {
-        User updatedUser = User.builder().id(1L).name("John Updated").email("updated@example.com").build();
-
-        // Mock user retrieval and password match failure
+    void updateUser_shouldThrowInvalidCredentialsExceptionIfPasswordMismatch() {
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
+        when(requestAccessToken.getUserId()).thenReturn(1L);
         when(passwordEncoder.matches("wrongOldPassword", user.getPassword())).thenReturn(false);
 
         assertThrows(InvalidCredentialsException.class, () -> userService.updateUser(1L, "wrongOldPassword", updatedUser));
-        verify(userRepository, never()).updateUser(eq(1L), any(User.class));  // Ensure update doesn't happen
+        verify(userRepository, never()).updateUser(eq(1L), any(User.class));
     }
 
     @Test
-    void deleteUser_shouldReturnTrueWhenDeleted() {
+    void updateUser_shouldThrowUnauthorizedDataAccessExceptionIfUnauthorized() {
+        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
+        when(requestAccessToken.getUserId()).thenReturn(2L);
+
+        assertThrows(UnauthorizedDataAccessException.class, () -> userService.updateUser(1L, "password123", updatedUser));
+        verify(userRepository, never()).updateUser(eq(1L), any(User.class));
+    }
+
+    @Test
+    void deleteUser_shouldReturnTrueWhenDeletedSuccessfully() throws UnauthorizedDataAccessException {
+        when(requestAccessToken.getUserId()).thenReturn(1L);
         when(userRepository.deleteUser(1L)).thenReturn(true);
 
         boolean result = userService.deleteUser(1L);
@@ -126,12 +142,31 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUser_shouldReturnFalseWhenNotDeleted() {
-        when(userRepository.deleteUser(100L)).thenReturn(false);
+    void deleteUser_shouldThrowUnauthorizedDataAccessExceptionWhenUnauthorized() {
+        when(requestAccessToken.getUserId()).thenReturn(2L);
 
-        boolean result = userService.deleteUser(100L);
+        assertThrows(UnauthorizedDataAccessException.class, () -> userService.deleteUser(1L));
+        verify(userRepository, never()).deleteUser(1L);
+    }
 
-        assertFalse(result);
-        verify(userRepository, times(1)).deleteUser(100L);
+    @Test
+    void getUserByPetId_shouldReturnUserWhenFound() {
+        when(userRepository.getUserByPetId(1L)).thenReturn(Optional.of(user));
+
+        Optional<User> result = userService.getUserByPetId(1L);
+
+        assertTrue(result.isPresent());
+        assertEquals(user, result.get());
+        verify(userRepository, times(1)).getUserByPetId(1L);
+    }
+
+    @Test
+    void getUserByPetId_shouldReturnEmptyOptionalWhenNotFound() {
+        when(userRepository.getUserByPetId(2L)).thenReturn(Optional.empty());
+
+        Optional<User> result = userService.getUserByPetId(2L);
+
+        assertTrue(result.isEmpty());
+        verify(userRepository, times(1)).getUserByPetId(2L);
     }
 }

@@ -28,6 +28,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
@@ -82,8 +83,8 @@ tasks.named('test') {
 sonar {
 	properties {
 		property "sonar.projectKey", "petpal"
-		property "sonar.projectName", "petpal"
-		property 'sonar.token', "sqp_cfa55df29af0d550a23c9d19732e4ad9b1018627"
+		property "sonar.projectName", "petpal2"
+		property 'sonar.token', "sqp_e9aab6ae7954b697ad572c094fda4e98d6c85263"
 	}
 }
 

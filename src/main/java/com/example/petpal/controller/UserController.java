@@ -58,17 +58,25 @@ public class UserController {
             return ResponseEntity.noContent().build();
         } catch (InvalidUserException | InvalidCredentialsException e) {
             return ResponseEntity.notFound().build();
+        } catch (UnauthorizedDataAccessException e) {
+            // Return 403 Forbidden if access is unauthorized
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
     @DeleteMapping("{id}")
     @RolesAllowed("Admin")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) {
-        boolean deleted = userService.deleteUser(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            boolean deleted = userService.deleteUser(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (UnauthorizedDataAccessException e) {
+            // Return 403 Forbidden if access is unauthorized
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 }

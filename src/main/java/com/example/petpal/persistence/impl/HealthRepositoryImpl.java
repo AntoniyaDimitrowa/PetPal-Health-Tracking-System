@@ -79,17 +79,11 @@ public class HealthRepositoryImpl implements IHealthRepository {
 
     @Override
     public List<Object[]> findHealthRecordsWithNormsForPet(Long petId, int month, int year) {
-        PetEntity pet = petRepositoryJPA.findById(petId)
-                .orElseThrow(() -> new RuntimeException("Pet not found"));
-
         return healthRecordRepository.findHealthRecordsWithNormsForPet(petId, month, year);
     }
 
     @Override
     public List<Object[]> findMoodDistributionForPet(Long petId, int month, int year) {
-        PetEntity pet = petRepositoryJPA.findById(petId)
-                .orElseThrow(() -> new RuntimeException("Pet not found"));
-
         return healthRecordRepository.findMoodDistributionForPet(petId, month, year);
     }
 }

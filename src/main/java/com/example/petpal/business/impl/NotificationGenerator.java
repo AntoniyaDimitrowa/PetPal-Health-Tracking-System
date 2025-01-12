@@ -13,45 +13,51 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class NotificationGenerator {
 
-    @Value("${openai.api.url}")
-    private String openAiApiUrl;
+    @Value("${openrouter.api.url}")
+    private String apiUrl;
 
-    @Value("${openai.api.key}")
-    private String openAiApiKey;
+    @Value("${openrouter.api.key}")
+    private String apiKey;
+
+    @Value("${openrouter.model}")
+    private String model;
 
     public String generateNotification(String anomalies) {
-        // If no anomalies, return a positive message
         if (anomalies == null || anomalies.trim().isEmpty()) {
             return "Your pet is in good health!";
         }
 
         RestTemplate restTemplate = new RestTemplate();
+
+        // Create the request payload
         Map<String, Object> request = new HashMap<>();
-        request.put("model", "text-davinci-003");
-        request.put("prompt", buildPrompt(anomalies));
+        request.put("model", model);
+        request.put("prompt", buildPrompt(anomalies)); // Use "prompt" instead of "messages"
         request.put("temperature", 0.7);
         request.put("max_tokens", 100);
 
+        // Set headers
         Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + openAiApiKey);
+        headers.put("Authorization", "Bearer " + apiKey);
         headers.put("Content-Type", "application/json");
 
-        // Call the OpenAI API and receive the response
-        Map<String, Object> response = restTemplate.postForObject(openAiApiUrl, request, Map.class, headers);
+        // Call the API
+        try {
+            Map<String, Object> response = restTemplate.postForObject(apiUrl, request, Map.class);
 
-        // Ensure response contains choices and safely extract the message
-        if (response != null && response.containsKey("choices")) {
-            Object choicesObject = response.get("choices");
-            if (choicesObject instanceof List<?>) {
-                List<Map<String, Object>> choices = (List<Map<String, Object>>) choicesObject;
+            // Extract the generated message
+            if (response != null && response.containsKey("choices")) {
+                var choices = (List<Map<String, Object>>) response.get("choices");
                 if (!choices.isEmpty()) {
-                    // Safely extract the text from the first choice
-                    Map<String, Object> firstChoice = choices.get(0);
-                    if (firstChoice.containsKey("text")) {
-                        return firstChoice.get("text").toString().trim();
+                    var choice = choices.get(0);
+                    if (choice.containsKey("text")) { // Expect "text" in the response, not "message"
+                        return choice.get("text").toString().trim();
                     }
                 }
             }
+        } catch (Exception e) {
+            String formattedAnomalies = anomalies.replace(", ", "\n").replace(";", "\n");
+            return "There was an issue generating a notification for your pet, but these are the raw results: \n" + formattedAnomalies;
         }
 
         // Fallback in case no valid response or text is found
@@ -60,6 +66,6 @@ public class NotificationGenerator {
     }
 
     private String buildPrompt(String anomalies) {
-        return "Generate a caring notification for the following issues: " + anomalies + ".";
+        return "Generate a caring notification for the following pet health issues: " + anomalies + ".";
     }
 }

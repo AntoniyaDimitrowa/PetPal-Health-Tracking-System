@@ -2,13 +2,13 @@ package com.example.petpal.controller;
 
 import com.example.petpal.business.IHealthService;
 import com.example.petpal.business.IPetHealthAnalyzer;
+import com.example.petpal.business.IUserService;
 import com.example.petpal.business.domain.BreedHealthInfo;
 import com.example.petpal.business.domain.HealthAnalysisResult;
 import com.example.petpal.business.domain.HealthRecord;
-import com.example.petpal.business.exception.InvalidMoodException;
-import com.example.petpal.business.exception.InvalidPetException;
-import com.example.petpal.business.exception.InvalidBreedException; // Import the exception
-import com.example.petpal.business.exception.InvalidUserException;
+import com.example.petpal.business.domain.User;
+import com.example.petpal.business.exception.*;
+import com.example.petpal.business.impl.NotificationService;
 import com.example.petpal.controller.converters.HealthConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.health.*;
@@ -31,6 +31,8 @@ public class HealthController {
 
     private final IHealthService healthService;
     private final IPetHealthAnalyzer petHealthAnalyzer;
+    private final NotificationService notificationService;
+    private final IUserService userService;
     private static final Logger log = LoggerFactory.getLogger(HealthController.class);
 
     @GetMapping("/pets/{petId}/records")
@@ -41,33 +43,45 @@ public class HealthController {
             return ResponseEntity.ok(HealthConverter.convertFromHealthRecordsToHealthRecordDTOs(healthRecords));
         } catch (InvalidPetException e) {
             return ResponseEntity.notFound().build();
+        } catch (UnauthorizedDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 Forbidden
         }
     }
 
     @PostMapping("/pets/{petId}/records")
     @RolesAllowed("Owner")
-    public ResponseEntity<CreateEntityResponse> createHealthRecord(@PathVariable Long petId, @RequestBody CreateHealthRecordDTO healthRecordDTO) {
+    public ResponseEntity<CreateEntityResponse> createHealthRecord(
+            @PathVariable Long petId, @RequestBody CreateHealthRecordDTO healthRecordDTO) {
         try {
             HealthRecord healthRecord = HealthConverter.convertFromCreateHealthRecordDTOToHealthRecord(healthRecordDTO);
+
             Long newHealthRecordId = healthService.createHealthRecord(petId, healthRecord, healthRecordDTO.getMoodId());
+
             // Execute health analysis asynchronously
             CompletableFuture.runAsync(() -> {
                 try {
                     HealthAnalysisResult analysisResult = petHealthAnalyzer.analyzeHealthRecord(petId, healthRecord);
                     log.info("ANALYSIS_RESULT: {}", analysisResult);
 
-                    //TODO WebSockets
+                    // Fetch the user associated with the pet
+                    User user = userService.getUserByPetId(petId)
+                            .orElseThrow(() -> new InvalidUserException("User not found for the pet"));
+
+                    // Send notification about unread messages
+                    int unreadCount = notificationService.getUnreadCountForUser(user.getId());
+                    notificationService.sendNotification(user.getId(), unreadCount);
                 } catch (InvalidPetException | InvalidUserException e) {
                     log.error("Error analyzing health record: {}", e.getMessage(), e);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     log.error("Unexpected error: {}", e.getMessage(), e);
                 }
-
             });
+
             return ResponseEntity.status(HttpStatus.CREATED).body(CreateEntityResponse.builder().id(newHealthRecordId).build());
         } catch (InvalidPetException | InvalidMoodException e) {
             return ResponseEntity.notFound().build();
+        } catch (UnauthorizedDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 Forbidden
         }
     }
 
@@ -85,6 +99,8 @@ public class HealthController {
             return ResponseEntity.ok(statistics);
         } catch (InvalidPetException e) {
             return ResponseEntity.notFound().build();
+        } catch (UnauthorizedDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 Forbidden
         }
     }
     @GetMapping("/breeds/{breedId}/health")
@@ -99,10 +115,12 @@ public class HealthController {
     public ResponseEntity<Void> createHealthInfoForBreed(@PathVariable Long breedId, @RequestBody CreateBreedHealthInfoDTO breedHealthInfoDTO) {
         try {
             BreedHealthInfo breedHealthInfo = HealthConverter.convertFromCreateBreedHealthInfoDTOToBreedHealthInfo(breedHealthInfoDTO);
-            healthService.createHealthInfoForBreed(breedId, breedHealthInfo);
+            healthService.createHealthInfoForBreed(breedId, breedHealthInfoDTO.getUserId(), breedHealthInfo);
             return ResponseEntity.status(201).build();
         } catch (InvalidBreedException e) {
             return ResponseEntity.badRequest().build();  // Return a 400 Bad Request if the breed is invalid
+        } catch (UnauthorizedDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 Forbidden
         }
     }
 }
