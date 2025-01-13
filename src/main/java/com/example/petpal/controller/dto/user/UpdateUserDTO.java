@@ -1,5 +1,9 @@
 package com.example.petpal.controller.dto.user;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,10 +13,24 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class UpdateUserDTO {
+    @NotNull(message = "Name is required.")
+    @Size(min = 1, message = "Name must not be empty.")
     private String name;
+    @NotNull(message = "Email is required.")
+    @Email(message = "The email should be valid.")
     private String email;
+    @NotNull(message = "Old Password is required.")
+    @Size(min = 1, message = "Old Password must not be empty.")
     private String oldPassword;
+    @NotNull(message = "New Password is required.")
+    @Size(min = 1, message = "New Password must not be empty.")
     private String newPassword;
+    @NotNull(message = "Address is required.")
+    @Size(min = 1, message = "Address must not be empty.")
+    @Pattern(
+            regexp = "^[A-Za-z]+(?:[\\s-][A-Za-z]+)*,\\s[A-Za-z]+(?:[\\s-][A-Za-z]+)*$",
+            message = "Address must be in the format 'City, Country'."
+    )
     private String address;
     private String image;
 }

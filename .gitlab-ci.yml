@@ -86,4 +86,5 @@ sonarqube-check:
 deploy:
   stage: deploy
   script:
+    - .\gradlew assemble
     - docker-compose -f docker-compose.ci.yml up --build -d
