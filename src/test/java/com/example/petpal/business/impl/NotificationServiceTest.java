@@ -8,7 +8,6 @@ import com.example.petpal.business.domain.enums.Gender;
 import com.example.petpal.business.exception.NotificationNotFoundException;
 import com.example.petpal.business.exception.UnauthorizedDataAccessException;
 import com.example.petpal.configuration.security.token.IAccessToken;
-import com.example.petpal.controller.converters.NotificationConverter;
 import com.example.petpal.controller.dto.NotificationDTO;
 import com.example.petpal.persistence.INotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,14 +58,6 @@ class NotificationServiceTest {
             .user(User.builder().id(USER_ID).build())
             .build();
 
-    private static final NotificationDTO notificationDTO = NotificationDTO.builder()
-            .id(NOTIFICATION_ID)
-            .isRead(false)
-            .message("Test notification")
-            .petName(pet.getName())
-            .date(new Date())
-            .build();
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -81,9 +72,6 @@ class NotificationServiceTest {
 
         // Mocked page of notifications containing the static `notification` object
         Page<HealthNotification> notificationsPage = new PageImpl<>(List.of(notification), pageable, 1);
-
-        // Mocked page of DTOs (mapping result)
-        Page<NotificationDTO> dtoPage = new PageImpl<>(List.of(notificationDTO), pageable, 1);
 
         when(requestAccessToken.getUserId()).thenReturn(USER_ID);
         when(notificationRepository.findByIsReadAndUserId(false, USER_ID, pageable)).thenReturn(notificationsPage);
