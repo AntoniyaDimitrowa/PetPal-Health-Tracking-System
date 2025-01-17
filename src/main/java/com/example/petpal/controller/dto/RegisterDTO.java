@@ -21,8 +21,8 @@ public class RegisterDTO {
     @NotNull(message = "Address is required.")
     @Size(min = 1, message = "Address must not be empty.")
     @Pattern(
-            regexp = "^[A-Za-z]+(?:[\\s-][A-Za-z]+)*,\\s[A-Za-z]+(?:[\\s-][A-Za-z]+)*$",
-            message = "Address must be in the format 'City, Country'."
+            regexp = "^[A-Za-z][A-Za-z\\s-]{0,99},\\s[A-Za-z][A-Za-z\\s-]{0,99}$",
+            message = "Address must be in the format 'City, Country'. Each part (City or Country) can be up to 100 characters."
     )
     private String address;
     @NotNull(message = "Password is required.")

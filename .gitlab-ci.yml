@@ -60,6 +60,12 @@ end-to-end-tests:
   stage: end-to-end-tests
   image: cypress/base:16.14.0 # Cypress Docker image with Node.js
   before_script:
+    - git clone https://gitlab-ci-token:$CI_GITLAB_TOKEN@git.fhict.nl/I529672/semester3-individualproject-petpal-fe.git
+    - cd semester3-individualproject-petpal-fe
+    - cd "Pet Care Front End"
+    - cd petCareFrontEnd
+    - npm install  # Install frontend dependencies
+    - cd ../../..  # Go back to the root directory
     - docker-compose -f docker-compose.ci.yml up --build -d # Start all services using Docker Compose
     - sleep 200 # Allow some time for containers to initialize (adjust as needed)
   script:
@@ -86,5 +92,10 @@ sonarqube-check:
 deploy:
   stage: deploy
   script:
-    - .\gradlew assemble
+    - git clone https://gitlab-ci-token:$CI_GITLAB_TOKEN@git.fhict.nl/I529672/semester3-individualproject-petpal-fe.git
+    - cd semester3-individualproject-petpal-fe
+    - cd "Pet Care Front End"
+    - cd petCareFrontEnd
+    - npm install  # Install frontend dependencies
+    - cd ../../..  # Go back to the root directory
     - docker-compose -f docker-compose.ci.yml up --build -d

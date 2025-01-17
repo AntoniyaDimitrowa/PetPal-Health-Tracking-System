@@ -30,9 +30,8 @@ public class HealthServiceImpl implements IHealthService {
             throw new InvalidPetException(petId);
         }
         Optional<User> owner = userRepository.getUserByPetId(petId);
-        if(owner.isEmpty() || !Objects.equals(requestAccessToken.getUserId(), owner.get().getId())) {
-            throw new UnauthorizedDataAccessException();
-        }
+        isTheUserAuthorized(owner);
+
         return healthRepository.getHealthRecordsByPetId(petId);
     }
 
@@ -43,9 +42,7 @@ public class HealthServiceImpl implements IHealthService {
         }
 
         Optional<User> owner = userRepository.getUserByPetId(petId);
-        if(owner.isEmpty() || !Objects.equals(requestAccessToken.getUserId(), owner.get().getId())) {
-            throw new UnauthorizedDataAccessException();
-        }
+        isTheUserAuthorized(owner);
 
         Mood mood = moodRepository.getMoodById(moodId)
                 .orElseThrow(() -> new InvalidMoodException(moodId));
@@ -61,9 +58,8 @@ public class HealthServiceImpl implements IHealthService {
         }
 
         Optional<User> owner = userRepository.getUserByPetId(petId);
-        if(owner.isEmpty() || !Objects.equals(requestAccessToken.getUserId(), owner.get().getId())) {
-            throw new UnauthorizedDataAccessException();
-        }
+        isTheUserAuthorized(owner);
+
         // Fetch health records with norms
         List<Object[]> healthRecords = healthRepository.findHealthRecordsWithNormsForPet(petId, month, year);
 
@@ -118,9 +114,7 @@ public class HealthServiceImpl implements IHealthService {
         }
 
         Optional<User> user = userRepository.getUserById(userId);
-        if(user.isEmpty() || !Objects.equals(requestAccessToken.getUserId(), userId)) {
-            throw new UnauthorizedDataAccessException();
-        }
+        isTheUserAuthorized(user);
 
         info.setBreed(breed.get());
         return healthRepository.createHealthInfoForBreed(info);
@@ -138,5 +132,11 @@ public class HealthServiceImpl implements IHealthService {
         }
 
         return healthRepository.getHealthRecentRecordsByPetId(petId, numberOfRecords);
+    }
+
+    private void isTheUserAuthorized(Optional<User> user) throws UnauthorizedDataAccessException {
+        if(user.isEmpty() || !Objects.equals(requestAccessToken.getUserId(), user.get().getId())) {
+            throw new UnauthorizedDataAccessException();
+        }
     }
 }

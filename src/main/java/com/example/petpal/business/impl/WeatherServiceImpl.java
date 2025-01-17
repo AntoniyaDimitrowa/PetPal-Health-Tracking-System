@@ -24,8 +24,7 @@ public class WeatherServiceImpl implements IWeatherService {
         String city = user.getAddress().split(", ")[0];
         String url = String.format("%s?q=%s&appid=%s&units=metric", weatherApiUrl, city, weatherApiKey);
 
-        RestTemplate restTemplate = new RestTemplate();
-        WeatherApiResponse response = restTemplate.getForObject(url, WeatherApiResponse.class);
+        WeatherApiResponse response = fetchWeatherData(url);
         if (response == null) {
             throw new IllegalStateException("Failed to fetch weather data");
         }
@@ -35,5 +34,13 @@ public class WeatherServiceImpl implements IWeatherService {
                 response.getMain().getHumidity(),
                 response.getWeather().get(0).getDescription()
         );
+    }
+
+    /**
+     * Virtual method for fetching weather data. Can be overridden for testing.
+     */
+    protected WeatherApiResponse fetchWeatherData(String url) {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(url, WeatherApiResponse.class);
     }
 }

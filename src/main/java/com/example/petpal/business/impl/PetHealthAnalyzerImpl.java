@@ -148,7 +148,14 @@ public class PetHealthAnalyzerImpl implements IPetHealthAnalyzer {
             }
         }
 
-        // Generate anomalies
+        anomalies.addAll(generateAnomaliesForConditions(lowFoodCount, lowWaterCount, sleepyDaysCount, sadDaysCount, angryDaysCount, neutralDaysCount));
+
+        return anomalies;
+    }
+
+    private List<String> generateAnomaliesForConditions(int lowFoodCount, int lowWaterCount, int sleepyDaysCount, int sadDaysCount, int angryDaysCount, int neutralDaysCount) {
+        List<String> anomalies = new ArrayList<>();
+
         if (lowFoodCount >= 3) {
             anomalies.add("Consistent low food intake over several days.");
         }
