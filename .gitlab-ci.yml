@@ -60,7 +60,7 @@ end-to-end-tests:
   stage: end-to-end-tests
   image: cypress/base:16.14.0 # Cypress Docker image with Node.js
   before_script:
-    - rm -rf node_modules # Remove any pre-existing node_modules
+    - Remove-Item -Recurse -Force node_modules
     - git clone https://gitlab-ci-token:$CI_GITLAB_TOKEN@git.fhict.nl/I529672/semester3-individualproject-petpal-fe.git
     - cd semester3-individualproject-petpal-fe
     - cd "Pet Care Front End"
