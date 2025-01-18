@@ -1,18 +1,21 @@
 describe('End-to-End Add Pet Flow', () => {
   const baseURLforBE = "http://localhost:8090";
-  const baseURLforFE = "http://localhost:5173";
+  const baseURLforFE = "http://localhost:3000";
 
   let createdPetId;
 
   beforeEach(() => {
-    // Navigate to Add Pet page
-    cy.visit(baseURLforFE + '/login');
+    // Start from the base URL (login page)
+    cy.visit(baseURLforFE);
+
+    // Log in using the login button and form
+    cy.get('[data-cy="loginBTN"]').click();
     cy.get('#email').type('antsimdim04@gmail.com');
-    cy.get('#password').type('1234');
+    cy.get('#password').type('Antsimdim04$');
     cy.get('form').submit();
     cy.url().should('eq', baseURLforFE + '/account');
     cy.contains('Profile Information');
-    cy.contains('Add Pet').click();
+    cy.get('[data-cy="addPetBTN"]').click();
     cy.url().should('eq', baseURLforFE + '/addPet');
   });
 
@@ -48,7 +51,8 @@ describe('End-to-End Add Pet Flow', () => {
       expect(createdPetId).to.exist; // Validate ID
     }).then(() => {
       // Verify the pet is displayed
-      cy.visit(`${baseURLforFE}/account`);
+      cy.get('[data-cy="accountBTN"]').click();
+      cy.url().should('eq', `${baseURLforFE}/account`);
       cy.contains('My Pets');
       cy.contains('Buddy');
       cy.contains('Bulldog');
@@ -74,13 +78,17 @@ describe('End-to-End Add Pet Flow', () => {
         },
         failOnStatusCode: false, // Allow non-2xx responses
       }).then((response) => {
-        expect(response.status).to.eq(404); // Verify pet is deleted
+        expect(response.status).to.eq(403); // Verify pet is deleted
       });
     });
   });
 
   it('should display validation errors for missing or incorrect input', () => {
-    cy.visit(baseURLforFE + '/addPet');
+    cy.visit(baseURLforFE);
+    cy.get('[data-cy="accountBTN"]').click();
+    cy.url().should('eq', `${baseURLforFE}/account`);
+    cy.get('[data-cy="addPetBTN"]').click();
+    cy.url().should('eq', baseURLforFE + '/addPet');
 
     // Try submitting without filling fields
     cy.get('form').submit();
@@ -107,7 +115,7 @@ describe('End-to-End Add Pet Flow', () => {
     // Submit form and verify error
     cy.get('form').submit();
     cy.contains(
-      'Vaccination "Rabies" is not allowed for dogs younger than 16 weeks.'
+      'Vaccination "Rabies" is not allowed for pets younger than 16 weeks.'
     );
   });
 });

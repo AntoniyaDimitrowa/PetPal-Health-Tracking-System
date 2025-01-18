@@ -49,7 +49,22 @@ public class UserServiceImpl implements IUserService {
         if(!passwordEncoder.matches(oldPassword, user.get().getPassword())) {
             throw new InvalidCredentialsException();
         }
-        return userRepository.updateUser(userId, updatedUser);
+        return userRepository.updateUser(userId, updatedUser, oldPassword);
+    }
+
+    @Override
+    public User updateUserWithoutPassword(Long userId, User updatedUser) throws InvalidUserException, UnauthorizedDataAccessException, InvalidCredentialsException {
+        Optional<User> user = userRepository.getUserById(userId);
+        if (user.isEmpty()) {
+            throw new InvalidUserException(userId);
+        }
+
+        if (!Objects.equals(requestAccessToken.getUserId(), userId)) {
+            throw new UnauthorizedDataAccessException();
+        }
+
+        // Update the user without checking the password
+        return userRepository.updateUser(userId, updatedUser, null);
     }
 
     @Override

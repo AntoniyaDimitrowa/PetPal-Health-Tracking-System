@@ -3,6 +3,8 @@ package com.example.petpal.controller.converters;
 import com.example.petpal.business.domain.User;
 import com.example.petpal.controller.dto.RegisterDTO;
 import com.example.petpal.controller.dto.user.UpdateUserDTO;
+import com.example.petpal.controller.dto.user.UpdateUserDTOWithPassword;
+import com.example.petpal.controller.dto.user.UpdateUserDTOWithoutPassword;
 import com.example.petpal.controller.dto.user.UserDTO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -78,5 +80,26 @@ public class UserConverter {
             dtos.add(convertFromUserToUserDTO(user));
         }
         return dtos;
+    }
+
+    public static User convertFromUpdateUserDTOWithoutPasswordToUser(UpdateUserDTOWithoutPassword userDTO) {
+        if (userDTO == null) return null;
+        return User.builder()
+                .name(userDTO.getName())
+                .email(userDTO.getEmail())
+                .address(userDTO.getAddress())
+                .image(userDTO.getImage())
+                .build();
+    }
+
+    public static User convertFromUpdateUserDTOWithPasswordToUser(UpdateUserDTOWithPassword userDTO) {
+        if (userDTO == null) return null;
+        return User.builder()
+                .name(userDTO.getName())
+                .email(userDTO.getEmail())
+                .password(userDTO.getNewPassword())
+                .address(userDTO.getAddress())
+                .image(userDTO.getImage())
+                .build();
     }
 }

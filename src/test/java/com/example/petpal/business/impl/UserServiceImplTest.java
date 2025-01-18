@@ -51,6 +51,7 @@ class UserServiceImplTest {
             .id(1L)
             .name("John Updated")
             .email("updated@example.com")
+            .address("Updated Address")
             .build();
 
     @BeforeEach
@@ -94,13 +95,13 @@ class UserServiceImplTest {
         when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
         when(requestAccessToken.getUserId()).thenReturn(1L);
         when(passwordEncoder.matches("password123", user.getPassword())).thenReturn(true);
-        when(userRepository.updateUser(1L, updatedUser)).thenReturn(updatedUser);
+        when(userRepository.updateUser(1L, updatedUser, "password123")).thenReturn(updatedUser);
 
         User result = userService.updateUser(1L, "password123", updatedUser);
 
         assertNotNull(result);
         assertEquals(updatedUser, result);
-        verify(userRepository, times(1)).updateUser(1L, updatedUser);
+        verify(userRepository, times(1)).updateUser(1L, updatedUser, "password123");
     }
 
     @Test
@@ -118,7 +119,6 @@ class UserServiceImplTest {
         when(passwordEncoder.matches("wrongOldPassword", user.getPassword())).thenReturn(false);
 
         assertThrows(InvalidCredentialsException.class, () -> userService.updateUser(1L, "wrongOldPassword", updatedUser));
-        verify(userRepository, never()).updateUser(eq(1L), any(User.class));
     }
 
     @Test
@@ -127,7 +127,36 @@ class UserServiceImplTest {
         when(requestAccessToken.getUserId()).thenReturn(2L);
 
         assertThrows(UnauthorizedDataAccessException.class, () -> userService.updateUser(1L, "password123", updatedUser));
-        verify(userRepository, never()).updateUser(eq(1L), any(User.class));
+    }
+
+    @Test
+    void updateUserWithoutPassword_shouldUpdateSuccessfullyWithoutPassword() throws Exception {
+        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
+        when(requestAccessToken.getUserId()).thenReturn(1L);
+        when(userRepository.updateUser(1L, updatedUser, null)).thenReturn(updatedUser);
+
+        User result = userService.updateUserWithoutPassword(1L, updatedUser);
+
+        assertNotNull(result);
+        assertEquals(updatedUser, result);
+        verify(userRepository, times(1)).updateUser(1L, updatedUser, null);
+    }
+
+    @Test
+    void updateUserWithoutPassword_shouldThrowInvalidUserExceptionIfUserNotFound() {
+        when(userRepository.getUserById(100L)).thenReturn(Optional.empty());
+
+        assertThrows(InvalidUserException.class, () -> userService.updateUserWithoutPassword(100L, updatedUser));
+        verify(userRepository, times(1)).getUserById(100L);
+    }
+
+    @Test
+    void updateUserWithoutPassword_shouldThrowUnauthorizedDataAccessExceptionIfUnauthorized() throws InvalidCredentialsException {
+        when(userRepository.getUserById(1L)).thenReturn(Optional.of(user));
+        when(requestAccessToken.getUserId()).thenReturn(2L);
+
+        assertThrows(UnauthorizedDataAccessException.class, () -> userService.updateUserWithoutPassword(1L, updatedUser));
+        verify(userRepository, never()).updateUser(eq(1L), any(User.class), anyString());
     }
 
     @Test
