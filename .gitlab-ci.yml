@@ -69,6 +69,7 @@ end-to-end-tests:
     - docker-compose -f docker-compose.ci.yml up --build -d # Start all services using Docker Compose
     - sleep 200 # Allow some time for containers to initialize (adjust as needed)
   script:
+    - npm install cypress --save-dev
     - npx cypress run --config-file cypress.config.js # Run Cypress tests
   after_script:
     - docker-compose -f docker-compose.ci.yml down # Tear down the services after tests
