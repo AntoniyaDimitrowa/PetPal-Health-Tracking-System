@@ -8,7 +8,6 @@ import com.example.petpal.business.exception.UnauthorizedDataAccessException;
 import com.example.petpal.controller.converters.UserConverter;
 import com.example.petpal.controller.dto.CreateEntityResponse;
 import com.example.petpal.controller.dto.RegisterDTO;
-import com.example.petpal.controller.dto.user.UpdateUserDTO;
 import com.example.petpal.controller.dto.user.UpdateUserDTOWithPassword;
 import com.example.petpal.controller.dto.user.UpdateUserDTOWithoutPassword;
 import com.example.petpal.controller.dto.user.UserDTO;

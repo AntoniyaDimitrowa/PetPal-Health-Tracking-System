@@ -53,7 +53,7 @@ public class PetHealthAnalyzerImpl implements IPetHealthAnalyzer {
         anomalies.addAll(analyzeHistoricalTrends(recentRecords));
 
         // Generate notification message
-        String notificationMessage = notificationGenerator.generateNotification(String.join(", ", anomalies));
+        String notificationMessage = notificationGenerator.generateNotification(String.join(", ", anomalies), user.getName(), pet.getName());
 
         HealthAnalysisResult result = new HealthAnalysisResult(newRecord.getId(), new Date(), pet, notificationMessage, false);
 

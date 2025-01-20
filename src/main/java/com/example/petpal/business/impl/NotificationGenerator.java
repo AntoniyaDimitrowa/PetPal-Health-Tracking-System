@@ -2,6 +2,10 @@ package com.example.petpal.business.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,7 +26,7 @@ public class NotificationGenerator {
     @Value("${openrouter.model}")
     private String model;
 
-    public String generateNotification(String anomalies) {
+    public String generateNotification(String anomalies, String ownerName, String petName) {
         if (anomalies == null || anomalies.trim().isEmpty()) {
             return "Your pet is in good health!";
         }
@@ -32,25 +36,27 @@ public class NotificationGenerator {
         // Create the request payload
         Map<String, Object> request = new HashMap<>();
         request.put("model", model);
-        request.put("prompt", buildPrompt(anomalies)); // Use "prompt" instead of "messages"
+        request.put("prompt", buildPrompt(anomalies, ownerName, petName)); // Use "prompt" instead of "messages"
         request.put("temperature", 0.7);
         request.put("max_tokens", 100);
 
         // Set headers
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + apiKey);
-        headers.put("Content-Type", "application/json");
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + apiKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
         // Call the API
         try {
-            Map<String, Object> response = restTemplate.postForObject(apiUrl, request, Map.class);
+            ResponseEntity<Map> responseEntity = restTemplate.postForEntity(apiUrl, entity, Map.class);
+            Map<String, Object> response = responseEntity.getBody();
 
             // Extract the generated message
             if (response != null && response.containsKey("choices")) {
                 var choices = (List<Map<String, Object>>) response.get("choices");
                 if (!choices.isEmpty()) {
                     var choice = choices.get(0);
-                    if (choice.containsKey("text")) { // Expect "text" in the response, not "message"
+                    if (choice.containsKey("text")) {
                         return choice.get("text").toString().trim();
                     }
                 }
@@ -65,7 +71,9 @@ public class NotificationGenerator {
         return "There was an issue generating a notification for your pet, but these are the raw results: \n" + formattedAnomalies;
     }
 
-    private String buildPrompt(String anomalies) {
-        return "Generate a caring notification for the following pet health issues: " + anomalies + ".";
-    }
+    private String buildPrompt(String anomalies, String ownerName, String petName) {
+        return String.format(
+                "Generate a concise, actionable notification about a pet's health. The message should be addressed to %s, referring to their pet, %s. Use the following health issues: %s. The response should only contain the message content and must not include any quotes or any additional text such as 'Here's a notification,' 'Let me know,' or anything else before or after the message.",
+                ownerName, petName, anomalies
+        );    }
 }

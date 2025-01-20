@@ -127,7 +127,7 @@ class PetHealthAnalyzerImplTest {
         when(healthService.getHealthInfoForBreed(BREED_ID, petAge)).thenReturn(breedHealthInfo);
         when(weatherService.getCurrentConditions(user)).thenReturn(weatherConditions);
         when(healthService.getRecentRecords(PET_ID, 3)).thenReturn(new ArrayList<>());
-        when(notificationGenerator.generateNotification(anyString())).thenReturn(String.join(", ", anomalies));
+        when(notificationGenerator.generateNotification(anyString(), anyString(), anyString())).thenReturn(String.join(", ", anomalies));
         // When
         HealthAnalysisResult result = petHealthAnalyzer.analyzeHealthRecord(PET_ID, healthRecord);
 
