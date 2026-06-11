@@ -1,0 +1,136 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Run unit and integration tests
+        run: ./gradlew unitTest integrationTest
+
+  bdd-tests:
+    name: BDD Tests
+    runs-on: ubuntu-latest
+    needs: backend-tests
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install Cypress dependencies
+        run: npm ci
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.30.0
+
+      - name: Install kind
+        run: |
+          curl -Lo kind https://kind.sigs.k8s.io/dl/v0.24.0/kind-linux-amd64
+          chmod +x kind
+          sudo mv kind /usr/local/bin/kind
+
+      - name: Create kind cluster
+        run: kind create cluster --name petpal
+
+      - name: Build backend image
+        run: docker build -t petpal-backend:latest .
+
+      - name: Load backend image into kind
+        run: kind load docker-image petpal-backend:latest --name petpal
+
+      - name: Apply test namespace and database manifests
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/secret.yaml
+          kubectl apply -f k8s/configmap.yaml
+          kubectl apply -f k8s/mysql-test.yaml
+
+      - name: Wait for MySQL
+        run: kubectl wait --for=condition=available deployment/mysql-test -n petpal --timeout=300s
+
+      - name: Apply test backend manifest
+        run: kubectl apply -f k8s/petpal-backend-test.yaml
+
+      - name: Wait for test backend
+        run: kubectl wait --for=condition=available deployment/petpal-backend-test -n petpal --timeout=300s
+
+      - name: Seed test catalog data
+        run: |
+          MYSQL_POD=$(kubectl get pods -n petpal -l app=mysql-test -o jsonpath='{.items[0].metadata.name}')
+          cat <<'SQL' | kubectl exec -i -n petpal "$MYSQL_POD" -- sh -c 'MYSQL_PWD=changeme-test mysql -uroot petpal-test-db'
+          INSERT INTO mood (name, emoji) VALUES
+            ('Happy', ':)'),
+            ('Playful', ':D');
+
+          INSERT INTO breed (name, description, normal_mood_id, minimum_exercise_per_day) VALUES
+            ('German Shepherd', 'Intelligent, loyal working dog.', 1, 2.0),
+            ('Golden Retriever', 'Friendly, family-oriented dog.', 2, 1.5),
+            ('Beagle', 'Curious, friendly, great scent hound.', 1, 1.0);
+
+          INSERT INTO breed_health_info (
+            breed_id,
+            user_id,
+            age_range_start,
+            age_range_end,
+            normal_food_intake,
+            normal_water_intake,
+            weight_range_min,
+            weight_range_max
+          ) VALUES
+            (2, NULL, 1, 3, 300, 1.2, 20, 28);
+
+          INSERT INTO vaccination (name, type, period_vac) VALUES
+            ('Rabies', 'FOR_ADULT', 16),
+            ('Bordetella', 'FOR_PUPPY', 12);
+          SQL
+
+      - name: Run BDD tests
+        env:
+          CYPRESS_API_BASE_URL: http://127.0.0.1:8081/backend
+        run: |
+          kubectl port-forward -n petpal service/petpal-backend-test-service 8081:8080 >/tmp/petpal-port-forward.log 2>&1 &
+          PF_PID=$!
+          trap 'kill $PF_PID || true' EXIT
+          for attempt in $(seq 1 30); do
+            STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8081/backend/breeds || true)
+            if [ "$STATUS_CODE" = "401" ]; then
+              break
+            fi
+            sleep 5
+          done
+
+          if [ "$STATUS_CODE" != "401" ]; then
+            echo "Backend test service did not become ready in time"
+            exit 1
+          fi
+
+          npm run bdd:test

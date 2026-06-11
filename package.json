@@ -1,6 +1,19 @@
 {
+  "scripts": {
+    "bdd:test": "cypress run --spec \"cypress/e2e/bdd/**/*.feature\"",
+    "bdd:open": "cypress open --spec \"cypress/e2e/bdd/**/*.feature\""
+  },
   "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^24.0.1",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
     "cypress": "^13.16.1",
-    "cypress-file-upload": "^5.0.8"
+    "cypress-file-upload": "^5.0.8",
+    "esbuild": "^0.28.0"
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": "cypress/support/step_definitions/**/*.{js,ts}"
+  },
+  "dependencies": {
+    "mvn": "^3.5.0"
   }
 }

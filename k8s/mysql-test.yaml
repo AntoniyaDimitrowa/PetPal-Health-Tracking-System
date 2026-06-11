@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-test-service
+  namespace: petpal
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: mysql-test
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-test
+  namespace: petpal
+spec:
+  selector:
+    matchLabels:
+      app: mysql-test
+  template:
+    metadata:
+      labels:
+        app: mysql-test
+    spec:
+      containers:
+        - name: mysql-test
+          image: mysql:latest
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: petpal-secret
+                  key: DB_PASSWORD_TEST
+            - name: MYSQL_DATABASE
+              value: petpal-test-db
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-test-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-test-storage
+          persistentVolumeClaim:
+            claimName: mysql-test-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-test-pvc
+  namespace: petpal
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

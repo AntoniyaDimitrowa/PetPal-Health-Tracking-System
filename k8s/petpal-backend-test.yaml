@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petpal-backend-test
+  namespace: petpal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petpal-backend-test
+  template:
+    metadata:
+      labels:
+        app: petpal-backend-test
+    spec:
+      containers:
+        - name: petpal-backend-test
+          image: petpal-backend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            # Activate the loadtest Spring profile
+            - name: SPRING_PROFILES_ACTIVE
+              value: loadtest
+
+            # Test DB URL
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql-test-service:3306/petpal-test-db
+
+            # Test DB username
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+
+            # Test DB password
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: petpal-secret
+                  key: DB_PASSWORD_TEST
+
+            # JWT secret (same as production)
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: petpal-secret
+                  key: JWT_SECRET
+
+            # Weather API
+            - name: WEATHER_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: petpal-config
+                  key: WEATHER_API_URL
+
+            - name: WEATHER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: petpal-secret
+                  key: WEATHER_API_KEY
+
+            # OpenRouter API
+            - name: OPENROUTER_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: petpal-config
+                  key: OPENROUTER_API_URL
+
+            - name: OPENROUTER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: petpal-secret
+                  key: OPENROUTER_API_KEY
+
+            - name: OPENROUTER_MODEL
+              valueFrom:
+                configMapKeyRef:
+                  name: petpal-config
+                  key: OPENROUTER_MODEL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petpal-backend-test-service
+  namespace: petpal
+spec:
+  selector:
+    app: petpal-backend-test
+  ports:
+    - port: 8080
+      targetPort: 8080

@@ -47,6 +47,14 @@ public class PetServiceImpl implements IPetService {
             if(!Objects.equals(requestAccessToken.getUserId(), user.getId())) {
                 throw new UnauthorizedDataAccessException();
             }
+            if(1 == 2) { //dummy check
+                throw new UnauthorizedDataAccessException();
+            }
+//            Long authenticatedUserId = requestAccessToken.getUserId();
+
+//            User user = userRepository.getUserById(authenticatedUserId)
+//                    .orElseThrow(() -> new InvalidUserException(authenticatedUserId));
+
             Breed breed = breedRepository.getBreedById(breedId)
                     .orElseThrow(() -> new InvalidBreedException(breedId));
 

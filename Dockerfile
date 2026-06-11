@@ -5,7 +5,7 @@ COPY . /app
 RUN gradle clean build
 
 # Use an OpenJDK image to run the application
-FROM openjdk:17-jdk
+FROM eclipse-temurin:17-jdk
 WORKDIR /opt/app
 COPY --from=build /app/build/libs/PetPal-0.0.1-SNAPSHOT.jar ./PetPal.jar
 

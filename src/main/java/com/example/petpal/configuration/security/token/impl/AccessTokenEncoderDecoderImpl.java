@@ -27,7 +27,15 @@ public class AccessTokenEncoderDecoderImpl implements IAccessTokenEncoder, IAcce
     private final Key key;
 
     public AccessTokenEncoderDecoderImpl(@Value("${jwt.secret}") String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        if (secretKey == null || secretKey.isBlank()) {
+            throw new IllegalStateException("jwt.secret is not configured");
+        }
+        byte[] keyBytes;
+        try {
+            keyBytes = Decoders.BASE64.decode(secretKey);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("jwt.secret is not valid Base64", e);
+        }
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 

@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: petpal-ingress
+  namespace: petpal
+  # Notice: No rewrite annotations are needed here!
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: petpal.local
+      http:
+        paths:
+          # BACKEND
+          # Any request starting with /backend goes to the backend service.
+          # The path is NOT modified. Spring Boot receives the full /backend/... path.
+          - path: /backend
+            pathType: Prefix
+            backend:
+              service:
+                name: petpal-backend-service
+                port:
+                  number: 8080
+
+          # FRONTEND
+          # Any other request goes to the frontend service.
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: petpal-frontend-service
+                port:
+                  number: 80

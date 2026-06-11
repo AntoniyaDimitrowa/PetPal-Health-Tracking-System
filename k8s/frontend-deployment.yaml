@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petpal-frontend
+  namespace: petpal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petpal-frontend
+  template:
+    metadata:
+      labels:
+        app: petpal-frontend
+    spec:
+      containers:
+        - name: petpal-frontend
+          image: petpal-frontend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80

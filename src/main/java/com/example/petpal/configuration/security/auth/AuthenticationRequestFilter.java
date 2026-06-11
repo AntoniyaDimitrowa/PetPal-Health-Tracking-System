@@ -30,7 +30,16 @@ public class AuthenticationRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        // Skip authentication for login and signup
+        if (path.startsWith("/authentication")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         final String requestTokenHeader = request.getHeader("Authorization");
+
         if (requestTokenHeader == null || !requestTokenHeader.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
@@ -47,6 +56,7 @@ public class AuthenticationRequestFilter extends OncePerRequestFilter {
             sendAuthenticationError(response);
         }
     }
+
 
     private void sendAuthenticationError(HttpServletResponse response) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

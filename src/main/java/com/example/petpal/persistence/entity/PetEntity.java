@@ -50,8 +50,7 @@ public class PetEntity {
     @Min(0)
     private double weight;
 
-    @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String image;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petpal-backend
+  namespace: petpal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petpal-backend
+  template:
+    metadata:
+      labels:
+        app: petpal-backend
+    spec:
+      containers:
+        - name: petpal-backend
+          image: petpal-backend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: petpal-config
+                  key: SPRING_DATASOURCE_URL
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: petpal-config
+                  key: SPRING_DATASOURCE_USERNAME
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: petpal-secret
+                  key: DB_PASSWORD
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: petpal-secret
+                  key: JWT_SECRET
+
+            - name: WEATHER_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: petpal-config
+                  key: WEATHER_API_URL
+
+            - name: WEATHER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: petpal-secret
+                  key: WEATHER_API_KEY
+
+            - name: OPENROUTER_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: petpal-config
+                  key: OPENROUTER_API_URL
+
+            - name: OPENROUTER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: petpal-secret
+                  key: OPENROUTER_API_KEY
+
+            - name: OPENROUTER_MODEL
+              valueFrom:
+                configMapKeyRef:
+                  name: petpal-config
+                  key: OPENROUTER_MODEL
