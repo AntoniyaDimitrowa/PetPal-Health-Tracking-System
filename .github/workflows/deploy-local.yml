@@ -1,0 +1,39 @@
+name: Local Minikube Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      recreate_backend:
+        description: Delete and recreate the backend deployment
+        type: boolean
+        default: false
+      run_load_tests:
+        description: Run Kubernetes load tests after deploy
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to Minikube
+    runs-on: [self-hosted, windows]
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run deploy script
+        shell: pwsh
+        run: |
+          $args = @()
+          if ('${{ inputs.recreate_backend }}' -eq 'true') {
+            $args += '-RecreateBackend'
+          }
+          if ('${{ inputs.run_load_tests }}' -eq 'true') {
+            $args += '-RunLoadTests'
+          }
+
+          .\apply-deploy.ps1 @args

@@ -13,6 +13,34 @@ Use this guide to run the BDD tests and the Kubernetes load tests, then collect 
   - `Bordetella`
 - For local BDD runs, keep the backend test service accessible through port-forwarding.
 
+## Local Deploy
+
+Use the Minikube deploy script to rebuild the backend image, apply the Kubernetes manifests, and restart the backend deployment:
+
+```powershell
+.\apply-deploy.ps1
+```
+
+To include the Kubernetes load tests after deploy:
+
+```powershell
+.\apply-deploy.ps1 -RunLoadTests
+```
+
+To keep a port-forward session open after the rollout:
+
+```powershell
+.\apply-deploy.ps1 -PortForward
+```
+
+To force a delete-and-recreate cycle for the backend deployment:
+
+```powershell
+.\apply-deploy.ps1 -RecreateBackend
+```
+
+To run the same deploy from GitHub Actions, use the `Local Minikube Deploy` workflow with a self-hosted Windows runner on the machine that has Minikube installed.
+
 ## BDD Tests
 
 ### Run in browser mode

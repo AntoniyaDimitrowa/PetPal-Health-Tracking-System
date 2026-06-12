@@ -60,8 +60,8 @@ public class WebSecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                //registry.addMapping("/**").allowedOrigins("http://petpal.local","http://localhost:5173", "http://localhost:3000", "http://localhost:80")
-                registry.addMapping("/**").allowedOriginPatterns("*")
+                registry.addMapping("/**").allowedOrigins("http://petpal.local","http://localhost:5173", "http://localhost:3000", "http://localhost:80")
+                //registry.addMapping("/**").allowedOriginPatterns("*")
 
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*") // Allow all headers
