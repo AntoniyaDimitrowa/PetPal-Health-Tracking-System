@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: petpal-config
+  namespace: petpal
+data:
+  SPRING_DATASOURCE_URL: jdbc:mysql://mysql-service:3306/petpal-db
+  SPRING_DATASOURCE_USERNAME: root
+  WEATHER_API_URL: https://api.openweathermap.org/data/2.5/weather
+  OPENROUTER_API_URL: https://openrouter.ai/api/v1/completions
+  OPENROUTER_MODEL: meta-llama/llama-3.2-1b-instruct:free
+  CORS_ALLOWED_ORIGIN: http://localhost:5173
