@@ -2,7 +2,7 @@
 FROM gradle:8.10.1-jdk17 AS build
 WORKDIR /app
 COPY . /app
-RUN gradle clean build
+RUN gradle clean bootJar
 
 # Use an OpenJDK image to run the application
 FROM eclipse-temurin:17-jdk
