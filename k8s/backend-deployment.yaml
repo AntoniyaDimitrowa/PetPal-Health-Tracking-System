@@ -16,7 +16,7 @@ spec:
       containers:
         - name: petpal-backend
           image: petpal-backend:latest
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:

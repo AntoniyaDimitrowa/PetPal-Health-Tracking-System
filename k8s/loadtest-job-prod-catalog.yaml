@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: petpal-loadtest-catalog
+  namespace: petpal
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app: petpal-loadtest-catalog
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: k6
+          image: grafana/k6:0.49.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - k6 run /scripts/catalog-read.js
+          env:
+            - name: API_BASE_URL
+              value: http://petpal-backend-service:8080/backend
+            - name: TEST_PASSWORD
+              value: PetPal@1234
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: loadtest-script
+              mountPath: /scripts
+      volumes:
+        - name: loadtest-script
+          configMap:
+            name: petpal-loadtest-script

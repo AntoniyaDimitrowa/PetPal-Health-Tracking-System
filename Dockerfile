@@ -1,7 +1,9 @@
 # Use an official Gradle image to build the application
 FROM gradle:8.10.1-jdk17 AS build
 WORKDIR /app
-COPY . /app
+COPY gradlew build.gradle settings.gradle ./
+COPY gradle ./gradle
+COPY src ./src
 RUN gradle clean bootJar
 
 # Use an OpenJDK image to run the application
