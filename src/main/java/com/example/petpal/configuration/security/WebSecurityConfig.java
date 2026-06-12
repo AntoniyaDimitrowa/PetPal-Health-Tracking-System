@@ -38,10 +38,10 @@ public class WebSecurityConfig {
                         configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(registry ->
                         registry.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "authentication/**").anonymous()
+                                .requestMatchers(HttpMethod.POST, "/authentication/**").permitAll()
                                 .requestMatchers("/ws/**").permitAll()
                                 .requestMatchers("/topic/**").permitAll()
-                                .requestMatchers(SWAGGER_UI_RESOURCES).permitAll()
+                                .requestMatchers(SWAGGER_UI_RESOURCES).anonymous()
                                 .anyRequest().authenticated()
 
                 )
@@ -60,7 +60,9 @@ public class WebSecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:5173", "http://localhost:3000")
+                //registry.addMapping("/**").allowedOrigins("http://petpal.local","http://localhost:5173", "http://localhost:3000", "http://localhost:80")
+                registry.addMapping("/**").allowedOriginPatterns("*")
+
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*") // Allow all headers
                         .allowCredentials(true); // Allow cookies or Authorization headers

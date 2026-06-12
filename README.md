@@ -1,5 +1,32 @@
 # Semester3-IndividualProject-PetPal
 
+## Testing
+
+This repository now separates behavior-driven tests from the Kubernetes load test.
+
+- BDD scenarios live in `cypress/e2e/bdd/*.feature` with step definitions in `cypress/support/step_definitions`.
+- The GitHub Actions workflow seeds the test catalog data before the BDD run so the suite is reproducible from a clean cluster.
+- Load-test scripts live in `loadtests/` and are mounted into the Kubernetes Job through `k8s/loadtest-script-configmap.yaml`.
+- The default Kubernetes load test runs `catalog-read.js` against `petpal-backend-test-service`.
+- The full run guide and report template are in `docs/testing-guide.md`.
+
+To run the BDD tests against the test backend service, port-forward the service first:
+
+```bash
+kubectl port-forward -n petpal service/petpal-backend-test-service 8081:8080
+npm run bdd:test -- --env apiBaseUrl=http://localhost:8081/backend
+```
+
+To run the load test inside Kubernetes:
+
+```bash
+kubectl delete job petpal-loadtest -n petpal --ignore-not-found
+kubectl apply -f k8s/loadtest-script-configmap.yaml -f k8s/loadtest-job.yaml
+kubectl logs -n petpal job/petpal-loadtest -f
+```
+
+To switch the Job to the write-heavy load test, set `K6_SCRIPT` to `pet-health.js` in `k8s/loadtest-job.yaml` before applying it.
+
 
 
 ## Getting started
