@@ -128,6 +128,31 @@ jobs:
       - name: Wait for test backend
         run: kubectl wait --for=condition=available deployment/petpal-backend-test -n petpal --timeout=300s
 
+      - name: Wait for test schema
+        run: |
+          MYSQL_POD=$(kubectl get pods -n petpal -l app=mysql-test -o jsonpath='{.items[0].metadata.name}')
+          REQUIRED_TABLES=(mood breed breed_health_info vaccination)
+
+          for table in "${REQUIRED_TABLES[@]}"; do
+            TABLE_READY=false
+
+            for attempt in $(seq 1 30); do
+              TABLE_COUNT=$(kubectl exec -n petpal "$MYSQL_POD" -- env MYSQL_PWD=changeme-test mysql --protocol=tcp -h 127.0.0.1 -uroot --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='petpal-test-db' AND table_name='${table}';" 2>/dev/null || true)
+              if [ "$TABLE_COUNT" = "1" ]; then
+                TABLE_READY=true
+                break
+              fi
+
+              sleep 5
+            done
+
+            if [ "$TABLE_READY" != "true" ]; then
+              echo "Schema table '$table' was not created in time"
+              kubectl logs -n petpal deployment/petpal-backend-test --tail=200 || true
+              exit 1
+            fi
+          done
+
       - name: Seed test catalog data
         run: |
           MYSQL_POD=$(kubectl get pods -n petpal -l app=mysql-test -o jsonpath='{.items[0].metadata.name}')
