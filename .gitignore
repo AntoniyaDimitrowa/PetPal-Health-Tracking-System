@@ -39,3 +39,14 @@ out/
 ### Node ###
 node_modules/
 dist/
+
+# GitHub Actions Runner (Local)
+actions-runner/
+_work/
+*.log
+v3.completed
+PipelineFolder.json
+**/actions-runner/**
+**/_diag/**
+**/_work/**
+*.log
