@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -77,7 +77,7 @@ jobs:
     needs:
       - unit-tests
       - integration-tests
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -106,6 +106,9 @@ jobs:
       - name: Create kind cluster
         run: kind create cluster --name petpal
 
+      - name: Wait for kind nodes
+        run: kubectl wait --for=condition=Ready nodes --all --timeout=300s
+
       - name: Build backend image
         run: docker build -t petpal-backend:latest .
 
@@ -120,13 +123,13 @@ jobs:
           kubectl apply -f k8s/mysql-test.yaml
 
       - name: Wait for MySQL
-        run: kubectl wait --for=condition=available deployment/mysql-test -n petpal --timeout=300s
+        run: kubectl rollout status deployment/mysql-test -n petpal --timeout=300s
 
       - name: Apply test backend manifest
         run: kubectl apply -f k8s/petpal-backend-test.yaml
 
       - name: Wait for test backend
-        run: kubectl wait --for=condition=available deployment/petpal-backend-test -n petpal --timeout=300s
+        run: kubectl rollout status deployment/petpal-backend-test -n petpal --timeout=300s
 
       - name: Wait for test schema
         run: |
@@ -220,3 +223,48 @@ jobs:
           fi
 
           npm run bdd:test
+
+  deploy-test-backend:
+    name: Deploy Test Backend
+    runs-on: [self-hosted, windows]
+    needs: bdd-tests
+    if: github.event_name != 'pull_request'
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Deploy test backend
+        shell: powershell
+        run: .\apply-deploy.ps1 -DeployTestBackend
+
+  load-tests:
+    name: Load Tests on Test Pods
+    runs-on: [self-hosted, windows]
+    needs: deploy-test-backend
+    if: github.event_name != 'pull_request'
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run test load tests
+        shell: powershell
+        run: .\apply-deploy.ps1 -RunTestLoadTests
+
+  deploy-production-backend:
+    name: Deploy Production Backend
+    runs-on: [self-hosted, windows]
+    needs: load-tests
+    if: github.event_name != 'pull_request'
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Deploy production backend
+        shell: powershell
+        run: .\apply-deploy.ps1 -DeployProductionBackend

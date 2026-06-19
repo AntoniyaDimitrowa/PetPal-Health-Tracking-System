@@ -2,6 +2,9 @@ Run the local Minikube deploy script from PowerShell:
 
 ```powershell
 .\apply-deploy.ps1
+.\apply-deploy.ps1 -DeployTestBackend
+.\apply-deploy.ps1 -RunTestLoadTests
+.\apply-deploy.ps1 -DeployProductionBackend
 .\apply-deploy.ps1 -RunLoadTests
 .\apply-deploy.ps1 -PortForward
 .\apply-deploy.ps1 -RecreateBackend
