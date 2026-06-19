@@ -5,7 +5,7 @@ Use this guide to run the BDD tests and the Kubernetes load tests, then collect 
 ## Prerequisites
 
 - The test namespace, MySQL test deployment, and backend test deployment must already be running in Kubernetes.
-- The test database must contain the catalog data expected by the tests, especially:
+- The test database will be seeded automatically before the load-test stage, but the expected catalog data is:
   - `German Shepherd`
   - `Golden Retriever`
   - `Beagle`
@@ -24,7 +24,7 @@ Use the Minikube deploy script to rebuild the backend image, apply the Kubernete
 To include the Kubernetes load tests after deploy:
 
 ```powershell
-.\apply-deploy.ps1 -RunLoadTests
+.\apply-deploy.ps1 -RunTestLoadTests
 ```
 
 To keep a port-forward session open after the rollout:
@@ -89,18 +89,10 @@ npm run bdd:test | Tee-Object -FilePath bdd-results.log
 Run the load test inside Kubernetes:
 
 ```powershell
-kubectl apply -f k8s/loadtest-script-configmap.yaml
-kubectl apply -f k8s/loadtest-job-catalog.yaml
-kubectl logs -f job/petpal-loadtest-catalog -n petpal
+.\apply-deploy.ps1 -RunTestLoadTests
 ```
 
-To run the write-heavy version:
-
-```powershell
-kubectl apply -f k8s/loadtest-script-configmap.yaml
-kubectl apply -f k8s/loadtest-job-pet-health.yaml
-kubectl logs -f job/petpal-loadtest-pet-health -n petpal
-```
+Run it after the test backend has been deployed. The script seeds `mysql-test` from `loadtests/test-db-seed.sql`, runs the catalog and pet-health jobs against `petpal-backend-test-service`, and truncates the test database afterward.
 
 What you will see:
 

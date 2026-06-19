@@ -7,6 +7,7 @@ This repository separates behavior-driven tests from the Kubernetes load test an
 - BDD scenarios live in `cypress/e2e/bdd/*.feature` with step definitions in `cypress/support/step_definitions`.
 - The GitHub Actions workflow now runs `Build -> Unit Tests -> Integration Tests -> BDD Tests -> Deploy Test Backend (self-hosted) -> Load Tests on the test pods (self-hosted) -> Deploy Production Backend (self-hosted)`.
 - The workflow seeds the test catalog data before the BDD run so the suite is reproducible from a clean cluster.
+- The load-test stage seeds `mysql-test` from `loadtests/test-db-seed.sql`, runs the jobs against `petpal-backend-test-service`, and truncates the test database afterward.
 - Load-test scripts live in `loadtests/` and are mounted into the Kubernetes Job through `k8s/loadtest-script-configmap.yaml`.
 - The default Kubernetes load test runs `catalog-read.js` against `petpal-backend-test-service` via `k8s/loadtest-job-catalog.yaml`.
 - The full run guide and report template are in `docs/testing-guide.md`.
@@ -21,13 +22,10 @@ npm run bdd:test -- --env apiBaseUrl=http://localhost:8081/backend
 To run the load test inside Kubernetes:
 
 ```bash
-kubectl delete job petpal-loadtest-catalog -n petpal --ignore-not-found
-kubectl apply -f k8s/loadtest-script-configmap.yaml
-kubectl apply -f k8s/loadtest-job-catalog.yaml
-kubectl logs -n petpal job/petpal-loadtest-catalog -f
+.\apply-deploy.ps1 -RunTestLoadTests
 ```
 
-To switch to the write-heavy load test, apply `k8s/loadtest-job-pet-health.yaml` instead.
+Run it after the test backend has been deployed. The script seeds the test database before the run and clears it afterward, so repeated load tests do not accumulate data in the persistent test volume.
 
 
 

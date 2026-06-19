@@ -43,6 +43,119 @@ function Wait-ForDeployment {
     Assert-Success $Step
 }
 
+function Get-ResourcePodName {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$LabelSelector,
+        [Parameter(Mandatory = $true)]
+        [string]$Step
+    )
+
+    $podName = & kubectl get pods -n petpal -l $LabelSelector -o jsonpath='{.items[0].metadata.name}'
+    Assert-Success $Step
+
+    if ([string]::IsNullOrWhiteSpace($podName)) {
+        throw "No pod was found for selector '$LabelSelector'."
+    }
+
+    return $podName.Trim()
+}
+
+function Invoke-MySqlScript {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ScriptPath,
+        [Parameter(Mandatory = $true)]
+        [string]$Step
+    )
+
+    if (-not (Test-Path $ScriptPath)) {
+        throw "Script '$ScriptPath' was not found."
+    }
+
+    $mysqlPod = Get-ResourcePodName -LabelSelector 'app=mysql-test' -Step 'get mysql-test pod'
+    $scriptContent = Get-Content -Raw -Encoding UTF8 $ScriptPath
+
+    $scriptContent | & kubectl exec -i -n petpal $mysqlPod -- env MYSQL_PWD=changeme-test mysql --protocol=tcp -h 127.0.0.1 -uroot petpal-test-db
+    Assert-Success $Step
+}
+
+function Reset-TestDatabase {
+    Invoke-MySqlScript -ScriptPath 'loadtests/test-db-cleanup.sql' -Step 'reset test database'
+}
+
+function Seed-TestDatabase {
+    Invoke-MySqlScript -ScriptPath 'loadtests/test-db-seed.sql' -Step 'seed test database'
+}
+
+function Wait-ForTestSchema {
+    $mysqlPod = Get-ResourcePodName -LabelSelector 'app=mysql-test' -Step 'get mysql-test pod'
+    $requiredTables = @('mood', 'breed', 'breed_health_info', 'vaccination')
+
+    foreach ($table in $requiredTables) {
+        $tableReady = $false
+
+        for ($attempt = 1; $attempt -le 30; $attempt++) {
+            $tableCount = & kubectl exec -n petpal $mysqlPod -- env MYSQL_PWD=changeme-test mysql --protocol=tcp -h 127.0.0.1 -uroot --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='petpal-test-db' AND table_name='$table';"
+            if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($tableCount) -and $tableCount.Trim() -eq '1') {
+                $tableReady = $true
+                break
+            }
+
+            Start-Sleep -Seconds 5
+        }
+
+        if (-not $tableReady) {
+            throw "Schema table '$table' was not created in time."
+        }
+    }
+}
+
+function Wait-ForJobTerminalState {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$JobName,
+        [int]$TimeoutSeconds = 900
+    )
+
+    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+
+    while ((Get-Date) -lt $deadline) {
+        $complete = & kubectl get job $JobName -n petpal -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}'
+        if ($LASTEXITCODE -ne 0) {
+            throw "Job '$JobName' could not be queried."
+        }
+
+        $failed = & kubectl get job $JobName -n petpal -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}'
+        if ($LASTEXITCODE -ne 0) {
+            throw "Job '$JobName' could not be queried."
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace($complete) -and $complete.Trim() -eq 'True') {
+            return 'Complete'
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace($failed) -and $failed.Trim() -eq 'True') {
+            return 'Failed'
+        }
+
+        Start-Sleep -Seconds 5
+    }
+
+    throw "Timed out waiting for job '$JobName' to reach a terminal state."
+}
+
+function Write-JobLogs {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$JobName
+    )
+
+    $podName = Get-ResourcePodName -LabelSelector "job-name=$JobName" -Step "get $JobName pod"
+    & kubectl logs -n petpal $podName --tail=200
+    Assert-Success "logs $JobName"
+}
+
 function Apply-Manifests {
     param(
         [Parameter(Mandatory = $true)]
@@ -65,17 +178,32 @@ function Invoke-LoadTestJob {
     Invoke-Kubectl -Arguments @('delete', 'job', $JobName, '-n', 'petpal', '--ignore-not-found') -Step "delete $JobName"
     Invoke-Kubectl -Arguments @('apply', '-f', $ManifestPath) -Step "apply $JobName"
 
+    $logsCaptured = $false
+
     try {
-        & kubectl wait --for=condition=complete "job/$JobName" -n petpal --timeout=900s
-        Assert-Success "wait $JobName"
-    } catch {
+        $terminalState = Wait-ForJobTerminalState -JobName $JobName -TimeoutSeconds 900
+        Write-JobLogs -JobName $JobName
+        $logsCaptured = $true
+
+        if ($terminalState -eq 'Failed') {
+            throw "Load test job '$JobName' reported a failed status."
+        }
+    }
+    catch {
         Write-Host "Load test job $JobName failed; collecting logs..."
-        & kubectl logs -n petpal "job/$JobName" --tail=200
+        if (-not $logsCaptured) {
+            try {
+                Write-JobLogs -JobName $JobName
+            } catch {
+                Write-Host "Unable to collect logs for $JobName."
+            }
+        }
+
         throw
     }
-
-    & kubectl logs -n petpal "job/$JobName"
-    Assert-Success "logs $JobName"
+    finally {
+        Invoke-Kubectl -Arguments @('delete', 'job', $JobName, '-n', 'petpal', '--ignore-not-found') -Step "delete $JobName"
+    }
 }
 
 function Deploy-TestBackend {
@@ -168,10 +296,23 @@ elseif ($ShouldDeployProduction) {
 
 if ($RunTestLoadTests) {
     Write-Host 'Running test Kubernetes load tests...'
+    Wait-ForDeployment -DeploymentName 'mysql-test' -Step 'test mysql ready for load tests'
     Wait-ForDeployment -DeploymentName 'petpal-backend-test' -Step 'test backend ready for load tests'
+    Wait-ForTestSchema
     Invoke-Kubectl -Arguments @('apply', '-f', 'k8s/loadtest-script-configmap.yaml') -Step 'apply loadtest configmap'
-    Invoke-LoadTestJob -JobName 'petpal-loadtest-catalog' -ManifestPath 'k8s/loadtest-job-catalog.yaml'
-    Invoke-LoadTestJob -JobName 'petpal-loadtest-pet-health' -ManifestPath 'k8s/loadtest-job-pet-health.yaml'
+    try {
+        Seed-TestDatabase
+        Invoke-LoadTestJob -JobName 'petpal-loadtest-catalog' -ManifestPath 'k8s/loadtest-job-catalog.yaml'
+        Invoke-LoadTestJob -JobName 'petpal-loadtest-pet-health' -ManifestPath 'k8s/loadtest-job-pet-health.yaml'
+    }
+    finally {
+        Write-Host 'Cleaning test database after load tests...'
+        try {
+            Reset-TestDatabase
+        } catch {
+            Write-Host 'Test database cleanup failed.'
+        }
+    }
 }
 
 if ($RunLoadTests) {

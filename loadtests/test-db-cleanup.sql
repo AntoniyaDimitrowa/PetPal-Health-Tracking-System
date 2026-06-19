@@ -1,0 +1,14 @@
+SET FOREIGN_KEY_CHECKS=0;
+
+TRUNCATE TABLE notification;
+TRUNCATE TABLE vaccination_record;
+TRUNCATE TABLE health_record;
+TRUNCATE TABLE pet;
+TRUNCATE TABLE breed_health_info;
+TRUNCATE TABLE breed_health_problems;
+TRUNCATE TABLE vaccination;
+TRUNCATE TABLE breed;
+TRUNCATE TABLE mood;
+TRUNCATE TABLE user;
+
+SET FOREIGN_KEY_CHECKS=1;
