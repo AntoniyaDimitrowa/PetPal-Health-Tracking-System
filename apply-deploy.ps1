@@ -119,23 +119,36 @@ function Wait-ForJobTerminalState {
     )
 
     $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+    $podName = $null
 
     while ((Get-Date) -lt $deadline) {
-        $complete = & kubectl get job $JobName -n petpal -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}'
-        if ($LASTEXITCODE -ne 0) {
-            throw "Job '$JobName' could not be queried."
+        if ([string]::IsNullOrWhiteSpace($podName)) {
+            $podName = & kubectl get pods -n petpal -l "job-name=$JobName" -o jsonpath='{.items[0].metadata.name}'
+            if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($podName)) {
+                Start-Sleep -Seconds 2
+                continue
+            }
+
+            $podName = $podName.Trim()
         }
 
-        $failed = & kubectl get job $JobName -n petpal -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}'
+        $phase = & kubectl get pod $podName -n petpal -o jsonpath='{.status.phase}'
         if ($LASTEXITCODE -ne 0) {
-            throw "Job '$JobName' could not be queried."
+            $podName = $null
+            Start-Sleep -Seconds 2
+            continue
         }
 
-        if (-not [string]::IsNullOrWhiteSpace($complete) -and $complete.Trim() -eq 'True') {
+        if ([string]::IsNullOrWhiteSpace($phase)) {
+            Start-Sleep -Seconds 2
+            continue
+        }
+
+        if ($phase.Trim() -eq 'Succeeded') {
             return 'Complete'
         }
 
-        if (-not [string]::IsNullOrWhiteSpace($failed) -and $failed.Trim() -eq 'True') {
+        if ($phase.Trim() -eq 'Failed') {
             return 'Failed'
         }
 
