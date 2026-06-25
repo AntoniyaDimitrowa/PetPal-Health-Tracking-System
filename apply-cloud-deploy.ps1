@@ -239,8 +239,6 @@ Apply-GeneratedSecret
 Apply-GeneratedConfigMap
 
 Invoke-Kubectl -Arguments @('apply', '-f', (Join-Path $ScriptRoot 'k8s/mysql-pvc.yaml')) -Step 'apply mysql pvc'
-& kubectl wait --for=condition=Bound "pvc/mysql-pvc" -n $Namespace --timeout=300s
-Assert-Success 'wait mysql pvc bound'
 Invoke-Kubectl -Arguments @('apply', '-f', (Join-Path $ScriptRoot 'k8s/mysql-service.yaml')) -Step 'apply mysql service'
 Invoke-Kubectl -Arguments @('apply', '-f', (Join-Path $ScriptRoot 'k8s/mysql-deployment.yaml')) -Step 'apply mysql deployment'
 Invoke-Kubectl -Arguments @('apply', '-f', (Join-Path $ScriptRoot 'k8s/backend-service.yaml')) -Step 'apply backend service'
