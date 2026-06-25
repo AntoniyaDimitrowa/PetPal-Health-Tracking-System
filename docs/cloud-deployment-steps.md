@@ -157,3 +157,4 @@ Example:
   the cluster cannot fit old and new pods at once.
 - If image pulls fail with `403 Forbidden`, grant `Artifact Registry Reader` to
   the GKE node service account that is pulling `petpal/*` images.
+
