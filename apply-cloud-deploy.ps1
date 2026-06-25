@@ -98,7 +98,24 @@ function Wait-ForDeployment {
         [string]$Step
     )
 
-    & kubectl rollout status "deployment/$DeploymentName" -n $Namespace --timeout=300s
+    & kubectl rollout status "deployment/$DeploymentName" -n $Namespace --timeout=600s
+    $rolloutExitCode = $LASTEXITCODE
+    if ($rolloutExitCode -ne 0) {
+        Write-Host ""
+        Write-Host "Rollout diagnostics for deployment/$DeploymentName"
+        & kubectl get pods -n $Namespace -l "app=$DeploymentName" -o wide
+        & kubectl describe deployment/$DeploymentName -n $Namespace
+        $podName = & kubectl get pods -n $Namespace -l "app=$DeploymentName" -o jsonpath='{.items[0].metadata.name}' 2>$null
+        if ($podName) {
+            Write-Host ""
+            Write-Host "Pod description for $podName"
+            & kubectl describe pod $podName -n $Namespace
+            Write-Host ""
+            Write-Host "Pod logs for $podName"
+            & kubectl logs $podName -n $Namespace --tail=200
+        }
+    }
+    $LASTEXITCODE = $rolloutExitCode
     Assert-Success $Step
 }
 
@@ -222,6 +239,8 @@ Apply-GeneratedSecret
 Apply-GeneratedConfigMap
 
 Invoke-Kubectl -Arguments @('apply', '-f', (Join-Path $ScriptRoot 'k8s/mysql-pvc.yaml')) -Step 'apply mysql pvc'
+& kubectl wait --for=condition=Bound "pvc/mysql-pvc" -n $Namespace --timeout=300s
+Assert-Success 'wait mysql pvc bound'
 Invoke-Kubectl -Arguments @('apply', '-f', (Join-Path $ScriptRoot 'k8s/mysql-service.yaml')) -Step 'apply mysql service'
 Invoke-Kubectl -Arguments @('apply', '-f', (Join-Path $ScriptRoot 'k8s/mysql-deployment.yaml')) -Step 'apply mysql deployment'
 Invoke-Kubectl -Arguments @('apply', '-f', (Join-Path $ScriptRoot 'k8s/backend-service.yaml')) -Step 'apply backend service'
