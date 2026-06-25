@@ -152,5 +152,8 @@ Example:
 - The local Minikube workflow still exists in `apply-deploy.ps1`.
 - MySQL uses `Recreate` in cloud because a rolling update can hit GKE Autopilot
   quota/capacity limits when the database pod is replaced.
+- Backend and frontend also use `Recreate` in cloud for the same reason: this
+  project runs with one replica per service, so rolling updates can stall if
+  the cluster cannot fit old and new pods at once.
 - If image pulls fail with `403 Forbidden`, grant `Artifact Registry Reader` to
   the GKE node service account that is pulling `petpal/*` images.

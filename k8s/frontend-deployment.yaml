@@ -4,6 +4,8 @@ metadata:
   name: petpal-frontend
   namespace: petpal
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
