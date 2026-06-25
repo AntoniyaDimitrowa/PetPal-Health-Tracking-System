@@ -1,160 +1,298 @@
-# Cloud Deployment Runbook
+# PetPal Cloud Deployment Documentation
 
-This branch is set up for a cloud Kubernetes deployment of the monolith stack.
-The app now reads runtime configuration from environment variables, and the
-cloud helper script applies the stack against a GKE cluster.
+## Summary
 
-In practice, this migrated PetPal from a local Kubernetes setup to GKE on
-Google Cloud. The pipeline now builds backend and frontend images, pushes them
-to Artifact Registry, and deploys the full runtime stack with MySQL, backend,
-frontend, and ingress through GitHub Actions authenticated with Workload
-Identity Federation.
+PetPal was migrated from a local Kubernetes deployment to a cloud deployment on
+Google Kubernetes Engine (GKE). The final setup builds Docker images for both
+the backend and frontend, pushes them to Google Artifact Registry, and deploys
+the application stack to a GKE Autopilot cluster through GitHub Actions. The
+cloud environment now runs MySQL, the Spring Boot backend, the frontend, and an
+NGINX ingress entry point. After the final fixes, the deployed frontend loads
+from the cloud address and successfully sends requests to the deployed backend.
 
-## What Changed In The Repo
+## Final Result
 
-1. `WebSecurityConfig` and `WebSocketConfig` now read allowed origins from
-   `cors.allowed-origins` instead of hardcoding `petpal.local` and localhost.
-2. `application.properties`, `application-dev.properties`,
-   `application-staging.properties`, and `application-loadtest.properties`
-   now use environment-backed datasource, JWT, weather, and OpenRouter values.
-3. `k8s/configmap.yaml` now exposes `CORS_ALLOWED_ORIGINS` for the backend.
-4. `k8s/backend-deployment.yaml` now passes `CORS_ALLOWED_ORIGINS` into the
-   container.
-5. `k8s/frontend-deployment.yaml`, `k8s/mysql-deployment.yaml`, and
-   `k8s/mysql-test.yaml` now use cloud-safe image defaults.
-6. `apply-cloud-deploy.ps1` was added to apply the cloud stack in one run.
-7. `k8s/cloud/ingress.yaml` was added so cloud ingress does not depend on the
-   local-only `petpal.local` host.
+- Cloud provider: Google Cloud Platform
+- Kubernetes platform: GKE Autopilot
+- GCP project: `project-2467249b-6a0f-4637-aeb`
+- Region: `europe-west4`
+- Cluster: `petpal-cluster-1`
+- Artifact Registry repository: `petpal`
+- Backend image: `petpal-backend`
+- Frontend image: `petpal-frontend`
+- Kubernetes namespace: `petpal`
+- Public entry point: NGINX ingress controller external IP
 
-## What You Still Need
+The application is no longer accessed through `petpal.local`. That address was
+only useful for the local Kubernetes setup. In the cloud, the site is opened
+through the external IP assigned to the ingress controller.
 
-The non-secret cloud values now live in [cloud-deploy.config.psd1](../cloud-deploy.config.psd1).
-That file includes:
+Useful checks:
 
-- project ID
-- region
+```bash
+kubectl get pods -n petpal
+kubectl get pods -n ingress-nginx
+kubectl get ingress petpal-ingress -n petpal
+kubectl get svc ingress-nginx-controller -n ingress-nginx
+```
+
+Expected application URLs:
+
+```text
+http://INGRESS_EXTERNAL_IP/
+http://INGRESS_EXTERNAL_IP/backend
+```
+
+## Architecture
+
+The cloud deployment keeps the monolith architecture because it was the most
+stable and realistic option for the project deadline. The microservice branch
+can still be demonstrated locally, but the cloud deployment focuses on the
+working monolith stack.
+
+The deployed runtime contains:
+
+- `mysql`: MySQL 8 database with a persistent volume claim
+- `petpal-backend`: Spring Boot backend running on port `8080`
+- `petpal-frontend`: frontend served through an NGINX container on port `80`
+- `petpal-ingress`: Kubernetes ingress routing `/` to the frontend and
+  `/backend` to the backend
+- `ingress-nginx-controller`: external load balancer entry point for the app
+
+The local-only test workloads, such as `backend-test` and `mysql-test`, are not
+part of the cloud runtime deployment. The cloud deployment focuses on the
+production-like application stack.
+
+## Repository Changes
+
+The cloud deployment required several repo changes:
+
+1. Added [cloud-deploy.config.psd1](../cloud-deploy.config.psd1) to keep
+   non-secret cloud configuration in one place.
+2. Added [apply-cloud-deploy.ps1](../apply-cloud-deploy.ps1) to apply the cloud
+   Kubernetes stack consistently.
+3. Added [ci-cloud.yml](../.github/workflows/ci-cloud.yml) for GitHub Actions
+   cloud CI/CD.
+4. Added [k8s/cloud/ingress.yaml](../k8s/cloud/ingress.yaml) for the cloud
+   ingress route.
+5. Updated the backend configuration so runtime values are read from
+   environment variables instead of hardcoded local values.
+6. Moved application secrets out of committed Kubernetes YAML and into GitHub
+   Actions environment secrets.
+7. Added `.env.example` for local development and kept the real `.env` ignored.
+8. Updated Kubernetes deployments to use cloud image paths and Autopilot-safe
+   rollout behavior.
+
+## Secret And Configuration Handling
+
+Normal developers do not commit real passwords, API keys, or tokens to GitHub.
+For this deployment, secrets were moved into the GitHub Actions `cloud`
+environment.
+
+GitHub environment secrets used by the workflow:
+
+- `DB_PASSWORD`
+- `JWT_SECRET`
+- `WEATHER_API_KEY`
+- `OPENROUTER_API_KEY`
+
+Non-secret deployment values are stored in
+[cloud-deploy.config.psd1](../cloud-deploy.config.psd1), including:
+
+- GCP project ID
+- GCP region
 - GKE cluster name
 - Workload Identity Provider
 - Google Cloud service account email
 - Artifact Registry repository
 - backend and frontend image names
-- frontend repo URL and branch
+- frontend repository URL and branch
 
-You still need the secrets that the application expects. Put them in GitHub
-Actions under the `cloud` environment:
+The old service account key approach was not used. Google Cloud blocked service
+account key creation because of organization policy, so the workflow was changed
+to use Workload Identity Federation instead.
 
-- database password
-- JWT secret
-- Weather API key
-- OpenRouter API key
+## Google Cloud Setup
 
-The frontend source is not inside this repository, but the workflow now clones
-the public frontend repo automatically.
+The following Google Cloud resources were prepared:
 
-The cloud workflow uses Workload Identity Federation instead of a downloaded
-Google Cloud service account key. Create a workload identity pool/provider in
-Google Cloud and add its full resource name plus the impersonated service
-account email to [cloud-deploy.config.psd1](../cloud-deploy.config.psd1).
-The old `GCP_SA_KEY` secret is not used by this workflow.
-The GitHub workflow also installs the `gke-gcloud-auth-plugin` component so
-`kubectl` can authenticate to the GKE cluster.
+1. Enabled the required APIs, including Kubernetes Engine and Artifact Registry.
+2. Created an Artifact Registry Docker repository named `petpal`.
+3. Created the GKE Autopilot cluster `petpal-cluster-1` in `europe-west4`.
+4. Created the service account
+   `petpal-github-actions@project-2467249b-6a0f-4637-aeb.iam.gserviceaccount.com`.
+5. Granted the deployment service account access to push images and deploy to
+   GKE.
+6. Created a Workload Identity Federation pool and provider for GitHub Actions.
+7. Allowed the backend GitHub repository to impersonate the Google Cloud service
+   account.
+8. Granted Artifact Registry read access to the GKE node service account so pods
+   could pull private images.
 
-For local work, use the checked-in [`.env.example`](../.env.example) as the
-template and the ignored root [`.env`](../.env) file as the working copy. The
-local PowerShell deploy script reads `.env` automatically.
+## CI/CD Pipeline
 
-## Build And Push Images
+The cloud pipeline is defined in
+[.github/workflows/ci-cloud.yml](../.github/workflows/ci-cloud.yml).
 
-The shared registry settings live in [cloud-deploy.config.psd1](../cloud-deploy.config.psd1).
-The script reads that file automatically, so the image names stay short:
+The workflow runs on pushes to the cloud deployment branch and can also be run
+manually from GitHub Actions.
 
-- backend: `petpal-backend`
-- frontend: `petpal-frontend`
+Pipeline steps:
 
-```powershell
-gcloud auth configure-docker europe-west4-docker.pkg.dev
+1. Check out the backend repository.
+2. Load shared values from [cloud-deploy.config.psd1](../cloud-deploy.config.psd1).
+3. Authenticate to Google Cloud with Workload Identity Federation.
+4. Install the GKE auth plugin so `kubectl` can connect to the cluster.
+5. Configure Docker authentication for Artifact Registry.
+6. Build and push the backend image.
+7. Clone the public frontend repository.
+8. Build and push the frontend image.
+9. Get GKE credentials for the target cluster.
+10. Apply the Kubernetes stack through [apply-cloud-deploy.ps1](../apply-cloud-deploy.ps1).
+11. Print the deployed image names and live address in the GitHub Actions
+    summary.
 
-docker build -t europe-west4-docker.pkg.dev/project-2467249b-6a0f-4637-aeb/petpal/petpal-backend:latest .
-docker push europe-west4-docker.pkg.dev/project-2467249b-6a0f-4637-aeb/petpal/petpal-backend:latest
+The backend and frontend images are tagged with the Git commit SHA. This makes
+each deployment traceable to the exact commit that produced it.
 
-# Run this from the separate frontend repo
-docker build -t europe-west4-docker.pkg.dev/project-2467249b-6a0f-4637-aeb/petpal/petpal-frontend:latest .
-docker push europe-west4-docker.pkg.dev/project-2467249b-6a0f-4637-aeb/petpal/petpal-frontend:latest
-```
+## Kubernetes Deployment
 
-## Deploy To Cloud
+The cloud deployment script applies these resources:
 
-1. Fill in `ClusterName` in `cloud-deploy.config.psd1` with your real GKE
-   cluster name.
-2. Create a GitHub Actions environment named `cloud` and add the four app
-   secrets there.
-3. Create a Workload Identity pool/provider in Google Cloud for GitHub Actions
-   and grant the impersonated service account Artifact Registry write access
-   plus GKE access for the target cluster.
-4. Fill in `WorkloadIdentityProvider`, `ServiceAccountEmail`, and `ClusterName`
-   in `cloud-deploy.config.psd1`.
-5. Run the cloud workflow or the cloud helper script.
-6. Wait for the backend, frontend, and MySQL rollouts to finish.
-7. Open the ingress address in the browser.
+- namespace
+- generated Kubernetes secret
+- generated Kubernetes config map
+- MySQL persistent volume claim
+- MySQL service and deployment
+- backend service and deployment
+- frontend service and deployment
+- cloud ingress
 
-## Live URL
+MySQL uses the public `mysql:8.0` image from the container registry, not a local
+Docker image. The backend and frontend use images built by GitHub Actions and
+pushed to Artifact Registry.
 
-The deployed site is **not** `petpal.local`. In the cloud, the frontend is
-exposed through the GKE ingress address assigned to `petpal-ingress`.
+The script waits for MySQL, backend, and frontend rollouts. If a rollout fails,
+it prints diagnostics such as pod status, deployment description, pod
+description, and recent logs.
 
-Use one of these after deployment:
+## Ingress And Public Access
 
-```powershell
-kubectl get ingress petpal-ingress -n petpal
-```
+The repo creates a Kubernetes ingress named `petpal-ingress` with
+`ingressClassName: nginx`. A plain ingress resource is not enough by itself; the
+cluster also needs an ingress controller.
 
-If you want just the address, use:
+An NGINX ingress controller was installed in the cluster. It created a Google
+Cloud load balancer and exposed the app through an external IP.
 
-```powershell
-kubectl get ingress petpal-ingress -n petpal -o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}'
-```
+The route setup is:
 
-The frontend is served at:
+- `/` routes to `petpal-frontend-service`
+- `/backend` routes to `petpal-backend-service`
 
-```text
-http://INGRESS_ADDRESS/
-```
+The frontend was also updated in the frontend repository so its backend base URL
+points to the cloud backend instead of `petpal.local`.
 
-The backend is reachable through the same ingress at:
+## Challenges And Fixes
 
-```text
-http://INGRESS_ADDRESS/backend
-```
+### Service account key creation was blocked
 
-If the frontend repo still contains a hardcoded local API base URL, update that
-repo to point at the cloud ingress address before testing frontend-to-backend
-requests.
+Google Cloud did not allow creating a downloadable service account key because
+of organization policy.
 
-Example:
+Fix: replaced `GCP_SA_KEY` authentication with Workload Identity Federation.
+This is also a better security practice because GitHub Actions does not need a
+long-lived JSON key.
 
-```powershell
-.\apply-cloud-deploy.ps1 `
-  -DbPassword 'your-db-password' `
-  -JwtSecret 'your-jwt-secret' `
-  -WeatherApiKey 'your-weather-api-key' `
-  -OpenRouterApiKey 'your-openrouter-api-key' `
-  -CorsAllowedOrigins '*'
-```
+### `kubectl` could not authenticate to GKE
 
-## Notes
+The first cloud workflow failed because the GitHub runner did not have
+`gke-gcloud-auth-plugin`.
 
-- The repository settings are stored in `cloud-deploy.config.psd1`, which the
-  deploy script reads automatically.
-- `CORS_ALLOWED_ORIGINS='*'` is the fastest way to get the cloud deployment
-  working. Narrow it later if you want a stricter browser policy.
-- If you want to use a single exact frontend origin instead, pass that value to
-  `-CorsAllowedOrigins`.
-- The local Minikube workflow still exists in `apply-deploy.ps1`.
-- MySQL uses `Recreate` in cloud because a rolling update can hit GKE Autopilot
-  quota/capacity limits when the database pod is replaced.
-- Backend and frontend also use `Recreate` in cloud for the same reason: this
-  project runs with one replica per service, so rolling updates can stall if
-  the cluster cannot fit old and new pods at once.
-- If image pulls fail with `403 Forbidden`, grant `Artifact Registry Reader` to
-  the GKE node service account that is pulling `petpal/*` images.
+Fix: updated the workflow to install the GKE auth plugin through
+`google-github-actions/setup-gcloud`.
 
+### MySQL rollout timed out
+
+The MySQL pod initially took too long to become ready, and rolling updates caused
+extra pods to be scheduled. On GKE Autopilot this created capacity and quota
+problems.
+
+Fix: added cloud-safe MySQL settings and changed MySQL to `Recreate` strategy so
+only one database pod is scheduled at a time.
+
+### PVC wait happened too early
+
+The first deployment script waited for the MySQL persistent volume claim before
+the database pod consumed it. With cloud storage classes, volume binding can
+happen only after a pod is scheduled.
+
+Fix: removed the premature PVC wait and let Kubernetes bind the volume during
+pod scheduling.
+
+### Backend and frontend rollouts hit capacity limits
+
+Rolling updates for backend and frontend could temporarily require both the old
+and new pods at the same time. The small Autopilot cluster did not always have
+enough available quota for that.
+
+Fix: changed backend and frontend deployments to `Recreate` strategy for this
+project. Since each service runs one replica, this is simpler and avoids
+unnecessary extra pod scheduling.
+
+### Pods could not pull images from Artifact Registry
+
+The backend pod failed with `403 Forbidden` while pulling the backend image from
+Artifact Registry.
+
+Fix: granted `Artifact Registry Reader` to the GKE node service account so GKE
+could pull images from the private Artifact Registry repository.
+
+### Ingress had no external address
+
+The `petpal-ingress` resource existed, but it had no address. The cluster did
+not have an ingress controller installed, so nothing was processing the ingress.
+
+Fix: installed the NGINX ingress controller and checked the external IP from the
+`ingress-nginx-controller` load balancer service.
+
+### Ingress controller setup was blocked by quota
+
+The NGINX admission jobs were temporarily unschedulable because GKE reported
+quota and capacity limits. This prevented the admission secret from being
+created, so the ingress controller stayed in `ContainerCreating`.
+
+Fix: activated the Google Cloud billing account, temporarily scaled down the
+backend and frontend to free cluster resources, allowed the ingress controller
+to roll out, and then scaled the application back up.
+
+### Frontend still pointed to the local backend
+
+The deployed frontend initially still used the local URL `petpal.local`.
+
+Fix: updated the frontend repository so the frontend sends API requests to the
+cloud backend address. After rerunning the cloud pipeline, the frontend image
+was rebuilt and deployed with the updated backend URL.
+
+## Final Validation
+
+The final deployment was validated by checking:
+
+- GitHub Actions cloud workflow completed successfully.
+- Backend image was built and pushed to Artifact Registry.
+- Frontend image was built and pushed to Artifact Registry.
+- MySQL, backend, and frontend pods were running in the `petpal` namespace.
+- NGINX ingress controller was running in the `ingress-nginx` namespace.
+- The load balancer external IP opened the deployed frontend in the browser.
+- Frontend requests reached the backend through `/backend`.
+- The application worked from the cloud deployment instead of the local cluster.
+
+
+## Conclusion
+
+The cloud migration is complete. PetPal now has a repeatable deployment path
+from GitHub to Google Cloud: source code is pushed, GitHub Actions builds the
+backend and frontend images, images are stored in Artifact Registry, and the
+application is deployed to GKE. The final deployed version runs successfully in
+the cloud, and the frontend sends requests to the backend without needing the
+local Kubernetes environment.
