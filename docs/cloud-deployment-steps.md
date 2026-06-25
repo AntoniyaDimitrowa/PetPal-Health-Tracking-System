@@ -111,3 +111,5 @@ Example:
 - If you want to use a single exact frontend origin instead, pass that value to
   `-CorsAllowedOrigins`.
 - The local Minikube workflow still exists in `apply-deploy.ps1`.
+- MySQL uses `Recreate` in cloud because a rolling update can hit GKE Autopilot
+  quota/capacity limits when the database pod is replaced.

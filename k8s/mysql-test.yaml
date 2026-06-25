@@ -17,6 +17,8 @@ metadata:
   name: mysql-test
   namespace: petpal
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: mysql-test

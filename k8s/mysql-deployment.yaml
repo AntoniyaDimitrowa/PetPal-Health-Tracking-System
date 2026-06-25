@@ -4,6 +4,8 @@ metadata:
   name: mysql
   namespace: petpal
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: mysql
