@@ -50,3 +50,6 @@ PipelineFolder.json
 **/_diag/**
 **/_work/**
 *.log
+.env
+.env.local
+.env.*.local

@@ -1,0 +1,146 @@
+name: Cloud CI/CD
+
+on:
+  push:
+    branches:
+      - feature/cloud-deployment
+      - cloud-deployment
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: cloud-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and deploy to GKE
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    environment: cloud
+
+    steps:
+      - name: Checkout backend repo
+        uses: actions/checkout@v6
+
+      - name: Load cloud config
+        shell: pwsh
+        run: |
+          $config = Import-PowerShellDataFile -Path "./cloud-deploy.config.psd1"
+
+          $requiredKeys = @(
+            'ProjectId',
+            'Region',
+            'ClusterName',
+            'WorkloadIdentityProvider',
+            'ServiceAccountEmail',
+            'ArtifactRegistryRepository',
+            'BackendImageName',
+            'FrontendImageName',
+            'FrontendRepoUrl',
+            'FrontendRepoBranch'
+          )
+
+          foreach ($key in $requiredKeys) {
+            if (-not $config.ContainsKey($key) -or [string]::IsNullOrWhiteSpace($config[$key])) {
+              throw "cloud-deploy.config.psd1 is missing '$key'."
+            }
+          }
+
+          if ($config.ClusterName -like 'REPLACE_*') {
+            throw "Set ClusterName in cloud-deploy.config.psd1 to the real GKE cluster name."
+          }
+
+          if ($config.WorkloadIdentityProvider -like 'REPLACE_*') {
+            throw "Set WorkloadIdentityProvider in cloud-deploy.config.psd1 to the real Workload Identity Provider resource name."
+          }
+
+          if ($config.ServiceAccountEmail -like 'REPLACE_*') {
+            throw "Set ServiceAccountEmail in cloud-deploy.config.psd1 to the real Google Cloud service account email."
+          }
+
+          "PROJECT_ID=$($config.ProjectId)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "REGION=$($config.Region)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "GKE_CLUSTER_NAME=$($config.ClusterName)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "WORKLOAD_IDENTITY_PROVIDER=$($config.WorkloadIdentityProvider)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "GCP_SERVICE_ACCOUNT_EMAIL=$($config.ServiceAccountEmail)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "ARTIFACT_REGISTRY_REPOSITORY=$($config.ArtifactRegistryRepository)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "BACKEND_IMAGE_NAME=$($config.BackendImageName)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "FRONTEND_IMAGE_NAME=$($config.FrontendImageName)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "FRONTEND_REPO_URL=$($config.FrontendRepoUrl)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "FRONTEND_REPO_BRANCH=$($config.FrontendRepoBranch)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "IMAGE_TAG=$env:GITHUB_SHA" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "BACKEND_IMAGE=$($config.Region)-docker.pkg.dev/$($config.ProjectId)/$($config.ArtifactRegistryRepository)/$($config.BackendImageName):$env:GITHUB_SHA" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "FRONTEND_IMAGE=$($config.Region)-docker.pkg.dev/$($config.ProjectId)/$($config.ArtifactRegistryRepository)/$($config.FrontendImageName):$env:GITHUB_SHA" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT_EMAIL }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Configure gcloud project
+        shell: bash
+        run: gcloud config set project "$PROJECT_ID"
+
+      - name: Configure Docker for Artifact Registry
+        shell: bash
+        run: gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
+
+      - name: Build and push backend image
+        shell: bash
+        run: |
+          docker build --pull -t "$BACKEND_IMAGE" .
+          docker push "$BACKEND_IMAGE"
+
+      - name: Checkout frontend repo
+        shell: bash
+        run: git clone --depth 1 --branch "$FRONTEND_REPO_BRANCH" "$FRONTEND_REPO_URL" frontend
+
+      - name: Build and push frontend image
+        shell: bash
+        run: |
+          FRONTEND_CONTEXT="frontend/Pet Care Front End/petCareFrontEnd"
+          docker build --pull -t "$FRONTEND_IMAGE" "$FRONTEND_CONTEXT"
+          docker push "$FRONTEND_IMAGE"
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v5
+        with:
+          version: v1.30.0
+
+      - name: Get GKE credentials
+        shell: bash
+        run: gcloud container clusters get-credentials "$GKE_CLUSTER_NAME" --region "$REGION" --project "$PROJECT_ID"
+
+      - name: Deploy cloud stack
+        shell: pwsh
+        run: |
+          .\apply-cloud-deploy.ps1 `
+            -DbPassword "${{ secrets.DB_PASSWORD }}" `
+            -JwtSecret "${{ secrets.JWT_SECRET }}" `
+            -WeatherApiKey "${{ secrets.WEATHER_API_KEY }}" `
+            -OpenRouterApiKey "${{ secrets.OPENROUTER_API_KEY }}" `
+            -ImageTag $env:IMAGE_TAG
+
+      - name: Summarize deployment
+        if: success()
+        shell: bash
+        run: |
+          {
+            echo "## PetPal cloud deployment"
+            echo ""
+            echo "- Backend image: \`$BACKEND_IMAGE\`"
+            echo "- Frontend image: \`$FRONTEND_IMAGE\`"
+            echo "- Cluster: \`$GKE_CLUSTER_NAME\`"
+            echo "- Region: \`$REGION\`"
+            echo "- Namespace: \`petpal\`"
+            echo "- Check ingress with: \`kubectl get ingress petpal-ingress -n petpal\`"
+          } >> "$GITHUB_STEP_SUMMARY"

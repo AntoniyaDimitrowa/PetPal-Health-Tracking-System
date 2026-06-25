@@ -24,7 +24,7 @@ spec:
             - name: API_BASE_URL
               value: http://petpal-backend-test-service:8080/backend
             - name: TEST_PASSWORD
-              value: PetPal@1234
+              value: change-me-local-test-password
           resources:
             requests:
               cpu: 100m

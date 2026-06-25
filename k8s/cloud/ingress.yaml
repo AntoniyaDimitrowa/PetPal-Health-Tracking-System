@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: petpal-ingress
+  namespace: petpal
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /backend
+            pathType: Prefix
+            backend:
+              service:
+                name: petpal-backend-service
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: petpal-frontend-service
+                port:
+                  number: 80

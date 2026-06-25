@@ -2,6 +2,7 @@ package com.example.petpal.configuration.security;
 
 import com.example.petpal.configuration.security.auth.AuthenticationRequestFilter;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,6 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
+
 @EnableWebSecurity
 @EnableMethodSecurity(jsr250Enabled = true)
 @Configuration
@@ -26,6 +29,9 @@ public class WebSecurityConfig {
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/swagger-ui/**"};
+
+    @Value("${cors.allowed-origins:http://petpal.local,http://localhost:5173,http://localhost:3000,http://localhost:80,http://127.0.0.1:5173,http://127.0.0.1:3000}")
+    private String corsAllowedOrigins;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity,
@@ -60,13 +66,18 @@ public class WebSecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://petpal.local","http://localhost:5173", "http://localhost:3000", "http://localhost:80")
-                //registry.addMapping("/**").allowedOriginPatterns("*")
-
+                registry.addMapping("/**").allowedOriginPatterns(resolveAllowedOrigins())
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*") // Allow all headers
-                        .allowCredentials(true); // Allow cookies or Authorization headers
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
+    }
+
+    private String[] resolveAllowedOrigins() {
+        return Arrays.stream(corsAllowedOrigins.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isEmpty())
+                .toArray(String[]::new);
     }
 }

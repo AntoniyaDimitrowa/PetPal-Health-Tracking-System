@@ -16,6 +16,6 @@ spec:
       containers:
         - name: petpal-frontend
           image: petpal-frontend:latest
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

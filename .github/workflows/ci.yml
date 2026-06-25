@@ -78,6 +78,8 @@ jobs:
       - unit-tests
       - integration-tests
     timeout-minutes: 45
+    env:
+      TEST_DB_PASSWORD: change-me-local-test-password
 
     steps:
       - name: Checkout
@@ -140,7 +142,7 @@ jobs:
             TABLE_READY=false
 
             for attempt in $(seq 1 30); do
-              TABLE_COUNT=$(kubectl exec -n petpal "$MYSQL_POD" -- env MYSQL_PWD=changeme-test mysql --protocol=tcp -h 127.0.0.1 -uroot --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='petpal-test-db' AND table_name='${table}';" 2>/dev/null || true)
+              TABLE_COUNT=$(kubectl exec -n petpal "$MYSQL_POD" -- env MYSQL_PWD=$TEST_DB_PASSWORD mysql --protocol=tcp -h 127.0.0.1 -uroot --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='petpal-test-db' AND table_name='${table}';" 2>/dev/null || true)
               if [ "$TABLE_COUNT" = "1" ]; then
                 TABLE_READY=true
                 break
@@ -162,7 +164,7 @@ jobs:
 
           MYSQL_READY=false
           for attempt in $(seq 1 30); do
-            if kubectl exec -n petpal "$MYSQL_POD" -- env MYSQL_PWD=changeme-test mysql --protocol=tcp -h 127.0.0.1 -uroot -e "SELECT 1" petpal-test-db >/dev/null 2>&1; then
+            if kubectl exec -n petpal "$MYSQL_POD" -- env MYSQL_PWD=$TEST_DB_PASSWORD mysql --protocol=tcp -h 127.0.0.1 -uroot -e "SELECT 1" petpal-test-db >/dev/null 2>&1; then
               MYSQL_READY=true
               break
             fi
@@ -175,7 +177,7 @@ jobs:
             exit 1
           fi
 
-          kubectl exec -i -n petpal "$MYSQL_POD" -- env MYSQL_PWD=changeme-test mysql --protocol=tcp -h 127.0.0.1 -uroot petpal-test-db <<'SQL'
+          kubectl exec -i -n petpal "$MYSQL_POD" -- env MYSQL_PWD=$TEST_DB_PASSWORD mysql --protocol=tcp -h 127.0.0.1 -uroot petpal-test-db <<'SQL'
           INSERT INTO mood (name, emoji) VALUES
             ('Happy', ':)'),
             ('Playful', ':D');

@@ -3,7 +3,7 @@ import http from "k6/http";
 import { check, fail, sleep } from "k6";
 
 const baseUrl = __ENV.API_BASE_URL || "http://petpal-backend-test-service:8080/backend";
-const password = __ENV.TEST_PASSWORD || "PetPal@1234";
+    const password = __ENV.TEST_PASSWORD || __ENV.DB_PASSWORD_TEST || "change-me-local-test-password";
 const jsonHeaders = {
   "Content-Type": "application/json",
 };

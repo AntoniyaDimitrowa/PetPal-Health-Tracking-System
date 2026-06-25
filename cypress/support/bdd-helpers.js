@@ -1,5 +1,5 @@
 const DEFAULT_API_BASE_URL = "http://localhost:8081/backend";
-const DEFAULT_PASSWORD = "PetPal@1234";
+const DEFAULT_PASSWORD = Cypress.env("TEST_PASSWORD") || "change-me-local-test-password";
 
 const normalizeLabel = (label) =>
   label

@@ -8,6 +8,45 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$LocalEnvPath = Join-Path $PSScriptRoot '.env'
+
+function Import-DotEnv {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    if (-not (Test-Path -LiteralPath $Path)) {
+        return
+    }
+
+    Get-Content -LiteralPath $Path | ForEach-Object {
+        $line = $_.Trim()
+
+        if ([string]::IsNullOrWhiteSpace($line) -or $line.StartsWith('#')) {
+            return
+        }
+
+        $separatorIndex = $line.IndexOf('=')
+        if ($separatorIndex -lt 1) {
+            return
+        }
+
+        $name = $line.Substring(0, $separatorIndex).Trim()
+        $value = $line.Substring($separatorIndex + 1).Trim()
+
+        if (($value.StartsWith('"') -and $value.EndsWith('"')) -or ($value.StartsWith("'") -and $value.EndsWith("'"))) {
+            $value = $value.Substring(1, $value.Length - 2)
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace($name) -and [string]::IsNullOrWhiteSpace((Get-Item -Path "Env:$name" -ErrorAction SilentlyContinue))) {
+            Set-Item -Path "Env:$name" -Value $value
+        }
+    }
+}
+
+Import-DotEnv -Path $LocalEnvPath
+$TestDatabasePassword = if ([string]::IsNullOrWhiteSpace($env:DB_PASSWORD_TEST)) { 'change-me-local-test-password' } else { $env:DB_PASSWORD_TEST }
 
 function Assert-Success {
     param(
@@ -76,7 +115,7 @@ function Invoke-MySqlScript {
     $mysqlPod = Get-ResourcePodName -LabelSelector 'app=mysql-test' -Step 'get mysql-test pod'
     $scriptContent = Get-Content -Raw -Encoding UTF8 $ScriptPath
 
-    $scriptContent | & kubectl exec -i -n petpal $mysqlPod -- env MYSQL_PWD=changeme-test mysql --protocol=tcp -h 127.0.0.1 -uroot petpal-test-db
+    $scriptContent | & kubectl exec -i -n petpal $mysqlPod -- env MYSQL_PWD=$TestDatabasePassword mysql --protocol=tcp -h 127.0.0.1 -uroot petpal-test-db
     Assert-Success $Step
 }
 
@@ -96,7 +135,7 @@ function Wait-ForTestSchema {
         $tableReady = $false
 
         for ($attempt = 1; $attempt -le 30; $attempt++) {
-            $tableCount = & kubectl exec -n petpal $mysqlPod -- env MYSQL_PWD=changeme-test mysql --protocol=tcp -h 127.0.0.1 -uroot --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='petpal-test-db' AND table_name='$table';"
+            $tableCount = & kubectl exec -n petpal $mysqlPod -- env MYSQL_PWD=$TestDatabasePassword mysql --protocol=tcp -h 127.0.0.1 -uroot --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='petpal-test-db' AND table_name='$table';"
             if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($tableCount) -and $tableCount.Trim() -eq '1') {
                 $tableReady = $true
                 break
