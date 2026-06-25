@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     environment: cloud
+    env:
+      USE_GKE_GCLOUD_AUTH_PLUGIN: "True"
 
     steps:
       - name: Checkout backend repo
@@ -85,6 +87,8 @@ jobs:
 
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v3
+        with:
+          install_components: gke-gcloud-auth-plugin
 
       - name: Configure gcloud project
         shell: bash

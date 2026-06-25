@@ -50,6 +50,8 @@ Google Cloud service account key. Create a workload identity pool/provider in
 Google Cloud and add its full resource name plus the impersonated service
 account email to [cloud-deploy.config.psd1](../cloud-deploy.config.psd1).
 The old `GCP_SA_KEY` secret is not used by this workflow.
+The GitHub workflow also installs the `gke-gcloud-auth-plugin` component so
+`kubectl` can authenticate to the GKE cluster.
 
 For local work, use the checked-in [`.env.example`](../.env.example) as the
 template and the ignored root [`.env`](../.env) file as the working copy. The
