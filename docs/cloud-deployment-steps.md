@@ -4,6 +4,12 @@ This branch is set up for a cloud Kubernetes deployment of the monolith stack.
 The app now reads runtime configuration from environment variables, and the
 cloud helper script applies the stack against a GKE cluster.
 
+In practice, this migrated PetPal from a local Kubernetes setup to GKE on
+Google Cloud. The pipeline now builds backend and frontend images, pushes them
+to Artifact Registry, and deploys the full runtime stack with MySQL, backend,
+frontend, and ingress through GitHub Actions authenticated with Workload
+Identity Federation.
+
 ## What Changed In The Repo
 
 1. `WebSecurityConfig` and `WebSocketConfig` now read allowed origins from
@@ -89,7 +95,40 @@ docker push europe-west4-docker.pkg.dev/project-2467249b-6a0f-4637-aeb/petpal/pe
    in `cloud-deploy.config.psd1`.
 5. Run the cloud workflow or the cloud helper script.
 6. Wait for the backend, frontend, and MySQL rollouts to finish.
-7. Check the ingress address and open that URL in the browser.
+7. Open the ingress address in the browser.
+
+## Live URL
+
+The deployed site is **not** `petpal.local`. In the cloud, the frontend is
+exposed through the GKE ingress address assigned to `petpal-ingress`.
+
+Use one of these after deployment:
+
+```powershell
+kubectl get ingress petpal-ingress -n petpal
+```
+
+If you want just the address, use:
+
+```powershell
+kubectl get ingress petpal-ingress -n petpal -o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}'
+```
+
+The frontend is served at:
+
+```text
+http://INGRESS_ADDRESS/
+```
+
+The backend is reachable through the same ingress at:
+
+```text
+http://INGRESS_ADDRESS/backend
+```
+
+If the frontend repo still contains a hardcoded local API base URL, update that
+repo to point at the cloud ingress address before testing frontend-to-backend
+requests.
 
 Example:
 
@@ -113,3 +152,5 @@ Example:
 - The local Minikube workflow still exists in `apply-deploy.ps1`.
 - MySQL uses `Recreate` in cloud because a rolling update can hit GKE Autopilot
   quota/capacity limits when the database pod is replaced.
+- If image pulls fail with `403 Forbidden`, grant `Artifact Registry Reader` to
+  the GKE node service account that is pulling `petpal/*` images.

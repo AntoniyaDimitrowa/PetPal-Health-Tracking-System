@@ -138,6 +138,7 @@ jobs:
         if: success()
         shell: bash
         run: |
+          INGRESS_ADDRESS=$(kubectl get ingress petpal-ingress -n petpal -o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}')
           {
             echo "## PetPal cloud deployment"
             echo ""
@@ -146,5 +147,10 @@ jobs:
             echo "- Cluster: \`$GKE_CLUSTER_NAME\`"
             echo "- Region: \`$REGION\`"
             echo "- Namespace: \`petpal\`"
-            echo "- Check ingress with: \`kubectl get ingress petpal-ingress -n petpal\`"
+            if [ -n "$INGRESS_ADDRESS" ]; then
+              echo "- Live URL: \`http://$INGRESS_ADDRESS/\`"
+              echo "- Backend API: \`http://$INGRESS_ADDRESS/backend\`"
+            else
+              echo "- Live URL: \`kubectl get ingress petpal-ingress -n petpal\`"
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
